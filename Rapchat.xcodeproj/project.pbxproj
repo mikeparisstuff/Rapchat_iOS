@@ -1,0 +1,757 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		3F376059185593B2004E83B0 /* RCTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F376058185593B2004E83B0 /* RCTabBarController.m */; };
+		3F37605F18559BEE004E83B0 /* RCNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F37605E18559BEE004E83B0 /* RCNavigationController.m */; };
+		3F4CB3AC185D43CA008B5D77 /* RCCrowdTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F4CB3AB185D43CA008B5D77 /* RCCrowdTableViewCell.m */; };
+		3F515E351859558500C950E9 /* Rapchat.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3F515E331859558500C950E9 /* Rapchat.xcdatamodeld */; };
+		3F515E38185965B300C950E9 /* RCProfile.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F515E37185965B300C950E9 /* RCProfile.m */; };
+		3F515E3B1859665700C950E9 /* RCUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F515E3A1859665700C950E9 /* RCUser.m */; };
+		3F572E55185557A200CADD95 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F572E54185557A200CADD95 /* Foundation.framework */; };
+		3F572E57185557A200CADD95 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F572E56185557A200CADD95 /* CoreGraphics.framework */; };
+		3F572E59185557A200CADD95 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F572E58185557A200CADD95 /* UIKit.framework */; };
+		3F572E5F185557A200CADD95 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3F572E5D185557A200CADD95 /* InfoPlist.strings */; };
+		3F572E61185557A200CADD95 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F572E60185557A200CADD95 /* main.m */; };
+		3F572E65185557A200CADD95 /* RCAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F572E64185557A200CADD95 /* RCAppDelegate.m */; };
+		3F572E68185557A200CADD95 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3F572E66185557A200CADD95 /* Main.storyboard */; };
+		3F572E6B185557A200CADD95 /* RCViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F572E6A185557A200CADD95 /* RCViewController.m */; };
+		3F572E6D185557A200CADD95 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3F572E6C185557A200CADD95 /* Images.xcassets */; };
+		3F572E74185557A200CADD95 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F572E73185557A200CADD95 /* XCTest.framework */; };
+		3F572E75185557A200CADD95 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F572E54185557A200CADD95 /* Foundation.framework */; };
+		3F572E76185557A200CADD95 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F572E58185557A200CADD95 /* UIKit.framework */; };
+		3F572E7E185557A200CADD95 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3F572E7C185557A200CADD95 /* InfoPlist.strings */; };
+		3F572E80185557A200CADD95 /* RapchatTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F572E7F185557A200CADD95 /* RapchatTests.m */; };
+		3F572E9118555C7200CADD95 /* RCProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F572E9018555C7200CADD95 /* RCProfileViewController.m */; };
+		3F572E941855619800CADD95 /* RCExploreViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F572E931855619800CADD95 /* RCExploreViewController.m */; };
+		3F572E971855669B00CADD95 /* RCActivityViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F572E961855669B00CADD95 /* RCActivityViewController.m */; };
+		3F572E9A18556A0000CADD95 /* RCCreateNewVideoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F572E9918556A0000CADD95 /* RCCreateNewVideoViewController.m */; };
+		3F74A6C0185AAC3F00B6BDB9 /* RCSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F74A6BF185AAC3F00B6BDB9 /* RCSession.m */; };
+		3F74A6C3185AAD3500B6BDB9 /* RCCrowd.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F74A6C2185AAD3500B6BDB9 /* RCCrowd.m */; };
+		3F74A6C6185AAD8F00B6BDB9 /* RCClip.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F74A6C5185AAD8F00B6BDB9 /* RCClip.m */; };
+		3F74A6C9185AAE2000B6BDB9 /* RCComment.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F74A6C8185AAE2000B6BDB9 /* RCComment.m */; };
+		3F74A6CD185AB8CA00B6BDB9 /* RCSessionTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F74A6CC185AB8CA00B6BDB9 /* RCSessionTableViewCell.m */; };
+		3F7BD4B8185A40D4006AB0BD /* RCFeedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F7BD4B7185A40D4006AB0BD /* RCFeedViewController.m */; };
+		3FA58EB9185BA8BC004C8BDB /* RCRestkitClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FA58EB8185BA8BC004C8BDB /* RCRestkitClient.m */; };
+		3FA58EBC185BABEA004C8BDB /* RCTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FA58EBB185BABEA004C8BDB /* RCTableViewController.m */; };
+		3FD3DDF8185AEBFD0016E3F3 /* RKValueTransformers.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FD3DDF7185AEBFD0016E3F3 /* RKValueTransformers.m */; };
+		3FD3DDFF185B04510016E3F3 /* RCWelcomeScreenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FD3DDFE185B04510016E3F3 /* RCWelcomeScreenViewController.m */; };
+		3FD3DE02185B07FD0016E3F3 /* RCLoginScreenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FD3DE01185B07FD0016E3F3 /* RCLoginScreenViewController.m */; };
+		3FD3DE05185B08410016E3F3 /* RCRegisterScreenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FD3DE04185B08410016E3F3 /* RCRegisterScreenViewController.m */; };
+		3FD3DE08185B0CCB0016E3F3 /* RCAccessToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FD3DE07185B0CCB0016E3F3 /* RCAccessToken.m */; };
+		3FE2FE37185BF89B002DA093 /* RCFriendTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FE2FE36185BF89B002DA093 /* RCFriendTableViewCell.m */; };
+		A435288F706540D0B3CED601 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C98569AD8979484D86CB458B /* libPods.a */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		3F572E77185557A200CADD95 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3F572E49185557A200CADD95 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3F572E50185557A200CADD95;
+			remoteInfo = Rapchat;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		3F10B8C41859471B00A9FD2F /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		3F10B8C61859475300A9FD2F /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		3F10B8C71859475300A9FD2F /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		3F10B8C81859475300A9FD2F /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
+		3F10B8C91859475300A9FD2F /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		3F10B8CA1859475300A9FD2F /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		3F10B8CB1859475300A9FD2F /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		3F376057185593B2004E83B0 /* RCTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTabBarController.h; sourceTree = "<group>"; };
+		3F376058185593B2004E83B0 /* RCTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTabBarController.m; sourceTree = "<group>"; };
+		3F37605D18559BEE004E83B0 /* RCNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCNavigationController.h; sourceTree = "<group>"; };
+		3F37605E18559BEE004E83B0 /* RCNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCNavigationController.m; sourceTree = "<group>"; };
+		3F4CB3AA185D43CA008B5D77 /* RCCrowdTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCCrowdTableViewCell.h; sourceTree = "<group>"; };
+		3F4CB3AB185D43CA008B5D77 /* RCCrowdTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCCrowdTableViewCell.m; sourceTree = "<group>"; };
+		3F515E341859558500C950E9 /* Rapchat.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Rapchat.xcdatamodel; sourceTree = "<group>"; };
+		3F515E36185965B300C950E9 /* RCProfile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RCProfile.h; path = Model/RCProfile.h; sourceTree = "<group>"; };
+		3F515E37185965B300C950E9 /* RCProfile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RCProfile.m; path = Model/RCProfile.m; sourceTree = "<group>"; };
+		3F515E391859665700C950E9 /* RCUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RCUser.h; path = Model/RCUser.h; sourceTree = "<group>"; };
+		3F515E3A1859665700C950E9 /* RCUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RCUser.m; path = Model/RCUser.m; sourceTree = "<group>"; };
+		3F572E51185557A200CADD95 /* Rapchat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Rapchat.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3F572E54185557A200CADD95 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		3F572E56185557A200CADD95 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		3F572E58185557A200CADD95 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		3F572E5C185557A200CADD95 /* Rapchat-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Rapchat-Info.plist"; sourceTree = "<group>"; };
+		3F572E5E185557A200CADD95 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		3F572E60185557A200CADD95 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		3F572E62185557A200CADD95 /* Rapchat-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Rapchat-Prefix.pch"; sourceTree = "<group>"; };
+		3F572E63185557A200CADD95 /* RCAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCAppDelegate.h; sourceTree = "<group>"; };
+		3F572E64185557A200CADD95 /* RCAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCAppDelegate.m; sourceTree = "<group>"; };
+		3F572E67185557A200CADD95 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		3F572E69185557A200CADD95 /* RCViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCViewController.h; sourceTree = "<group>"; };
+		3F572E6A185557A200CADD95 /* RCViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCViewController.m; sourceTree = "<group>"; };
+		3F572E6C185557A200CADD95 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		3F572E72185557A200CADD95 /* RapchatTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RapchatTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		3F572E73185557A200CADD95 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		3F572E7B185557A200CADD95 /* RapchatTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "RapchatTests-Info.plist"; sourceTree = "<group>"; };
+		3F572E7D185557A200CADD95 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		3F572E7F185557A200CADD95 /* RapchatTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RapchatTests.m; sourceTree = "<group>"; };
+		3F572E8F18555C7200CADD95 /* RCProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCProfileViewController.h; sourceTree = "<group>"; };
+		3F572E9018555C7200CADD95 /* RCProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCProfileViewController.m; sourceTree = "<group>"; };
+		3F572E921855619800CADD95 /* RCExploreViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCExploreViewController.h; sourceTree = "<group>"; };
+		3F572E931855619800CADD95 /* RCExploreViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCExploreViewController.m; sourceTree = "<group>"; };
+		3F572E951855669B00CADD95 /* RCActivityViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCActivityViewController.h; sourceTree = "<group>"; };
+		3F572E961855669B00CADD95 /* RCActivityViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCActivityViewController.m; sourceTree = "<group>"; };
+		3F572E9818556A0000CADD95 /* RCCreateNewVideoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCCreateNewVideoViewController.h; sourceTree = "<group>"; };
+		3F572E9918556A0000CADD95 /* RCCreateNewVideoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCCreateNewVideoViewController.m; sourceTree = "<group>"; };
+		3F74A6BE185AAC3F00B6BDB9 /* RCSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RCSession.h; path = Model/RCSession.h; sourceTree = "<group>"; };
+		3F74A6BF185AAC3F00B6BDB9 /* RCSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RCSession.m; path = Model/RCSession.m; sourceTree = "<group>"; };
+		3F74A6C1185AAD3500B6BDB9 /* RCCrowd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RCCrowd.h; path = Model/RCCrowd.h; sourceTree = "<group>"; };
+		3F74A6C2185AAD3500B6BDB9 /* RCCrowd.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RCCrowd.m; path = Model/RCCrowd.m; sourceTree = "<group>"; };
+		3F74A6C4185AAD8F00B6BDB9 /* RCClip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RCClip.h; path = Model/RCClip.h; sourceTree = "<group>"; };
+		3F74A6C5185AAD8F00B6BDB9 /* RCClip.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RCClip.m; path = Model/RCClip.m; sourceTree = "<group>"; };
+		3F74A6C7185AAE2000B6BDB9 /* RCComment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RCComment.h; path = Model/RCComment.h; sourceTree = "<group>"; };
+		3F74A6C8185AAE2000B6BDB9 /* RCComment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RCComment.m; path = Model/RCComment.m; sourceTree = "<group>"; };
+		3F74A6CB185AB8CA00B6BDB9 /* RCSessionTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCSessionTableViewCell.h; sourceTree = "<group>"; };
+		3F74A6CC185AB8CA00B6BDB9 /* RCSessionTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCSessionTableViewCell.m; sourceTree = "<group>"; };
+		3F7BD4B6185A40D4006AB0BD /* RCFeedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCFeedViewController.h; sourceTree = "<group>"; };
+		3F7BD4B7185A40D4006AB0BD /* RCFeedViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCFeedViewController.m; sourceTree = "<group>"; };
+		3FA58EB7185BA8BC004C8BDB /* RCRestkitClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCRestkitClient.h; sourceTree = "<group>"; };
+		3FA58EB8185BA8BC004C8BDB /* RCRestkitClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCRestkitClient.m; sourceTree = "<group>"; };
+		3FA58EBA185BABEA004C8BDB /* RCTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTableViewController.h; sourceTree = "<group>"; };
+		3FA58EBB185BABEA004C8BDB /* RCTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTableViewController.m; sourceTree = "<group>"; };
+		3FD3DDF7185AEBFD0016E3F3 /* RKValueTransformers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RKValueTransformers.m; path = "../../../../Downloads/RKValueTransformers-master/Code/RKValueTransformers.m"; sourceTree = "<group>"; };
+		3FD3DDF9185AEC0F0016E3F3 /* RKValueTransformers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RKValueTransformers.h; path = "../../../../Downloads/RKValueTransformers-master/Code/RKValueTransformers.h"; sourceTree = "<group>"; };
+		3FD3DDFD185B04510016E3F3 /* RCWelcomeScreenViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCWelcomeScreenViewController.h; sourceTree = "<group>"; };
+		3FD3DDFE185B04510016E3F3 /* RCWelcomeScreenViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCWelcomeScreenViewController.m; sourceTree = "<group>"; };
+		3FD3DE00185B07FD0016E3F3 /* RCLoginScreenViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCLoginScreenViewController.h; sourceTree = "<group>"; };
+		3FD3DE01185B07FD0016E3F3 /* RCLoginScreenViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCLoginScreenViewController.m; sourceTree = "<group>"; };
+		3FD3DE03185B08410016E3F3 /* RCRegisterScreenViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCRegisterScreenViewController.h; sourceTree = "<group>"; };
+		3FD3DE04185B08410016E3F3 /* RCRegisterScreenViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCRegisterScreenViewController.m; sourceTree = "<group>"; };
+		3FD3DE06185B0CCB0016E3F3 /* RCAccessToken.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RCAccessToken.h; path = Model/RCAccessToken.h; sourceTree = "<group>"; };
+		3FD3DE07185B0CCB0016E3F3 /* RCAccessToken.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RCAccessToken.m; path = Model/RCAccessToken.m; sourceTree = "<group>"; };
+		3FE2FE35185BF89B002DA093 /* RCFriendTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCFriendTableViewCell.h; sourceTree = "<group>"; };
+		3FE2FE36185BF89B002DA093 /* RCFriendTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCFriendTableViewCell.m; sourceTree = "<group>"; };
+		739A8126176243C8B918B014 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
+		C98569AD8979484D86CB458B /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		3F572E4E185557A200CADD95 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3F572E57185557A200CADD95 /* CoreGraphics.framework in Frameworks */,
+				3F572E59185557A200CADD95 /* UIKit.framework in Frameworks */,
+				3F572E55185557A200CADD95 /* Foundation.framework in Frameworks */,
+				A435288F706540D0B3CED601 /* libPods.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3F572E6F185557A200CADD95 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3F572E74185557A200CADD95 /* XCTest.framework in Frameworks */,
+				3F572E76185557A200CADD95 /* UIKit.framework in Frameworks */,
+				3F572E75185557A200CADD95 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		3F10B86918593E7D00A9FD2F /* todo */ = {
+			isa = PBXGroup;
+			children = (
+				3F572E921855619800CADD95 /* RCExploreViewController.h */,
+				3F572E931855619800CADD95 /* RCExploreViewController.m */,
+				3F572E951855669B00CADD95 /* RCActivityViewController.h */,
+				3F572E961855669B00CADD95 /* RCActivityViewController.m */,
+			);
+			name = todo;
+			sourceTree = "<group>";
+		};
+		3F10B86A18593E8F00A9FD2F /* bars */ = {
+			isa = PBXGroup;
+			children = (
+				3F376057185593B2004E83B0 /* RCTabBarController.h */,
+				3F376058185593B2004E83B0 /* RCTabBarController.m */,
+				3F37605D18559BEE004E83B0 /* RCNavigationController.h */,
+				3F37605E18559BEE004E83B0 /* RCNavigationController.m */,
+			);
+			name = bars;
+			sourceTree = "<group>";
+		};
+		3F572E48185557A200CADD95 = {
+			isa = PBXGroup;
+			children = (
+				3F572E5A185557A200CADD95 /* Rapchat */,
+				3F572E79185557A200CADD95 /* RapchatTests */,
+				3F572E53185557A200CADD95 /* Frameworks */,
+				3F572E52185557A200CADD95 /* Products */,
+				739A8126176243C8B918B014 /* Pods.xcconfig */,
+			);
+			sourceTree = "<group>";
+		};
+		3F572E52185557A200CADD95 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3F572E51185557A200CADD95 /* Rapchat.app */,
+				3F572E72185557A200CADD95 /* RapchatTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		3F572E53185557A200CADD95 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				3F10B8C61859475300A9FD2F /* CFNetwork.framework */,
+				3F10B8C71859475300A9FD2F /* CoreData.framework */,
+				3F10B8C81859475300A9FD2F /* libxml2.dylib */,
+				3F10B8C91859475300A9FD2F /* MobileCoreServices.framework */,
+				3F10B8CA1859475300A9FD2F /* QuartzCore.framework */,
+				3F10B8CB1859475300A9FD2F /* Security.framework */,
+				3F10B8C41859471B00A9FD2F /* SystemConfiguration.framework */,
+				3F572E54185557A200CADD95 /* Foundation.framework */,
+				3F572E56185557A200CADD95 /* CoreGraphics.framework */,
+				3F572E58185557A200CADD95 /* UIKit.framework */,
+				3F572E73185557A200CADD95 /* XCTest.framework */,
+				C98569AD8979484D86CB458B /* libPods.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		3F572E5A185557A200CADD95 /* Rapchat */ = {
+			isa = PBXGroup;
+			children = (
+				3FA58EB6185BA898004C8BDB /* API */,
+				3F74A6CA185AB8A500B6BDB9 /* Views */,
+				3F572E8B18555C0700CADD95 /* Controllers */,
+				3F572E8A185557E500CADD95 /* Model */,
+				3F572E89185557C600CADD95 /* AppDelegate */,
+				3F572E66185557A200CADD95 /* Main.storyboard */,
+				3F572E6C185557A200CADD95 /* Images.xcassets */,
+				3F572E5B185557A200CADD95 /* Supporting Files */,
+			);
+			path = Rapchat;
+			sourceTree = "<group>";
+		};
+		3F572E5B185557A200CADD95 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				3FD3DDF9185AEC0F0016E3F3 /* RKValueTransformers.h */,
+				3FD3DDF7185AEBFD0016E3F3 /* RKValueTransformers.m */,
+				3F572E5C185557A200CADD95 /* Rapchat-Info.plist */,
+				3F572E5D185557A200CADD95 /* InfoPlist.strings */,
+				3F572E60185557A200CADD95 /* main.m */,
+				3F572E62185557A200CADD95 /* Rapchat-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		3F572E79185557A200CADD95 /* RapchatTests */ = {
+			isa = PBXGroup;
+			children = (
+				3F572E7F185557A200CADD95 /* RapchatTests.m */,
+				3F572E7A185557A200CADD95 /* Supporting Files */,
+			);
+			path = RapchatTests;
+			sourceTree = "<group>";
+		};
+		3F572E7A185557A200CADD95 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				3F572E7B185557A200CADD95 /* RapchatTests-Info.plist */,
+				3F572E7C185557A200CADD95 /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		3F572E89185557C600CADD95 /* AppDelegate */ = {
+			isa = PBXGroup;
+			children = (
+				3F572E63185557A200CADD95 /* RCAppDelegate.h */,
+				3F572E64185557A200CADD95 /* RCAppDelegate.m */,
+			);
+			name = AppDelegate;
+			sourceTree = "<group>";
+		};
+		3F572E8A185557E500CADD95 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				3F515E331859558500C950E9 /* Rapchat.xcdatamodeld */,
+				3F515E36185965B300C950E9 /* RCProfile.h */,
+				3F515E37185965B300C950E9 /* RCProfile.m */,
+				3F515E391859665700C950E9 /* RCUser.h */,
+				3F515E3A1859665700C950E9 /* RCUser.m */,
+				3F74A6BE185AAC3F00B6BDB9 /* RCSession.h */,
+				3F74A6BF185AAC3F00B6BDB9 /* RCSession.m */,
+				3F74A6C1185AAD3500B6BDB9 /* RCCrowd.h */,
+				3F74A6C2185AAD3500B6BDB9 /* RCCrowd.m */,
+				3F74A6C4185AAD8F00B6BDB9 /* RCClip.h */,
+				3F74A6C5185AAD8F00B6BDB9 /* RCClip.m */,
+				3F74A6C7185AAE2000B6BDB9 /* RCComment.h */,
+				3F74A6C8185AAE2000B6BDB9 /* RCComment.m */,
+				3FD3DE06185B0CCB0016E3F3 /* RCAccessToken.h */,
+				3FD3DE07185B0CCB0016E3F3 /* RCAccessToken.m */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		3F572E8B18555C0700CADD95 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				3F10B86A18593E8F00A9FD2F /* bars */,
+				3F10B86918593E7D00A9FD2F /* todo */,
+				3F572E69185557A200CADD95 /* RCViewController.h */,
+				3F572E6A185557A200CADD95 /* RCViewController.m */,
+				3FA58EBA185BABEA004C8BDB /* RCTableViewController.h */,
+				3FA58EBB185BABEA004C8BDB /* RCTableViewController.m */,
+				3F572E8F18555C7200CADD95 /* RCProfileViewController.h */,
+				3F572E9018555C7200CADD95 /* RCProfileViewController.m */,
+				3F572E9818556A0000CADD95 /* RCCreateNewVideoViewController.h */,
+				3F572E9918556A0000CADD95 /* RCCreateNewVideoViewController.m */,
+				3F7BD4B6185A40D4006AB0BD /* RCFeedViewController.h */,
+				3F7BD4B7185A40D4006AB0BD /* RCFeedViewController.m */,
+				3FD3DDFD185B04510016E3F3 /* RCWelcomeScreenViewController.h */,
+				3FD3DDFE185B04510016E3F3 /* RCWelcomeScreenViewController.m */,
+				3FD3DE00185B07FD0016E3F3 /* RCLoginScreenViewController.h */,
+				3FD3DE01185B07FD0016E3F3 /* RCLoginScreenViewController.m */,
+				3FD3DE03185B08410016E3F3 /* RCRegisterScreenViewController.h */,
+				3FD3DE04185B08410016E3F3 /* RCRegisterScreenViewController.m */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		3F74A6CA185AB8A500B6BDB9 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				3F74A6CB185AB8CA00B6BDB9 /* RCSessionTableViewCell.h */,
+				3F74A6CC185AB8CA00B6BDB9 /* RCSessionTableViewCell.m */,
+				3FE2FE35185BF89B002DA093 /* RCFriendTableViewCell.h */,
+				3FE2FE36185BF89B002DA093 /* RCFriendTableViewCell.m */,
+				3F4CB3AA185D43CA008B5D77 /* RCCrowdTableViewCell.h */,
+				3F4CB3AB185D43CA008B5D77 /* RCCrowdTableViewCell.m */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		3FA58EB6185BA898004C8BDB /* API */ = {
+			isa = PBXGroup;
+			children = (
+				3FA58EB7185BA8BC004C8BDB /* RCRestkitClient.h */,
+				3FA58EB8185BA8BC004C8BDB /* RCRestkitClient.m */,
+			);
+			name = API;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		3F572E50185557A200CADD95 /* Rapchat */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3F572E83185557A200CADD95 /* Build configuration list for PBXNativeTarget "Rapchat" */;
+			buildPhases = (
+				D4264B4805D74CAC9110D08E /* Check Pods Manifest.lock */,
+				3F572E4D185557A200CADD95 /* Sources */,
+				3F572E4E185557A200CADD95 /* Frameworks */,
+				3F572E4F185557A200CADD95 /* Resources */,
+				FEF093BECE904326A6894495 /* Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Rapchat;
+			productName = Rapchat;
+			productReference = 3F572E51185557A200CADD95 /* Rapchat.app */;
+			productType = "com.apple.product-type.application";
+		};
+		3F572E71185557A200CADD95 /* RapchatTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3F572E86185557A200CADD95 /* Build configuration list for PBXNativeTarget "RapchatTests" */;
+			buildPhases = (
+				3F572E6E185557A200CADD95 /* Sources */,
+				3F572E6F185557A200CADD95 /* Frameworks */,
+				3F572E70185557A200CADD95 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				3F572E78185557A200CADD95 /* PBXTargetDependency */,
+			);
+			name = RapchatTests;
+			productName = RapchatTests;
+			productReference = 3F572E72185557A200CADD95 /* RapchatTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		3F572E49185557A200CADD95 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = RC;
+				LastUpgradeCheck = 0500;
+				ORGANIZATIONNAME = "Michael Paris";
+				TargetAttributes = {
+					3F572E71185557A200CADD95 = {
+						TestTargetID = 3F572E50185557A200CADD95;
+					};
+				};
+			};
+			buildConfigurationList = 3F572E4C185557A200CADD95 /* Build configuration list for PBXProject "Rapchat" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 3F572E48185557A200CADD95;
+			productRefGroup = 3F572E52185557A200CADD95 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				3F572E50185557A200CADD95 /* Rapchat */,
+				3F572E71185557A200CADD95 /* RapchatTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		3F572E4F185557A200CADD95 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3F572E6D185557A200CADD95 /* Images.xcassets in Resources */,
+				3F572E5F185557A200CADD95 /* InfoPlist.strings in Resources */,
+				3F572E68185557A200CADD95 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3F572E70185557A200CADD95 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3F572E7E185557A200CADD95 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		D4264B4805D74CAC9110D08E /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		FEF093BECE904326A6894495 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		3F572E4D185557A200CADD95 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3FD3DDF8185AEBFD0016E3F3 /* RKValueTransformers.m in Sources */,
+				3F376059185593B2004E83B0 /* RCTabBarController.m in Sources */,
+				3FD3DE08185B0CCB0016E3F3 /* RCAccessToken.m in Sources */,
+				3F515E3B1859665700C950E9 /* RCUser.m in Sources */,
+				3F74A6C9185AAE2000B6BDB9 /* RCComment.m in Sources */,
+				3F572E9A18556A0000CADD95 /* RCCreateNewVideoViewController.m in Sources */,
+				3FA58EB9185BA8BC004C8BDB /* RCRestkitClient.m in Sources */,
+				3F572E9118555C7200CADD95 /* RCProfileViewController.m in Sources */,
+				3F515E351859558500C950E9 /* Rapchat.xcdatamodeld in Sources */,
+				3F572E61185557A200CADD95 /* main.m in Sources */,
+				3FE2FE37185BF89B002DA093 /* RCFriendTableViewCell.m in Sources */,
+				3FD3DDFF185B04510016E3F3 /* RCWelcomeScreenViewController.m in Sources */,
+				3F7BD4B8185A40D4006AB0BD /* RCFeedViewController.m in Sources */,
+				3F74A6C3185AAD3500B6BDB9 /* RCCrowd.m in Sources */,
+				3FA58EBC185BABEA004C8BDB /* RCTableViewController.m in Sources */,
+				3F74A6CD185AB8CA00B6BDB9 /* RCSessionTableViewCell.m in Sources */,
+				3F74A6C6185AAD8F00B6BDB9 /* RCClip.m in Sources */,
+				3F572E941855619800CADD95 /* RCExploreViewController.m in Sources */,
+				3F37605F18559BEE004E83B0 /* RCNavigationController.m in Sources */,
+				3F515E38185965B300C950E9 /* RCProfile.m in Sources */,
+				3F572E65185557A200CADD95 /* RCAppDelegate.m in Sources */,
+				3F4CB3AC185D43CA008B5D77 /* RCCrowdTableViewCell.m in Sources */,
+				3F572E6B185557A200CADD95 /* RCViewController.m in Sources */,
+				3FD3DE02185B07FD0016E3F3 /* RCLoginScreenViewController.m in Sources */,
+				3FD3DE05185B08410016E3F3 /* RCRegisterScreenViewController.m in Sources */,
+				3F572E971855669B00CADD95 /* RCActivityViewController.m in Sources */,
+				3F74A6C0185AAC3F00B6BDB9 /* RCSession.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3F572E6E185557A200CADD95 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3F572E80185557A200CADD95 /* RapchatTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		3F572E78185557A200CADD95 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3F572E50185557A200CADD95 /* Rapchat */;
+			targetProxy = 3F572E77185557A200CADD95 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		3F572E5D185557A200CADD95 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				3F572E5E185557A200CADD95 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		3F572E66185557A200CADD95 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				3F572E67185557A200CADD95 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		3F572E7C185557A200CADD95 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				3F572E7D185557A200CADD95 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		3F572E81185557A200CADD95 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		3F572E82185557A200CADD95 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		3F572E84185557A200CADD95 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 739A8126176243C8B918B014 /* Pods.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Rapchat/Rapchat-Prefix.pch";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+				);
+				INFOPLIST_FILE = "Rapchat/Rapchat-Info.plist";
+				OTHER_LDFLAGS = "$(inherited)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		3F572E85185557A200CADD95 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 739A8126176243C8B918B014 /* Pods.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Rapchat/Rapchat-Prefix.pch";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+				);
+				INFOPLIST_FILE = "Rapchat/Rapchat-Info.plist";
+				OTHER_LDFLAGS = "$(inherited)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		3F572E87185557A200CADD95 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Rapchat.app/Rapchat";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Rapchat/Rapchat-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "RapchatTests/RapchatTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Debug;
+		};
+		3F572E88185557A200CADD95 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Rapchat.app/Rapchat";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Rapchat/Rapchat-Prefix.pch";
+				INFOPLIST_FILE = "RapchatTests/RapchatTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		3F572E4C185557A200CADD95 /* Build configuration list for PBXProject "Rapchat" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3F572E81185557A200CADD95 /* Debug */,
+				3F572E82185557A200CADD95 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3F572E83185557A200CADD95 /* Build configuration list for PBXNativeTarget "Rapchat" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3F572E84185557A200CADD95 /* Debug */,
+				3F572E85185557A200CADD95 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3F572E86185557A200CADD95 /* Build configuration list for PBXNativeTarget "RapchatTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3F572E87185557A200CADD95 /* Debug */,
+				3F572E88185557A200CADD95 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		3F515E331859558500C950E9 /* Rapchat.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				3F515E341859558500C950E9 /* Rapchat.xcdatamodel */,
+			);
+			currentVersion = 3F515E341859558500C950E9 /* Rapchat.xcdatamodel */;
+			name = Rapchat.xcdatamodeld;
+			path = Model/Rapchat.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = 3F572E49185557A200CADD95 /* Project object */;
+}
