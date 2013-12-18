@@ -7,8 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "RCBaseModel.h"
 
-@interface RCUser : NSObject
+@interface RCUser : RCBaseModel
 
 @property (nonatomic, copy) NSNumber *userId;
 @property (nonatomic, copy) NSString *username;

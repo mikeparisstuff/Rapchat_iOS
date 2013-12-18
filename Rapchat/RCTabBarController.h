@@ -10,4 +10,7 @@
 
 @interface RCTabBarController : UITabBarController
 
+- (void)setTabBarHidden:(BOOL)hidden animated:(BOOL)animated;
+- (BOOL)tabBarIsHidden;
+
 @end

@@ -9,14 +9,16 @@
 #import <Foundation/Foundation.h>
 #import "RCProfile.h"
 #import "RCSession.h"
+#import "RCBaseModel.h"
 
-@interface RCComment : NSObject
+@interface RCComment : RCBaseModel
 
+@property (nonatomic, copy) NSNumber *commentId;
 @property (nonatomic, copy) NSString *text;
 @property (nonatomic, copy) NSDate *created;
 @property (nonatomic, copy) NSDate *modified;
-@property (nonatomic, strong) RCProfile *creator;
-@property (nonatomic, strong) RCSession *session;
+@property (nonatomic, strong) NSString *commenter;
+//@property (nonatomic, strong) RCSession *session;
 
 
 @end

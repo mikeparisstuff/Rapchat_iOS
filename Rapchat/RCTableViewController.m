@@ -7,6 +7,7 @@
 //
 
 #import "RCTableViewController.h"
+#import "RCTabBarController.h"
 
 @interface RCTableViewController ()
 
@@ -30,12 +31,31 @@
     UIBarButtonItem *searchItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(searchButtonClicked:)];
     NSArray *actionButtonItems = @[searchItem];
     self.navigationItem.rightBarButtonItems = actionButtonItems;
+    self.showTabBar = YES;
+    
 
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
  
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self setTabBarVisible];
+}
+
+- (void)setTabBarVisible
+{
+    if (self.showTabBar) {
+        RCTabBarController *tabBarController = (RCTabBarController *)self.tabBarController;
+        [tabBarController setTabBarHidden:NO animated:YES];
+    } else {
+        RCTabBarController *tabBarController = (RCTabBarController *)self.tabBarController;
+        [tabBarController setTabBarHidden:YES animated:YES];
+    }
 }
 
 - (void)searchButtonClicked:(id)sender
@@ -99,5 +119,18 @@
 }
 
  */
+
+- (UIStatusBarStyle)preferredStatusBarStyle
+{
+    return UIStatusBarStyleLightContent;
+}
+
+//- (BOOL) prefersStatusBarHidden
+//{
+//    if(hidden)
+//        return YES;
+//    return NO;
+//}
+
 
 @end

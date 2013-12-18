@@ -18,7 +18,8 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
-    [[UINavigationBar appearance] setBarTintColor:[UIColor colorWithHue:0.0 saturation:0.06 brightness:0.14 alpha:1.0]];
+    [[UINavigationBar appearance] setBarTintColor:[UIColor colorWithRed:231.0/255.0 green:76.0/255.0 blue:60.0/255.0 alpha:1.0]];
+    //[UIColor colorWithHue:0.0 saturation:0.06 brightness:0.14 alpha:1.0] -- Dark
     //[UIColor colorWithRed:231.0/255.0 green:76.0/255.0 blue:60.0/255.0 alpha:1.0]
     [[UITabBar appearance] setBarTintColor:[UIColor colorWithHue:0.0 saturation:0.06 brightness:0.14 alpha:1.0]];
     [[UIToolbar appearance] setBarTintColor:[UIColor colorWithHue:0.0 saturation:0.06 brightness:0.14 alpha:1.0]];
@@ -51,6 +52,16 @@
     {
         controllerId = @"LoginStart";
     }
+    
+    
+    // Set Status bar color
+//    self.window.clipsToBounds = YES;
+//    UIView *statusBarBackground = [[UIView alloc] initWithFrame:CGRectMake(0, 20, 320, 20)];
+//    [statusBarBackground setBackgroundColor:[UIColor colorWithRed:231.0/255.0 green:76.0/255.0 blue:60.0/255.0 alpha:1.0]];
+//    [self.window addSubview:statusBarBackground];
+//    
+//    self.window.frame =  CGRectMake(0,20,self.window.frame.size.width,self.window.frame.size.height-20);
+//    self.window.bounds = CGRectMake(0, 20, self.window.frame.size.width, self.window.frame.size.height);
     
     UIViewController* controller = [storyboard instantiateViewControllerWithIdentifier:controllerId];
     self.window.rootViewController = controller;

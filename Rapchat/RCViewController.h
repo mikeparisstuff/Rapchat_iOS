@@ -10,4 +10,8 @@
 
 @interface RCViewController : UIViewController
 
+@property (nonatomic) BOOL showTabBar;
+
+- (void)setTabBarVisible;
+
 @end

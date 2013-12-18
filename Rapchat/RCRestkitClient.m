@@ -13,11 +13,14 @@
 #import "RKValueTransformers.h"
 #import "RCAccessToken.h"
 #import "RCAccessToken.h"
+#import "RCLike.h"
+#import "RCComment.h"
+#import "RCBaseModel.h"
 
 @implementation RCRestkitClient
 
-//static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
-static const NSString *BASE_URL = @"http://127.0.0.1:8000";
+static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
+//static const NSString *BASE_URL = @"http://127.0.0.1:8000";
 
 
 +(void)setupRestkit
@@ -59,6 +62,11 @@ static const NSString *BASE_URL = @"http://127.0.0.1:8000";
     [RKObjectMapping addDefaultDateFormatterForString:@"yyyy-MM-dd'T'HH:mm:ss'Z'" inTimeZone:EST];
     [RKObjectMapping setPreferredDateFormatter:dateFormatter];
     
+    /*
+     *  Base Model Mappings
+     */
+    RKObjectMapping *baseModelMapping = [RKObjectMapping mappingForClass:[RCBaseModel class]];
+    [baseModelMapping addAttributeMappingsFromDictionary:@{@"detail": @"detail"}];
     
     /*
      Setup Profile and User Mappings
@@ -97,9 +105,11 @@ static const NSString *BASE_URL = @"http://127.0.0.1:8000";
     RKObjectMapping *sessionMapping = [RKObjectMapping mappingForClass:[RCSession class]];
     [sessionMapping addAttributeMappingsFromDictionary:@{@"id": @"sessionId",
                                                          @"title": @"title",
+                                                         @"likes":@"numberOfLikes",
                                                          @"is_complete": @"isComplete",
                                                          @"created":@"created",
-                                                         @"modifed":@"modified"}];
+                                                         @"modified":@"modified",
+                                                         @"clip_url":@"mostRecentClipUrl"}];
     
     /*
      Setup Crowds Mappings
@@ -110,10 +120,14 @@ static const NSString *BASE_URL = @"http://127.0.0.1:8000";
                                                        @"modified": @"modified"}];
     
     /*
-     Setup access token mapping
+     *  Setup Comments Mappings
      */
-    RKObjectMapping *accessTokenMapping = [RKObjectMapping mappingForClass:[RCAccessToken class]];
-    [accessTokenMapping addAttributeMappingsFromDictionary:@{@"token":@"accessToken"}];
+    RKObjectMapping *commentMapping = [RKObjectMapping mappingForClass:[RCComment class]];
+    [commentMapping addAttributeMappingsFromDictionary:@{@"id":@"commentId",
+                                                         @"text":@"text",
+                                                         @"commenter":@"commenter",
+                                                         @"created":@"created",
+                                                         @"modified":@"modified"}];
     
     /*
      Setup Sessions and Crowds relationships
@@ -125,6 +139,31 @@ static const NSString *BASE_URL = @"http://127.0.0.1:8000";
     // crowd.members mapping
     RKRelationshipMapping *crowdMembersRelationshipMapping = [RKRelationshipMapping relationshipMappingFromKeyPath:@"members" toKeyPath:@"members" withMapping:profileMapping];
     [crowdMapping addPropertyMapping:crowdMembersRelationshipMapping];
+    
+    /*
+     *  Session and Comments Mappings
+     */
+    RKRelationshipMapping *sessionCommentsRelationshipMapping = [RKRelationshipMapping relationshipMappingFromKeyPath:@"comments" toKeyPath:@"comments" withMapping:commentMapping];
+    [sessionMapping addPropertyMapping:sessionCommentsRelationshipMapping];
+    
+    /*
+     Setup access token mapping
+     */
+    RKObjectMapping *accessTokenMapping = [RKObjectMapping mappingForClass:[RCAccessToken class]];
+    [accessTokenMapping addAttributeMappingsFromDictionary:@{@"token":@"accessToken"}];
+    
+    /*
+     *  Setup Likes mapping
+     */
+    RKObjectMapping *likeMapping = [RKObjectMapping mappingForClass:[RCLike class]];
+    [likeMapping addAttributeMappingsFromDictionary:@{
+                                                      @"id":@"likeId",
+                                                      @"created":@"created",
+                                                      @"modifed":@"modifed"
+                                                      }];
+                                                         
+    RKRelationshipMapping *likeSessionRelationshipMapping = [RKRelationshipMapping relationshipMappingFromKeyPath:@"session" toKeyPath:@"session" withMapping:sessionMapping];
+    [likeMapping addPropertyMapping:likeSessionRelationshipMapping];
     
     
     // Register out mapping with the provider using a response descriptor
@@ -179,6 +218,61 @@ static const NSString *BASE_URL = @"http://127.0.0.1:8000";
                                                  keyPath:@"crowds"
                                                  statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     
+    RKResponseDescriptor *getLikesDescriptor = [RKResponseDescriptor
+                                                responseDescriptorWithMapping:likeMapping
+                                                method:RKRequestMethodGET
+                                                pathPattern:@"/users/me/likes/"
+                                                keyPath:@"likes"
+                                                statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+    
+    RKResponseDescriptor *postLikesDescriptor = [RKResponseDescriptor
+                                                responseDescriptorWithMapping:likeMapping
+                                                method:RKRequestMethodPOST
+                                                pathPattern:@"/users/me/likes/"
+                                                keyPath:@"like"
+                                                statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+
+    RKResponseDescriptor *getCommentsDescriptor = [RKResponseDescriptor
+                                                   responseDescriptorWithMapping:commentMapping
+                                                   method:RKRequestMethodGET
+                                                   pathPattern:@"/sessions/comments/:sessionId/"
+                                                   keyPath:@"comments"
+                                                   statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+
+    RKResponseDescriptor *postNewCommentDescriptor = [RKResponseDescriptor
+                                                     responseDescriptorWithMapping:commentMapping
+                                                     method:RKRequestMethodPOST
+                                                     pathPattern:@"/sessions/comments/"
+                                                     keyPath:@"comment"
+                                                     statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+    
+//    RKResponseDescriptor *baseModelDescriptor = [RKResponseDescriptor
+//                                               responseDescriptorWithMapping:baseModelMapping
+//                                               method:RKRequestMethodAny
+//                                               pathPattern:nil
+//                                               keyPath:nil
+//                                               statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+    
+    
+    /*
+     *  Error Mapping
+     */
+//    RKObjectMapping *errorMapping = [RKObjectMapping mappingForClass:[RKErrorMessage class]];
+//    [errorMapping addPropertyMapping: [RKAttributeMapping attributeMappingFromKeyPath:@"error_description" toKeyPath:@"errorMessage"]];
+//    RKResponseDescriptor *errorResponseDescriptor = [RKResponseDescriptor
+//                                                     responseDescriptorWithMapping:errorMapping
+//                                                     method:RKRequestMethodAny
+//                                                     pathPattern:nil
+//                                                     keyPath:nil
+//                                                     statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassClientError)];
+
+//    RKResponseDescriptor *postLikesDescriptorNoKeypath = [RKResponseDescriptor
+//                                                 responseDescriptorWithMapping:likeMapping
+//                                                 method:RKRequestMethodPOST
+//                                                 pathPattern:@"/users/me/likes/"
+//                                                 keyPath:nil
+//                                                 statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+    
     
     [objectManager addResponseDescriptor:usersResponseDescriptor];
     [objectManager addResponseDescriptor:sessionsResponseDescriptor];
@@ -187,6 +281,12 @@ static const NSString *BASE_URL = @"http://127.0.0.1:8000";
     [objectManager addResponseDescriptor:getMyProfileDescriptor];
     [objectManager addResponseDescriptor:getFriendsDescriptor];
     [objectManager addResponseDescriptor:getCrowdsDescriptor];
+    [objectManager addResponseDescriptor:getLikesDescriptor];
+    [objectManager addResponseDescriptor:postLikesDescriptor];
+    [objectManager addResponseDescriptor:getCommentsDescriptor];
+    [objectManager addResponseDescriptor:postNewCommentDescriptor];
+//    [objectManager addResponseDescriptor:errorResponseDescriptor];
+//v    [objectManager addResponseDescriptor:baseModelDescriptor];
 }
 
 

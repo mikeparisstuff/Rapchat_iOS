@@ -9,8 +9,9 @@
 #import <Foundation/Foundation.h>
 #import "RCProfile.h"
 #import "RCSession.h"
+#import "RCBaseModel.h"
 
-@interface RCClip : NSObject
+@interface RCClip : RCBaseModel
 
 @property (nonatomic, copy) NSNumber *clipNumber;
 @property (nonatomic, strong) RCProfile *creator;

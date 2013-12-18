@@ -8,8 +8,9 @@
 
 #import <Foundation/Foundation.h>
 #import "RCCrowd.h"
+#import "RCBaseModel.h"
 
-@interface RCSession : NSObject
+@interface RCSession : RCBaseModel
 
 @property (nonatomic, copy) NSNumber *sessionId;
 @property (nonatomic, copy) NSString *title;
@@ -17,6 +18,9 @@
 @property (nonatomic, copy) NSDate *created;
 @property (nonatomic, copy) NSDate *modified;
 @property (nonatomic, strong) RCCrowd *crowd;
+@property (nonatomic, copy) NSNumber *numberOfLikes;
+@property (nonatomic, copy) NSArray *comments;
+@property (nonatomic, copy) NSURL *mostRecentClipUrl;
 
 // Probably need likes here as well
 

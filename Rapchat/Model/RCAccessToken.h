@@ -7,8 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "RCBaseModel.h"
 
-@interface RCAccessToken : NSObject
+@interface RCAccessToken : RCBaseModel
 
 @property (nonatomic, copy) NSString* accessToken;
 

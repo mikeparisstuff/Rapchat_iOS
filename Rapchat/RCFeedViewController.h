@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "RCTableViewController.h"
+#import "RCContractableTableViewController.h"
+#import "RCSessionTableViewCell.h"
 
-@interface RCFeedViewController : RCTableViewController
+@interface RCFeedViewController : RCContractableTableViewController <RCSessionCellProtocol>
 
 @end

@@ -8,6 +8,6 @@
 
 #import "RCViewController.h"
 
-@interface RCCreateNewVideoViewController : RCViewController
+@interface RCCreateNewVideoViewController : RCViewController <UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
 @end

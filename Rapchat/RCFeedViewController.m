@@ -9,18 +9,28 @@
 #import "RCFeedViewController.h"
 #import "RCSession.h"
 #import "RCSessionTableViewCell.h"
+#import "RCCommentsViewController.h"
+#import "RCPreviewFileViewController.h"
+#import "RCPreviewVideoNoNavbarViewController.h"
 
 @interface RCFeedViewController ()
 
 @property (nonatomic, strong) NSArray *sessions;
+@property (nonatomic, strong) RCSession *commentsSession;
+@property (nonatomic, strong) NSURL *clipUrl;
 
 @end
 
 @implementation RCFeedViewController
 
+
 // Control dragged from refreshController so that dragging down will
 // refresh the page
 - (IBAction)refresh:(id)sender {
+    [self loadSessions];
+}
+
+- (void) updateUI {
     [self loadSessions];
 }
 
@@ -69,9 +79,25 @@
  
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
-    self.extendedLayoutIncludesOpaqueBars = NO;
-    [self loadSessions];
+//    self.extendedLayoutIncludesOpaqueBars = NO;
     
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+//    CGRect frame = self.view.frame;
+//    frame.origin.y = 20;
+//    if (self.view.frame.size.height == 1024 ||   self.view.frame.size.height == 768)
+//    {
+//        frame.size.height -= 20;
+//    }
+//    self.view.frame = frame;
+//    UIView *statusBarBackground = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 20)];
+//    statusBarBackground.backgroundColor = [UIColor colorWithRed:231.0/255.0 green:76.0/255.0 blue:60.0/255.0 alpha:1.0];
+    
+    
+    [self updateUI];
+    [super viewWillAppear:animated];
 }
 
 - (void)didReceiveMemoryWarning
@@ -97,20 +123,13 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"Feed Session Cell";
+    static NSString *CellIdentifier = @"Session Cell";
     RCSessionTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
     // Configure the cell...
     RCSession *session = [self.sessions objectAtIndex:indexPath.row];
-    NSDateFormatter *dateFormatter = [NSDateFormatter new];
-    cell.titleLabel.text = session.title;
-    NSArray *months = @[@"", @"Jan", @"Feb", @"March", @"Apr", @"May", @"June", @"July", @"Aug", @"Sep",  @"Oct", @"Nov", @"Dec"];
-    [dateFormatter setDateFormat:@"MM/dd"];
-    NSArray *dateArray = [[dateFormatter stringFromDate:session.created] componentsSeparatedByString:@"/"];
-    cell.dateLabel.text = [NSString stringWithFormat:@"%@ %@", [months objectAtIndex:[dateArray[0] intValue]], dateArray[1]];
-    cell.numberOfMembersLabel.text = [NSString stringWithFormat:@"%d members", (int)[session.crowd.members count]];
-    cell.crowdTitleLabel.text = [NSString stringWithFormat:@"Crowd: %@", session.crowd.title];
-//    NSLog(@"Session with date: %@, %@", [months objectAtIndex: ] [session.created description]);
+    [cell setCellSession:session];
+    cell.delegate = self;
     return cell;
 }
 
@@ -153,16 +172,81 @@
 }
 */
 
-/*
+
 #pragma mark - Navigation
 
 // In a story board-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
+    if([segue.identifier isEqualToString:@"GoToCommentsSegue"]) {
+        if ([segue.destinationViewController isKindOfClass:[RCCommentsViewController class]]) {
+            RCCommentsViewController *RCtvc = segue.destinationViewController;
+            RCtvc.comments = self.commentsSession.comments;
+            RCtvc.sessionId = self.commentsSession.sessionId;
+            NSLog(@"Prepared GoToCommentsSegue");
+        }
+    }
+    if([segue.identifier isEqualToString:@"PlayVideoSegue"]) {
+        if ([segue.destinationViewController isKindOfClass:[UINavigationController class]]) {
+            UINavigationController *navController = segue.destinationViewController;
+            if ([[navController topViewController] isKindOfClass:[RCPreviewVideoNoNavbarViewController class]]) {
+                RCPreviewVideoNoNavbarViewController *RCpfvc = (RCPreviewVideoNoNavbarViewController *)[navController topViewController];
+                RCpfvc.videoURL = self.clipUrl;
+                NSLog(@"Prepared PlayVideoSegue");
+            }
+        }
+    }
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
 }
 
- */
+
+# pragma mark Utility methods
+- (NSIndexPath *)indexPathForCellHoldingButton:(UIButton *)button
+{
+    return [self.tableView indexPathForCell:(UITableViewCell *)button.superview];
+}
+
+#pragma mark Session cell Protocol
+
+- (void)likeButtonPressedInCell:(RCSessionTableViewCell *)sender
+{
+//    NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
+//    NSLog(@"Clicked on like button in cell: %ld", (long)indexPath.row);
+//    RCSession *session = [self.sessions objectAtIndex:indexPath.row];
+    RCSession *session = [sender getCellSession];
+    RKObjectManager *objectManager = [RKObjectManager sharedManager];
+    [objectManager postObject:nil
+                         path:@"/users/me/likes/"
+                   parameters:@{@"session":session.sessionId}
+                      success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+                          NSLog(@"Toggling like for session: %@", session.sessionId);
+                          // We can further optimize this so there is no delay when you are refreshing the tableview
+                          [self updateUI];
+                      }failure:^(RKObjectRequestOperation *operation, NSError *error) {
+                          UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"error"
+                                                                          message:[error localizedDescription]
+                                                                         delegate:nil
+                                                                cancelButtonTitle:@"OK"
+                                                                otherButtonTitles:nil, nil];
+                          [alert show];
+                          NSLog(@"Hit error: %@", error);
+                      }];
+
+}
+
+- (void)commentButtonPressedInCell:(RCSessionTableViewCell *)sender
+{
+    self.commentsSession = [sender getCellSession];
+    [self performSegueWithIdentifier:@"GoToCommentsSegue" sender:self];
+}
+
+- (void)playVideoInCell:(RCSessionTableViewCell *)sender
+{
+    self.clipUrl = [sender getCellSession].mostRecentClipUrl;
+    NSLog(@"Clicking on video with url: %@", self.clipUrl);
+    [self performSegueWithIdentifier:@"PlayVideoSegue" sender:self];
+}
+
 
 @end

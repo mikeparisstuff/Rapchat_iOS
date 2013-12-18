@@ -9,14 +9,15 @@
 #import "RCProfileViewController.h"
 #import "RCProfile.h"
 #import "RCCrowd.h"
+#import "RClike.h"
 #import "RCFriendTableViewCell.h"
 #import "RCCrowdTableViewCell.h"
+#import "RCSessionTableViewCell.h"
 
 @interface RCProfileViewController ()
 
 
 @property (nonatomic, strong) RCProfile *myProfile;
-@property (nonatomic, strong) NSArray *listObjects;
 @property (nonatomic, strong) NSArray *myLikes;
 @property (nonatomic, strong) NSArray *myCrowds;
 @property (nonatomic, strong) NSArray *myRaps;
@@ -25,6 +26,7 @@
 @property (nonatomic) NSInteger currentSectionIndex;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (nonatomic, strong) NSArray *tabs;
+@property (nonatomic) UIRefreshControl *refreshControl;
 
 @end
 
@@ -58,6 +60,8 @@
     return dataSources[section];
 }
 
+# pragma mark API call methods
+
 - (void)loadRaps
 {
     NSLog(@"Load Raps Clicked");
@@ -66,14 +70,14 @@
 - (void)loadCrowds
 {
     NSLog(@"Load Crowds Clicked");
+    [self.refreshControl beginRefreshing];
     if (!self.myCrowds) {
         RKObjectManager *objectManager = [RKObjectManager sharedManager];
-    
         [objectManager getObjectsAtPath:@"/crowds/"
                          parameters:nil
                             success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                                 self.myCrowds = [mappingResult array];
-                                NSLog(@"Got Crowds: %@", self.listObjects);
+                                NSLog(@"Got Crowds: %@", self.myCrowds);
                                 [self updateGui];
                             }failure:^(RKObjectRequestOperation *operation, NSError *error) {
                                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"error"
@@ -90,13 +94,30 @@
 
 - (void)loadLikes
 {
+    [self.refreshControl beginRefreshing];
+    NSLog(@"Loading Likes");
+    RKObjectManager *objectManager = [RKObjectManager sharedManager];
+    [objectManager getObjectsAtPath:@"/users/me/likes/"
+                         parameters:nil
+                            success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+                                self.myLikes = [mappingResult array];
+                                NSLog(@"Got Likes: %@", self.myLikes);
+                                [self updateGui];
+                            }failure:^(RKObjectRequestOperation *operation, NSError *error) {
+                                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"error"
+                                                                                message:[error localizedDescription]
+                                                                               delegate:nil
+                                                                      cancelButtonTitle:@"OK"
+                                                                      otherButtonTitles:nil, nil];
+                                [alert show];
+                            }];
     NSLog(@"Load Likes Clicked");
 }
 
 - (void)loadProfile
 {
+    [self.refreshControl beginRefreshing];
     RKObjectManager *objectManager = [RKObjectManager sharedManager];
-    
     [objectManager getObjectsAtPath:@"/users/me/"
                          parameters:nil
                             success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
@@ -106,10 +127,10 @@
                                 [self updateGui];
                             }failure:^(RKObjectRequestOperation *operation, NSError *error) {
                                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"error"
-                                        message:[error localizedDescription]
-                                        delegate:nil
-                                cancelButtonTitle:@"OK"
-                                otherButtonTitles:nil, nil];
+                                                                                message:[error localizedDescription]
+                                                                               delegate:nil
+                                                                      cancelButtonTitle:@"OK"
+                                                                      otherButtonTitles:nil, nil];
                                 [alert show];
                             }];
 }
@@ -117,13 +138,14 @@
 - (void)loadFriends
 {
     NSLog(@"Load Friends");
+    [self.refreshControl beginRefreshing];
     if (!self.myFriends) {
         RKObjectManager *objectManager = [RKObjectManager sharedManager];
         
         [objectManager getObjectsAtPath:@"/users/friends/"
                              parameters:nil
                                 success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-                                    self.listObjects = [mappingResult array];
+                                    self.myFriends = [mappingResult array];
                                     [self updateGui];
                                 }failure:^(RKObjectRequestOperation *operation, NSError *error) {
                                     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"error"
@@ -138,11 +160,10 @@
     }
 }
 
-- (void)updateGui
+- (void)refresh:(id)sender
 {
-    self.navigationItem.title = self.myProfile.user.username;
-    [self.tableView reloadData];
-
+    [self performSelector:NSSelectorFromString([self validSelectorsForSegmentedControl][self.currentSection])];
+//    [self loadProfile];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
@@ -159,11 +180,69 @@
     }
 }
 
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self) {
+        // Custom initialization
+    }
+    return self;
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+	// Do any additional setup after loading the view.
+    self.tabs = @[@"Raps", @"Crowds", @"Likes", @"Friends"];
+    
+
+    // Because refreshControl is made to be used with UItvc we need to create on and
+    // embed our tableview within it to get the refresh to work. This is magic so just leave it
+    UITableViewController *tableViewController = [[UITableViewController alloc] init];
+    tableViewController.tableView = self.tableView;
+
+    self.refreshControl = [[UIRefreshControl alloc] init];
+    self.refreshControl.tintColor = [UIColor grayColor];
+//    self.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@""];
+    [self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
+    tableViewController.refreshControl = self.refreshControl;
+
+//    self.refreshControl = [[UIRefreshControl alloc] init];
+//    self.refreshControl.tag = 99;
+//    [self.tableView addSubview:self.refreshControl];
+//    self.tableView.alwaysBounceVertical = YES;
+//    self.edgesForExtendedLayout = UIRectEdgeNone;
+
+//    [self.tableView registerClass: [RCCrowdTableViewCell class] forCellReuseIdentifier:@"Crowd Cell"];
+//    [self.tableView registerClass: [RCFriendTableViewCell class] forCellReuseIdentifier:@"Friend Cell"];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [self loadProfile];
+}
+
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+# pragma mark Tableview Utility Methods
+
+- (void)updateGui
+{
+    [self.refreshControl endRefreshing];
+    self.navigationItem.title = self.myProfile.user.username;
+    [self.tableView reloadData];
+    
+}
+
 - (RCFriendTableViewCell *)createFriendCellForTable:(UITableView *)tableView atIndexPath:(NSIndexPath *)indexPath
 {
     NSString *reuseIdentifier = @"Friend Cell";
     RCFriendTableViewCell *cell = (RCFriendTableViewCell *)[self.tableView dequeueReusableCellWithIdentifier:reuseIdentifier forIndexPath:indexPath];
-
+    
     if (cell == nil) {
         cell = [[RCFriendTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
     }
@@ -190,34 +269,22 @@
     return cell;
 }
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (RCSessionTableViewCell *)createSessionCellForTable:(UITableView *)tableView forIndexPath:(NSIndexPath *)indexPath
 {
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
+    NSString *reuseIdentifier = @"Session Cell";
+    RCSessionTableViewCell *cell = (RCSessionTableViewCell *)[tableView dequeueReusableCellWithIdentifier:reuseIdentifier forIndexPath:indexPath];
+    RCSession *session = [(RCLike *)[self.myLikes objectAtIndex:indexPath.row] session];
+    [cell setCellSession:session];
+    return cell;
 }
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-	// Do any additional setup after loading the view.
-    self.tabs = @[@"Raps", @"Crowds", @"Likes", @"Friends"];
-//    [self.tableView registerClass: [RCCrowdTableViewCell class] forCellReuseIdentifier:@"Crowd Cell"];
-//    [self.tableView registerClass: [RCFriendTableViewCell class] forCellReuseIdentifier:@"Friend Cell"];
-    [self loadProfile];
-}
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
+
 
 /*
  *  Listview Delegate and Protocol Methods
  */
+#pragma mark Tableview Delegate Methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -241,6 +308,7 @@
             break;
         case 2:
             numElements = [self.myLikes count];
+            NSLog(@"loading %lu likes", numElements);
             break;
         case 3:
             numElements = [self.myFriends count];
@@ -263,7 +331,7 @@
             height = 70;
             break;
         case 2:
-            height = 50;
+            height = 455;
             break;
         case 3:
             height = 45;
@@ -283,6 +351,7 @@
             cell = [self createCrowdCellForTable:tableView forIndexPath:indexPath];
             break;
         case 2:
+            cell = [self createSessionCellForTable:tableView forIndexPath:indexPath];
             break;
         case 3:
             cell = [self createFriendCellForTable:tableView atIndexPath:indexPath];

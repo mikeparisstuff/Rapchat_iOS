@@ -7,6 +7,7 @@
 //
 
 #import "RCViewController.h"
+#import "RCTabBarController.h"
 
 @interface RCViewController ()
 
@@ -17,6 +18,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    self.showTabBar = YES;
 	// Do any additional setup after loading the view, typically from a nib.
     
     //Create search item in the tab bar
@@ -25,7 +28,6 @@
 //    self.navigationItem.rightBarButtonItems = actionButtonItems;
     
     // Disable middle button with red button overlay
-    [[self.tabBarController.tabBar.items objectAtIndex:1] setEnabled:NO];
     
 //    [self.tabBarController.tabBar setBackgroundColor:[UIColor colorWithHue:0.0 saturation:0.06 brightness:0.14 alpha:1.0]];
 //    [self.navigationController.navigationBar setBackgroundColor:[UIColor colorWithHue:0.0 saturation:0.06 brightness:0.14 alpha:1.0]];
@@ -51,6 +53,23 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self setTabBarVisible];
+}
+
+- (void)setTabBarVisible
+{
+    if (self.showTabBar) {
+        RCTabBarController *tabBarController = (RCTabBarController *)self.tabBarController;
+        [tabBarController setTabBarHidden:NO animated:YES];
+    } else {
+        RCTabBarController *tabBarController = (RCTabBarController *)self.tabBarController;
+        [tabBarController setTabBarHidden:YES animated:YES];
+    }
 }
 
 @end

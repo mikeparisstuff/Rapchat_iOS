@@ -7,8 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "RCBaseModel.h"
 
-@interface RCCrowd : NSObject
+@interface RCCrowd : RCBaseModel
 
 @property (nonatomic, copy) NSString *title;
 @property (nonatomic, copy) NSDate *created;
