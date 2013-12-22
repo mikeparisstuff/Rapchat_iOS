@@ -10,4 +10,6 @@
 
 @interface RCReplyToSessionCameraViewController : RCCameraViewController
 
+@property (nonatomic, strong)NSNumber *sessionId;
+
 @end

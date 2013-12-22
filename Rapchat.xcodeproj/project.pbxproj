@@ -13,7 +13,7 @@
 		3F19CBC6185FF1CF008BBA85 /* RCPreviewFileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F19CBC5185FF1CF008BBA85 /* RCPreviewFileViewController.m */; };
 		3F3511A118622DE30056ACBF /* RCReplyToSessionCameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F3511A018622DE30056ACBF /* RCReplyToSessionCameraViewController.m */; };
 		3F3511A418622E130056ACBF /* RCCreateNewSessionCameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F3511A318622E130056ACBF /* RCCreateNewSessionCameraViewController.m */; };
-		3F3511A7186234DD0056ACBF /* RCPreviewVideoInvisibileNavbarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F3511A6186234DD0056ACBF /* RCPreviewVideoInvisibileNavbarViewController.m */; };
+		3F3511A7186234DD0056ACBF /* RCPreviewVideoInvisibleNavbarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F3511A6186234DD0056ACBF /* RCPreviewVideoInvisibleNavbarViewController.m */; };
 		3F376059185593B2004E83B0 /* RCTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F376058185593B2004E83B0 /* RCTabBarController.m */; };
 		3F37605F18559BEE004E83B0 /* RCNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F37605E18559BEE004E83B0 /* RCNavigationController.m */; };
 		3F4CB3AC185D43CA008B5D77 /* RCCrowdTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F4CB3AB185D43CA008B5D77 /* RCCrowdTableViewCell.m */; };
@@ -60,6 +60,8 @@
 		3FE2FE37185BF89B002DA093 /* RCFriendTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FE2FE36185BF89B002DA093 /* RCFriendTableViewCell.m */; };
 		3FEA9B3C1862220B00781346 /* RCInvisibleNavbarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FEA9B3B1862220B00781346 /* RCInvisibleNavbarViewController.m */; };
 		3FEA9B3F1862298500781346 /* RCPreviewVideoNoNavbarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FEA9B3E1862298500781346 /* RCPreviewVideoNoNavbarViewController.m */; };
+		3FF9674C1866A2E100516152 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FF9674B1866A2E100516152 /* ImageIO.framework */; };
+		3FF9674E1866A40900516152 /* SDWebImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FF9674D1866A40900516152 /* SDWebImage.framework */; };
 		A435288F706540D0B3CED601 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C98569AD8979484D86CB458B /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -93,8 +95,8 @@
 		3F3511A018622DE30056ACBF /* RCReplyToSessionCameraViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCReplyToSessionCameraViewController.m; sourceTree = "<group>"; };
 		3F3511A218622E130056ACBF /* RCCreateNewSessionCameraViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCCreateNewSessionCameraViewController.h; sourceTree = "<group>"; };
 		3F3511A318622E130056ACBF /* RCCreateNewSessionCameraViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCCreateNewSessionCameraViewController.m; sourceTree = "<group>"; };
-		3F3511A5186234DD0056ACBF /* RCPreviewVideoInvisibileNavbarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCPreviewVideoInvisibileNavbarViewController.h; sourceTree = "<group>"; };
-		3F3511A6186234DD0056ACBF /* RCPreviewVideoInvisibileNavbarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCPreviewVideoInvisibileNavbarViewController.m; sourceTree = "<group>"; };
+		3F3511A5186234DD0056ACBF /* RCPreviewVideoInvisibleNavbarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCPreviewVideoInvisibleNavbarViewController.h; sourceTree = "<group>"; };
+		3F3511A6186234DD0056ACBF /* RCPreviewVideoInvisibleNavbarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCPreviewVideoInvisibleNavbarViewController.m; sourceTree = "<group>"; };
 		3F376057185593B2004E83B0 /* RCTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTabBarController.h; sourceTree = "<group>"; };
 		3F376058185593B2004E83B0 /* RCTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTabBarController.m; sourceTree = "<group>"; };
 		3F37605D18559BEE004E83B0 /* RCNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCNavigationController.h; sourceTree = "<group>"; };
@@ -177,6 +179,8 @@
 		3FEA9B3B1862220B00781346 /* RCInvisibleNavbarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCInvisibleNavbarViewController.m; sourceTree = "<group>"; };
 		3FEA9B3D1862298500781346 /* RCPreviewVideoNoNavbarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCPreviewVideoNoNavbarViewController.h; sourceTree = "<group>"; };
 		3FEA9B3E1862298500781346 /* RCPreviewVideoNoNavbarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCPreviewVideoNoNavbarViewController.m; sourceTree = "<group>"; };
+		3FF9674B1866A2E100516152 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
+		3FF9674D1866A40900516152 /* SDWebImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDWebImage.framework; path = ../../../Downloads/SDWebImage.framework; sourceTree = "<group>"; };
 		739A8126176243C8B918B014 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 		C98569AD8979484D86CB458B /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -186,9 +190,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3FF9674C1866A2E100516152 /* ImageIO.framework in Frameworks */,
 				3F572E57185557A200CADD95 /* CoreGraphics.framework in Frameworks */,
 				3F572E59185557A200CADD95 /* UIKit.framework in Frameworks */,
 				3F572E55185557A200CADD95 /* Foundation.framework in Frameworks */,
+				3FF9674E1866A40900516152 /* SDWebImage.framework in Frameworks */,
 				A435288F706540D0B3CED601 /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -231,6 +237,7 @@
 		3F572E48185557A200CADD95 = {
 			isa = PBXGroup;
 			children = (
+				3FF9674D1866A40900516152 /* SDWebImage.framework */,
 				3F572E5A185557A200CADD95 /* Rapchat */,
 				3F572E79185557A200CADD95 /* RapchatTests */,
 				3F572E53185557A200CADD95 /* Frameworks */,
@@ -251,6 +258,7 @@
 		3F572E53185557A200CADD95 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3FF9674B1866A2E100516152 /* ImageIO.framework */,
 				3F10B8C61859475300A9FD2F /* CFNetwork.framework */,
 				3F10B8C71859475300A9FD2F /* CoreData.framework */,
 				3F10B8C81859475300A9FD2F /* libxml2.dylib */,
@@ -385,8 +393,8 @@
 				3F3511A018622DE30056ACBF /* RCReplyToSessionCameraViewController.m */,
 				3F3511A218622E130056ACBF /* RCCreateNewSessionCameraViewController.h */,
 				3F3511A318622E130056ACBF /* RCCreateNewSessionCameraViewController.m */,
-				3F3511A5186234DD0056ACBF /* RCPreviewVideoInvisibileNavbarViewController.h */,
-				3F3511A6186234DD0056ACBF /* RCPreviewVideoInvisibileNavbarViewController.m */,
+				3F3511A5186234DD0056ACBF /* RCPreviewVideoInvisibleNavbarViewController.h */,
+				3F3511A6186234DD0056ACBF /* RCPreviewVideoInvisibleNavbarViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -568,7 +576,7 @@
 				3FB24C8E186176E50047FFF4 /* RCContractableTableViewController.m in Sources */,
 				3F572E61185557A200CADD95 /* main.m in Sources */,
 				3FB24C88186141C80047FFF4 /* RCProgressView.m in Sources */,
-				3F3511A7186234DD0056ACBF /* RCPreviewVideoInvisibileNavbarViewController.m in Sources */,
+				3F3511A7186234DD0056ACBF /* RCPreviewVideoInvisibleNavbarViewController.m in Sources */,
 				3FE2FE37185BF89B002DA093 /* RCFriendTableViewCell.m in Sources */,
 				3FD3DDFF185B04510016E3F3 /* RCWelcomeScreenViewController.m in Sources */,
 				3F7BD4B8185A40D4006AB0BD /* RCFeedViewController.m in Sources */,
@@ -723,6 +731,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/MichaelParis/Downloads,
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Rapchat/Rapchat-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
@@ -742,6 +754,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/MichaelParis/Downloads,
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Rapchat/Rapchat-Prefix.pch";
 				HEADER_SEARCH_PATHS = (

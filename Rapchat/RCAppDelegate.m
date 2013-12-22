@@ -26,6 +26,7 @@
     [[UITabBar appearance] setTintColor:[UIColor whiteColor]];
     [[UIToolbar appearance] setTintColor:[UIColor whiteColor]];
     [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
+    
 
     
     NSShadow *shadow = [[NSShadow alloc] init];
@@ -66,6 +67,10 @@
     UIViewController* controller = [storyboard instantiateViewControllerWithIdentifier:controllerId];
     self.window.rootViewController = controller;
     
+    UIView *statusBar = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 20)];
+    [statusBar setBackgroundColor:[UIColor colorWithRed:231.0/255.0 green:76.0/255.0 blue:60.0/255.0 alpha:1.0]];
+    [self.window.rootViewController.view addSubview:statusBar];
+
     [self.window makeKeyAndVisible];
     
     return YES;

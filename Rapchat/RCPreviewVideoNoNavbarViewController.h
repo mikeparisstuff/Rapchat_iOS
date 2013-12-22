@@ -10,4 +10,6 @@
 
 @interface RCPreviewVideoNoNavbarViewController : RCPreviewFileViewController
 
+@property (nonatomic, strong) NSNumber *sessionId;
+
 @end

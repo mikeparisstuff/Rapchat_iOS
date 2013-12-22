@@ -10,4 +10,9 @@
 
 @interface RCCameraViewController : UIViewController
 
+- (NSURL *)getVideoUrl;
+
+// Thumbnail
+@property (nonatomic, strong) NSURL *thumbnailImageUrl;
+
 @end

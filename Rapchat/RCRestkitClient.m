@@ -16,11 +16,12 @@
 #import "RCLike.h"
 #import "RCComment.h"
 #import "RCBaseModel.h"
+#import "RCClip.h"
 
 @implementation RCRestkitClient
 
 static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
-//static const NSString *BASE_URL = @"http://127.0.0.1:8000";
+//static const NSString *BASE_URL = @"http://192.168.1.27:8000";
 
 
 +(void)setupRestkit
@@ -109,7 +110,8 @@ static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
                                                          @"is_complete": @"isComplete",
                                                          @"created":@"created",
                                                          @"modified":@"modified",
-                                                         @"clip_url":@"mostRecentClipUrl"}];
+                                                         @"clip_url":@"mostRecentClipUrl",
+                                                         @"thumbnail_url": @"thumbnailUrl"}];
     
     /*
      Setup Crowds Mappings
@@ -164,6 +166,35 @@ static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
                                                          
     RKRelationshipMapping *likeSessionRelationshipMapping = [RKRelationshipMapping relationshipMappingFromKeyPath:@"session" toKeyPath:@"session" withMapping:sessionMapping];
     [likeMapping addPropertyMapping:likeSessionRelationshipMapping];
+    
+    
+    /*
+     *  Clip Mapping
+     */
+    NSDictionary *clipMappingDict = @{@"url": @"url",
+                                             @"creator": @"creator",
+                                             @"session": @"session",
+                                             @"created": @"created",
+                                             @"modified": @"modified",
+                                             @"clip_number": @"clipNumber"};
+    
+    RKObjectMapping *clipMapping = [RKObjectMapping mappingForClass:[RCClip class]];
+    [clipMapping addAttributeMappingsFromDictionary:clipMappingDict];
+    
+//    RKObjectMapping *clipRequestMapping = [RKObjectMapping mappingForClass:[RKObjectMapping requestMapping]];
+//    [clipRequestMapping addAttributeMappingsFromDictionary:clipMappingDict];
+    
+    
+    /*
+     *  Error Message Mapping
+     */
+    RKObjectMapping *errorMapping = [RKObjectMapping mappingForClass:[RKErrorMessage class]];
+    [errorMapping addPropertyMapping:[RKAttributeMapping attributeMappingFromKeyPath:@"error_description" toKeyPath:@"errorMessage"]];
+    RKResponseDescriptor *errorDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:errorMapping
+                                                                                         method:RKRequestMethodAny
+                                                                                    pathPattern:nil
+                                                                                        keyPath:nil
+                                                                                    statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassClientError)];
     
     
     // Register out mapping with the provider using a response descriptor
@@ -235,36 +266,30 @@ static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
     RKResponseDescriptor *getCommentsDescriptor = [RKResponseDescriptor
                                                    responseDescriptorWithMapping:commentMapping
                                                    method:RKRequestMethodGET
-                                                   pathPattern:@"/sessions/comments/:sessionId/"
+                                                   pathPattern:@"/sessions/:sessionId/comments/"
                                                    keyPath:@"comments"
                                                    statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
 
     RKResponseDescriptor *postNewCommentDescriptor = [RKResponseDescriptor
                                                      responseDescriptorWithMapping:commentMapping
                                                      method:RKRequestMethodPOST
-                                                     pathPattern:@"/sessions/comments/"
+                                                     pathPattern:@"/sessions/:sessionId/comments/"
                                                      keyPath:@"comment"
                                                      statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     
-//    RKResponseDescriptor *baseModelDescriptor = [RKResponseDescriptor
-//                                               responseDescriptorWithMapping:baseModelMapping
-//                                               method:RKRequestMethodAny
-//                                               pathPattern:nil
-//                                               keyPath:nil
-//                                               statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+    RKResponseDescriptor *addClipDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:clipMapping
+                                                                                           method:RKRequestMethodPOST
+                                                                                      pathPattern:@"/sessions/:sessionId/clips/"
+                                                                                          keyPath:nil
+                                                                                      statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+    
+#pragma mark Request Descriptors
     
     
-    /*
-     *  Error Mapping
-     */
-//    RKObjectMapping *errorMapping = [RKObjectMapping mappingForClass:[RKErrorMessage class]];
-//    [errorMapping addPropertyMapping: [RKAttributeMapping attributeMappingFromKeyPath:@"error_description" toKeyPath:@"errorMessage"]];
-//    RKResponseDescriptor *errorResponseDescriptor = [RKResponseDescriptor
-//                                                     responseDescriptorWithMapping:errorMapping
-//                                                     method:RKRequestMethodAny
-//                                                     pathPattern:nil
-//                                                     keyPath:nil
-//                                                     statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassClientError)];
+    RKRequestDescriptor *addClipRequestDescriptor = [RKRequestDescriptor requestDescriptorWithMapping:[clipMapping inverseMapping]
+                                                                                          objectClass:[RCClip class]
+                                                                                          rootKeyPath:nil
+                                                                                               method:RKRequestMethodPOST];
 
 //    RKResponseDescriptor *postLikesDescriptorNoKeypath = [RKResponseDescriptor
 //                                                 responseDescriptorWithMapping:likeMapping
@@ -274,19 +299,13 @@ static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
 //                                                 statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     
     
-    [objectManager addResponseDescriptor:usersResponseDescriptor];
-    [objectManager addResponseDescriptor:sessionsResponseDescriptor];
-    [objectManager addResponseDescriptor:obtainTokenDescriptor];
-    [objectManager addResponseDescriptor:registerUserDescriptor];
-    [objectManager addResponseDescriptor:getMyProfileDescriptor];
-    [objectManager addResponseDescriptor:getFriendsDescriptor];
-    [objectManager addResponseDescriptor:getCrowdsDescriptor];
-    [objectManager addResponseDescriptor:getLikesDescriptor];
-    [objectManager addResponseDescriptor:postLikesDescriptor];
-    [objectManager addResponseDescriptor:getCommentsDescriptor];
-    [objectManager addResponseDescriptor:postNewCommentDescriptor];
-//    [objectManager addResponseDescriptor:errorResponseDescriptor];
-//v    [objectManager addResponseDescriptor:baseModelDescriptor];
+#pragma mark Register Descriptors
+    NSArray *responseDescriptorArray = @[usersResponseDescriptor, sessionsResponseDescriptor, obtainTokenDescriptor, registerUserDescriptor, getMyProfileDescriptor, getFriendsDescriptor, getCrowdsDescriptor, getLikesDescriptor, postLikesDescriptor, getCommentsDescriptor, postNewCommentDescriptor, errorDescriptor, addClipDescriptor];
+    [objectManager addResponseDescriptorsFromArray:responseDescriptorArray];
+    
+    NSArray *requestDescriptorArray = @[addClipRequestDescriptor];
+    [objectManager addRequestDescriptorsFromArray:requestDescriptorArray];
+    
 }
 
 

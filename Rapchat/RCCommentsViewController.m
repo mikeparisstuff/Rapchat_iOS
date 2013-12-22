@@ -40,6 +40,11 @@
     
     // Hides the tab bar and middle tab bar button in the tab bar
     self.showTabBar = NO;
+    
+    // Add gesture recognizer to dismiss the keyboard on downward swipe
+    UISwipeGestureRecognizer *swipeRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipe:)];
+    [swipeRecognizer setDirection:UISwipeGestureRecognizerDirectionDown];
+    [self.view addGestureRecognizer:swipeRecognizer];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -89,7 +94,7 @@
     // Load the object model via RestKit
     RKObjectManager *objectManager = [RKObjectManager sharedManager];
     
-    [objectManager getObjectsAtPath:[NSString stringWithFormat:@"/sessions/comments/%@/", self.sessionId]
+    [objectManager getObjectsAtPath:[NSString stringWithFormat:@"/sessions/%@/comments/", self.sessionId]
                          parameters:nil
                             success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                                 self.comments = [mappingResult array];
@@ -115,8 +120,8 @@
     NSString *commentText = self.textfield.text;
     RKObjectManager *objectManager = [RKObjectManager sharedManager];
     [objectManager postObject:nil
-                         path:[NSString stringWithFormat:@"/sessions/comments/"]
-                   parameters:@{@"comment_text": commentText, @"session": self.sessionId}
+                         path:[NSString stringWithFormat:@"/sessions/%@/comments/", self.sessionId]
+                   parameters:@{@"text": commentText}
                       success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                           NSLog(@"Successfully added comment");
                           [self loadComments];
@@ -261,22 +266,33 @@
     [UIView setAnimationDuration:0.3]; // if you want to slide up the view
     
     CGRect rect = self.view.frame;
+    CGRect tableViewRect = self.tableView.frame;
     if (movedUp)
     {
         // 1. move the view's origin up so that the text field that will be hidden come above the keyboard
         // 2. increase the size of the view so that the area behind the keyboard is covered up.
         rect.origin.y -= kOFFSET_FOR_KEYBOARD;
-        rect.size.height += kOFFSET_FOR_KEYBOARD;
+        tableViewRect.origin.y += kOFFSET_FOR_KEYBOARD;
+        tableViewRect.size.height -= kOFFSET_FOR_KEYBOARD;
     }
     else
     {
         // revert back to the normal state.
         rect.origin.y += kOFFSET_FOR_KEYBOARD;
-        rect.size.height -= kOFFSET_FOR_KEYBOARD;
+        tableViewRect.origin.y -= kOFFSET_FOR_KEYBOARD;
+        tableViewRect.size.height += kOFFSET_FOR_KEYBOARD;
     }
     self.view.frame = rect;
+    self.tableView.frame = tableViewRect;
     
     [UIView commitAnimations];
+}
+
+#pragma mark Swipe Gestures
+-(void)handleSwipe:(UISwipeGestureRecognizer *)recognizer
+{
+    NSLog(@"Swipe down recognized");
+    [self.view endEditing:YES];
 }
 
 

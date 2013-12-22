@@ -12,5 +12,6 @@
 @interface RCPreviewFileViewController : RCInvisibleNavbarViewController
 
 @property (nonatomic) NSURL *videoURL;
+@property (nonatomic) NSURL *thumbnailImageUrl;
 
 @end

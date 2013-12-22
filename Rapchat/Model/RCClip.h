@@ -14,8 +14,9 @@
 @interface RCClip : RCBaseModel
 
 @property (nonatomic, copy) NSNumber *clipNumber;
-@property (nonatomic, strong) RCProfile *creator;
-@property (nonatomic, strong) RCSession *session;
+@property (nonatomic, copy) NSURL *url;
+@property (nonatomic, copy) NSNumber *creator;
+@property (nonatomic, copy) NSNumber *session;
 @property (nonatomic, copy) NSDate *created;
 @property (nonatomic, copy) NSDate *modified;
 

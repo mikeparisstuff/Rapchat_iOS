@@ -131,11 +131,12 @@ static const NSString *ItemStatusContext;
 - (void)dealloc
 {
     NSLog(@"Deleting file: %@", self.videoURL);
-    [[NSFileManager defaultManager] removeItemAtURL:self.videoURL error:nil];
+//    [[NSFileManager defaultManager] removeItemAtURL:self.videoURL error:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:AVPlayerItemDidPlayToEndTimeNotification
                                                   object:[self.player currentItem]];
     [self.playerItem removeObserver:self forKeyPath:@"status"];
+    [[NSFileManager defaultManager] removeItemAtPath:[self.thumbnailImageUrl absoluteString] error:nil];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object
@@ -171,6 +172,5 @@ static const NSString *ItemStatusContext;
 - (IBAction)submitVideoForUpload:(UIButton *)sender {
     NSLog(@"Submit video and go to select crowd");
 }
-
 
 @end

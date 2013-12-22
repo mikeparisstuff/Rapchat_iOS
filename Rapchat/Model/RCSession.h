@@ -21,6 +21,7 @@
 @property (nonatomic, copy) NSNumber *numberOfLikes;
 @property (nonatomic, copy) NSArray *comments;
 @property (nonatomic, copy) NSURL *mostRecentClipUrl;
+@property (nonatomic, copy) NSURL *thumbnailUrl;
 
 // Probably need likes here as well
 

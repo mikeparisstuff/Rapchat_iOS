@@ -52,6 +52,10 @@ static const NSString *ItemStatusContext;
 @property (nonatomic) AVCaptureDeviceInput *videoDeviceInput;
 @property (nonatomic) AVCaptureMovieFileOutput *movieFileOutput;
 @property (nonatomic) AVCaptureStillImageOutput *stillImageOutput;
+@property (nonatomic) NSURL *videoURL;
+
+// Thumbnail
+@property (nonatomic) NSURL *thumbnailUrl;
 
 // Utilities.
 @property (nonatomic) UIBackgroundTaskIdentifier backgroundRecordingID;
@@ -85,6 +89,7 @@ static const NSString *ItemStatusContext;
     
     // Create the AVCaptureSession
     AVCaptureSession *session = [[AVCaptureSession alloc] init];
+    [session setSessionPreset:AVCaptureSessionPresetMedium];
     [self setSession:session];
     
     // Setup the preview view
@@ -92,6 +97,9 @@ static const NSString *ItemStatusContext;
     
     // Check for device authorization
     [self checkDeviceAuthorizationStatus];
+    
+    // Set url
+    self.thumbnailImageUrl = [NSURL URLWithString:[NSTemporaryDirectory() stringByAppendingPathComponent:[@"thumbnail" stringByAppendingPathExtension:@"jpg"]]];
     
     // Dispatch the rest of session setup to the sessionQueue so that the main queue isn't blocked.
     dispatch_queue_t sessionQueue = dispatch_queue_create("session queue", DISPATCH_QUEUE_SERIAL);
@@ -199,10 +207,16 @@ static const NSString *ItemStatusContext;
     if([segue.identifier isEqualToString:@"PreviewVideoSegue"]) {
             if ([segue.destinationViewController isKindOfClass:[RCPreviewFileViewController class]]) {
                 RCPreviewFileViewController *pfvc = (RCPreviewFileViewController *)segue.destinationViewController;
-                pfvc.videoURL = [self.movieFileOutput outputFileURL];
+                pfvc.videoURL = self.videoURL;
+                //[self.movieFileOutput outputFileURL];
+                NSLog(@"PreviewVideoSegue being prepared with url: %@", pfvc.videoURL);
             }
-        NSLog(@"CreateSeque being prepared");
     }
+}
+
+- (NSURL *)getVideoUrl
+{
+    return self.videoURL;
 }
 
 - (BOOL)prefersStatusBarHidden
@@ -340,7 +354,7 @@ static const NSString *ItemStatusContext;
             [RCCameraViewController setFlashMode:AVCaptureFlashModeOff forDevice:[[self videoDeviceInput] device]];
             
             // Start recording to a temporary file.
-            NSString *outputFilePath = [NSTemporaryDirectory() stringByAppendingPathComponent:[@"movie" stringByAppendingPathExtension:@"mov"]];
+            NSString *outputFilePath = [NSTemporaryDirectory() stringByAppendingPathComponent:[@"movie" stringByAppendingPathExtension:@"mp4"]];
             if ([[NSFileManager defaultManager] fileExistsAtPath:outputFilePath]) {
                 [[NSFileManager defaultManager] removeItemAtPath:outputFilePath error:nil];
             }
@@ -458,6 +472,7 @@ static const NSString *ItemStatusContext;
         NSLog(@"%@", error);
     
     [self setLockInterfaceRotation:NO];
+    self.videoURL = [self.movieFileOutput outputFileURL];
     
     // Note the backgroundRecordingID for use in the ALAssetsLibrary completion handler to end the background task associated with this recording. This allows a new recording to be started, associated with a new UIBackgroundTaskIdentifier, once the movie file output's -isRecording is back to NO — which happens sometime after this method returns.
     
@@ -474,7 +489,10 @@ static const NSString *ItemStatusContext;
 //        if (backgroundRecordingID != UIBackgroundTaskInvalid)
 //            [[UIApplication sharedApplication] endBackgroundTask:backgroundRecordingID];
 //    }];
+    [self generateImage];
     [self performSegueWithIdentifier:@"PreviewVideoSegue" sender:self];
+
+
 }
 
 #pragma mark Device Configuration
@@ -575,6 +593,37 @@ static const NSString *ItemStatusContext;
             });
         }
     }];
+}
+
+#pragma mark Thumbnail
+
+-(void)generateImage
+{
+    AVURLAsset *asset=[[AVURLAsset alloc] initWithURL:[self.movieFileOutput outputFileURL] options:nil];
+    AVAssetImageGenerator *generator = [[AVAssetImageGenerator alloc] initWithAsset:asset];
+    generator.appliesPreferredTrackTransform=TRUE;
+    CMTime thumbTime = CMTimeMakeWithSeconds(0,30);
+    
+    AVAssetImageGeneratorCompletionHandler handler = ^(CMTime requestedTime, CGImageRef im, CMTime actualTime, AVAssetImageGeneratorResult result, NSError *error){
+        if (result != AVAssetImageGeneratorSucceeded) {
+            NSLog(@"couldn't generate thumbnail, error:%@", error);
+        }
+        NSLog(@"Generated thumbnail.");
+        
+//        [self.thumbnailImageView setImage:[UIImage imageWithCGImage:im]];
+        
+        NSData *thumbnailImageData=UIImageJPEGRepresentation([UIImage imageWithCGImage:im], 0.75);
+        if ([[NSFileManager defaultManager] fileExistsAtPath:[self.thumbnailImageUrl absoluteString]]) {
+            [[NSFileManager defaultManager] removeItemAtPath:[self.thumbnailImageUrl absoluteString] error:nil];
+        }
+        [thumbnailImageData writeToFile:[self.thumbnailImageUrl absoluteString] atomically:NO];
+        // Wait for image to be generated before segueing to the next screen
+    };
+    
+    CGSize maxSize = CGSizeMake(320, 320);
+    generator.maximumSize = maxSize;
+    [generator generateCGImagesAsynchronouslyForTimes:[NSArray arrayWithObject:[NSValue valueWithCMTime:thumbTime]] completionHandler:handler];
+    
 }
 
 @end

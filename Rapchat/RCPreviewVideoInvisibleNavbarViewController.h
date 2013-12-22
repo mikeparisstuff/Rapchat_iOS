@@ -7,6 +7,8 @@
 //
 
 #import "RCPreviewFileViewController.h"
-@interface RCPreviewVideoInvisibileNavbarViewController : RCPreviewFileViewController
+@interface RCPreviewVideoInvisibleNavbarViewController : RCPreviewFileViewController
+
+@property (nonatomic, strong)NSNumber *sessionId;
 
 @end

@@ -31,6 +31,11 @@
     UIBarButtonItem *searchItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(searchButtonClicked:)];
     NSArray *actionButtonItems = @[searchItem];
     self.navigationItem.rightBarButtonItems = actionButtonItems;
+    
+    // Set translucent no so that the statusbar color matches
+    [self.navigationController.navigationBar setTranslucent:NO];
+    self.extendedLayoutIncludesOpaqueBars = YES;
+    
     self.showTabBar = YES;
     
 

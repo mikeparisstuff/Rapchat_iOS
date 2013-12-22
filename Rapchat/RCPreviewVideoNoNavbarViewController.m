@@ -7,6 +7,7 @@
 //
 
 #import "RCPreviewVideoNoNavbarViewController.h"
+#import "RCReplyToSessionCameraViewController.h"
 
 @interface RCPreviewVideoNoNavbarViewController ()
 
@@ -40,6 +41,18 @@
     [super viewWillAppear:animated];
     // Hide the navigation bar
     self.navigationController.navigationBarHidden = YES;
+}
+
+// In a story board-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if([segue.identifier isEqualToString:@"ReplyToVideoSegue"]) {
+        if ([segue.destinationViewController isKindOfClass:[RCReplyToSessionCameraViewController class]]) {
+            RCReplyToSessionCameraViewController *controller = segue.destinationViewController;
+            controller.sessionId = self.sessionId;
+            NSLog(@"Prepared ReplyToVideoSegue");
+        }
+    }
 }
 
 

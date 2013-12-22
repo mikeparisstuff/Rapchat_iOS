@@ -18,6 +18,7 @@
 @property (nonatomic, strong) NSArray *sessions;
 @property (nonatomic, strong) RCSession *commentsSession;
 @property (nonatomic, strong) NSURL *clipUrl;
+@property (nonatomic, strong) NSNumber *selectedSessionId;
 
 @end
 
@@ -70,6 +71,21 @@
     return self;
 }
 
+//- (void)viewDidLayoutSubviews
+//{
+//    // Only works for iOS 7
+//    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) {
+//        CGRect viewBounds = self.view.bounds;
+//        CGFloat topBarOffset = self.topLayoutGuide.length;
+//        
+//        // snaps the view under the status bar like iOS 6
+//        viewBounds.origin.y = topBarOffset * -1;
+//        
+//        // shrink bounds to compensate for offset
+//        self.view.bounds = viewBounds;
+//    }
+//}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -79,7 +95,9 @@
  
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
-//    self.extendedLayoutIncludesOpaqueBars = NO;
+//    self.extendedLayoutIncludesOpaqueBars = YES;
+//    self.navigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
+//    self.edgesForExtendedLayout = UIRectEdgeNone;
     
 }
 
@@ -94,7 +112,6 @@
 //    self.view.frame = frame;
 //    UIView *statusBarBackground = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 20)];
 //    statusBarBackground.backgroundColor = [UIColor colorWithRed:231.0/255.0 green:76.0/255.0 blue:60.0/255.0 alpha:1.0];
-    
     
     [self updateUI];
     [super viewWillAppear:animated];
@@ -192,6 +209,7 @@
             if ([[navController topViewController] isKindOfClass:[RCPreviewVideoNoNavbarViewController class]]) {
                 RCPreviewVideoNoNavbarViewController *RCpfvc = (RCPreviewVideoNoNavbarViewController *)[navController topViewController];
                 RCpfvc.videoURL = self.clipUrl;
+                RCpfvc.sessionId = self.selectedSessionId;
                 NSLog(@"Prepared PlayVideoSegue");
             }
         }
@@ -243,7 +261,9 @@
 
 - (void)playVideoInCell:(RCSessionTableViewCell *)sender
 {
-    self.clipUrl = [sender getCellSession].mostRecentClipUrl;
+    RCSession *session = [sender getCellSession];
+    self.clipUrl = session.mostRecentClipUrl;
+    self.selectedSessionId = session.sessionId;
     NSLog(@"Clicking on video with url: %@", self.clipUrl);
     [self performSegueWithIdentifier:@"PlayVideoSegue" sender:self];
 }

@@ -7,6 +7,8 @@
 //
 
 #import "RCSessionTableViewCell.h"
+#import <AVFoundation/AVFoundation.h>
+#import <SDWebImage/UIImageView+WebCache.h>
 
 @interface RCSessionTableViewCell ()
 
@@ -15,6 +17,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *commentsLabel;
 @property (weak, nonatomic) IBOutlet UILabel *likesLabel;
 @property (strong, nonatomic) RCSession* session;
+@property (weak, nonatomic) IBOutlet UIImageView *thumbnailImageView;
 
 @end
 
@@ -70,6 +73,8 @@
     [dateFormatter setDateFormat:@"MM/dd"];
     NSArray *dateArray = [[dateFormatter stringFromDate:session.created] componentsSeparatedByString:@"/"];
     
+//    [self.thumbnailImageView setImage:[UIImage imageWithData:[NSData dataWithContentsOfURL:session.thumbnailUrl]]];
+    [self.thumbnailImageView setImageWithURL:session.thumbnailUrl placeholderImage:[UIImage imageNamed:@"session_placeholder"]];
     self.titleLabel.text = session.title;
     self.dateLabel.text = [NSString stringWithFormat:@"%@ %@", [months objectAtIndex:[dateArray[0] intValue]], dateArray[1]];
     self.numberOfMembersLabel.text = [NSString stringWithFormat:@"%d members", (int)[session.crowd.members count]];
