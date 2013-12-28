@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "RCInvisibleNavbarViewController.h"
 
-@interface RCPreviewFileViewController : RCInvisibleNavbarViewController
+@interface RCPreviewFileViewController : RCViewController
 
 @property (nonatomic) NSURL *videoURL;
 @property (nonatomic) NSURL *thumbnailImageUrl;

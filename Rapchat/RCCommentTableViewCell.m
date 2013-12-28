@@ -37,7 +37,11 @@
     self.comment = comment;
     self.commentTextView.contentInset = UIEdgeInsetsMake(-4,-5,0,0);
     self.usernameLabel.text = comment.commenter;
-    self.commentTextView.text = comment.text;
+    
+    // Set frame of textview so that it fits text
+    NSString *text = self.comment.text;
+    self.commentTextView.text = text;
+    
     // Set Date
     NSDateFormatter *dateFormatter = [NSDateFormatter new];
     NSArray *months = @[@"", @"Jan", @"Feb", @"March", @"Apr", @"May", @"June", @"July", @"Aug", @"Sep",  @"Oct", @"Nov", @"Dec"];

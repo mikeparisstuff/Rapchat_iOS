@@ -166,8 +166,19 @@
 // heights explicitly so that the rows do not overlap.
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    CGFloat height = 70;
-    return height;
+    CGFloat height = 0;
+    height = [self textViewHeightForRowAtIndexPath:indexPath];
+    return (height > 65) ? height : 65;
+}
+
+- (CGFloat)textViewHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSString *text = ((RCComment *)[self.comments objectAtIndex:indexPath.row]).text;
+    NSAttributedString *attributed = [[NSAttributedString alloc] initWithString:text attributes:@{NSFontAttributeName: [UIFont preferredFontForTextStyle:UIFontTextStyleBody]}];
+    
+    UITextView *calculationView = [[UITextView alloc] init];
+    [calculationView setAttributedText:attributed];
+    CGSize size = [calculationView sizeThatFits:CGSizeMake(300, FLT_MAX)];
+    return size.height;
 }
 
 

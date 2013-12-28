@@ -7,6 +7,7 @@
 //
 
 #import "RCCreateNewSessionCameraViewController.h"
+#import "RCPreviewVideoForCreationViewController.h"
 
 @interface RCCreateNewSessionCameraViewController ()
 
@@ -40,6 +41,20 @@
     [super viewWillAppear:animated];
     // Hide the navigation bar
     self.navigationController.navigationBarHidden = YES;
+}
+
+#pragma mark Segues
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if([segue.identifier isEqualToString:@"PreviewVideoSegue"]) {
+        if ([segue.destinationViewController isKindOfClass:[RCPreviewVideoForCreationViewController class]]) {
+            RCPreviewVideoForCreationViewController *controller = segue.destinationViewController;
+            controller.videoURL = [self getVideoUrl];
+            controller.thumbnailImageUrl = self.thumbnailImageUrl;
+            NSLog(@"Prepared PreviewVideoSegue");
+        }
+    }
 }
 
 @end

@@ -89,7 +89,7 @@ static const NSString *ItemStatusContext;
     
     // Create the AVCaptureSession
     AVCaptureSession *session = [[AVCaptureSession alloc] init];
-    [session setSessionPreset:AVCaptureSessionPresetMedium];
+//    [session setSessionPreset:AVCaptureSessionPresetMedium];
     [self setSession:session];
     
     // Setup the preview view

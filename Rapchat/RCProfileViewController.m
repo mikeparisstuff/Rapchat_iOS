@@ -73,7 +73,7 @@
     [self.refreshControl beginRefreshing];
     if (!self.myCrowds) {
         RKObjectManager *objectManager = [RKObjectManager sharedManager];
-        [objectManager getObjectsAtPath:@"/crowds/"
+        [objectManager getObjectsAtPath:@"/users/me/crowds/"
                          parameters:nil
                             success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                                 self.myCrowds = [mappingResult array];
@@ -256,7 +256,7 @@
 
 - (RCCrowdTableViewCell *)createCrowdCellForTable:(UITableView *)tableView forIndexPath:(NSIndexPath *)indexPath
 {
-    NSString *reuseIdentifier = @"Crowd Cell";
+    NSString *reuseIdentifier = @"CrowdCell";
     RCCrowdTableViewCell *cell = (RCCrowdTableViewCell *)[self.tableView dequeueReusableCellWithIdentifier:reuseIdentifier forIndexPath:indexPath];
     
     if (cell == nil) {

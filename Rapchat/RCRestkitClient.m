@@ -245,7 +245,7 @@ static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
     RKResponseDescriptor *getCrowdsDescriptor = [RKResponseDescriptor
                                                  responseDescriptorWithMapping:crowdMapping
                                                  method:RKRequestMethodGET
-                                                 pathPattern:@"/crowds/"
+                                                 pathPattern:@"/users/me/crowds/"
                                                  keyPath:@"crowds"
                                                  statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     
@@ -307,7 +307,6 @@ static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
     [objectManager addRequestDescriptorsFromArray:requestDescriptorArray];
     
 }
-
 
 
 @end
