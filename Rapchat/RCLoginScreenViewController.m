@@ -9,6 +9,8 @@
 #import "RCLoginScreenViewController.h"
 #import "RCAccessToken.h"
 
+#import "RCUrlPaths.h"
+
 @interface RCLoginScreenViewController ()
 @property (weak, nonatomic) IBOutlet UITextField *usernameTextfield;
 @property (weak, nonatomic) IBOutlet UITextField *passwordTextfield;
@@ -24,7 +26,8 @@
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     [objectManager.HTTPClient setDefaultHeader:@"Authorization" value:nil];
     
-    [objectManager postObject:nil path:@"/users/obtain-token/"
+    [objectManager postObject:nil
+                         path:obtainTokenEndpoint
                    parameters:@{@"username": username, @"password": password}
                       success: ^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                           NSLog(@"Logging in user with username: %@", username);

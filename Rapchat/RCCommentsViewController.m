@@ -8,6 +8,7 @@
 
 #import "RCCommentsViewController.h"
 #import "RCCommentTableViewCell.h"
+#import "RCUrlPaths.h"
 
 #define kOFFSET_FOR_KEYBOARD 216.0
 

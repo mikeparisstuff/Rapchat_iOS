@@ -9,6 +9,8 @@
 #import "RCRegisterScreenViewController.h"
 #import "RCProfile.h"
 
+#import "RCUrlPaths.h"
+
 @interface RCRegisterScreenViewController ()
 @property (weak, nonatomic) IBOutlet UITextField *firstNameTextField;
 @property (weak, nonatomic) IBOutlet UITextField *lastNameTextField;
@@ -26,7 +28,7 @@
     RKObjectManager *objectManager = [RKObjectManager sharedManager];
     [objectManager.HTTPClient setDefaultHeader:@"Authorization" value:nil];
     [objectManager postObject:nil
-                         path:@"/users/"
+                         path:usersEndpoint
                    parameters:profileParams
                       success:^(RKObjectRequestOperation *operation, RKMappingResult* mappingResult) {
                           NSLog(@"Registering user: %@", profileParams);

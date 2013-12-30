@@ -18,10 +18,12 @@
 #import "RCBaseModel.h"
 #import "RCClip.h"
 
+#import "RCUrlPaths.h"
+
 @implementation RCRestkitClient
 
 static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
-//static const NSString *BASE_URL = @"http://192.168.1.27:8000";
+//static const NSString *BASE_URL = @"http://10.0.1.39:8000";
 
 
 +(void)setupRestkit
@@ -117,7 +119,8 @@ static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
      Setup Crowds Mappings
      */
     RKObjectMapping *crowdMapping = [RKObjectMapping mappingForClass:[RCCrowd class]];
-    [crowdMapping addAttributeMappingsFromDictionary:@{@"title": @"title",
+    [crowdMapping addAttributeMappingsFromDictionary:@{@"id": @"crowdId",
+                                                       @"title": @"title",
                                                        @"created": @"created",
                                                        @"modified": @"modified"}];
     
@@ -203,63 +206,71 @@ static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
     RKResponseDescriptor *usersResponseDescriptor = [RKResponseDescriptor
                                                      responseDescriptorWithMapping:profileMapping
                                                      method:RKRequestMethodGET
-                                                     pathPattern:@"/users/"                                                     keyPath:nil
+                                                     pathPattern:usersEndpoint
+                                                     keyPath:nil
                                                      statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     
     RKResponseDescriptor *sessionsResponseDescriptor = [RKResponseDescriptor
                                                         responseDescriptorWithMapping:sessionMapping
                                                         method:RKRequestMethodGET
-                                                        pathPattern:@"/sessions/"
+                                                        pathPattern:mySessionsEndpoint
                                                         keyPath:@"sessions"
                                                         statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+    
+    RKResponseDescriptor *newSessionResponseDescriptor = [RKResponseDescriptor
+                                                          responseDescriptorWithMapping:sessionMapping
+                                                          method:RKRequestMethodPOST
+                                                          pathPattern:mySessionsEndpoint
+                                                          keyPath:@"session"
+                                                          statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     
     RKResponseDescriptor *obtainTokenDescriptor = [RKResponseDescriptor
                                                    responseDescriptorWithMapping:
                                                    accessTokenMapping
                                                    method:RKRequestMethodPOST
-                                                   pathPattern:@"/users/obtain-token/"
+                                                   pathPattern:obtainTokenEndpoint
                                                    keyPath:nil
                                                    statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     
     RKResponseDescriptor *registerUserDescriptor = [RKResponseDescriptor
                                                     responseDescriptorWithMapping:profileMapping
                                                     method:RKRequestMethodPOST
-                                                    pathPattern:@"/users/"
+                                                    pathPattern:usersEndpoint
                                                     keyPath:nil
                                                     statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
 
     RKResponseDescriptor *getMyProfileDescriptor = [RKResponseDescriptor
                                                     responseDescriptorWithMapping:profileMapping
                                                     method:RKRequestMethodGET
-                                                    pathPattern:@"/users/me/"
+                                                    pathPattern:myProfileEndpoint
                                                     keyPath:nil
                                                     statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     
     RKResponseDescriptor *getFriendsDescriptor = [RKResponseDescriptor
                                                   responseDescriptorWithMapping:profileMapping
                                                   method:RKRequestMethodGET
-                                                  pathPattern:@"/users/friends/"
+                                                  pathPattern:myFriendsEndpoint
                                                   keyPath:@"friends"
                                                   statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
 
     RKResponseDescriptor *getCrowdsDescriptor = [RKResponseDescriptor
                                                  responseDescriptorWithMapping:crowdMapping
                                                  method:RKRequestMethodGET
-                                                 pathPattern:@"/users/me/crowds/"
+                                                 pathPattern:myCrowdsEndpoint
                                                  keyPath:@"crowds"
                                                  statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     
     RKResponseDescriptor *getLikesDescriptor = [RKResponseDescriptor
                                                 responseDescriptorWithMapping:likeMapping
                                                 method:RKRequestMethodGET
-                                                pathPattern:@"/users/me/likes/"
+                                                pathPattern:myLikesEndpoint
                                                 keyPath:@"likes"
                                                 statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     
     RKResponseDescriptor *postLikesDescriptor = [RKResponseDescriptor
                                                 responseDescriptorWithMapping:likeMapping
                                                 method:RKRequestMethodPOST
-                                                pathPattern:@"/users/me/likes/"
+                                                pathPattern:myLikesEndpoint
                                                 keyPath:@"like"
                                                 statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
 
@@ -280,7 +291,7 @@ static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
     RKResponseDescriptor *addClipDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:clipMapping
                                                                                            method:RKRequestMethodPOST
                                                                                       pathPattern:@"/sessions/:sessionId/clips/"
-                                                                                          keyPath:nil
+                                                                                          keyPath:@"clip"
                                                                                       statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     
 #pragma mark Request Descriptors
@@ -300,7 +311,7 @@ static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
     
     
 #pragma mark Register Descriptors
-    NSArray *responseDescriptorArray = @[usersResponseDescriptor, sessionsResponseDescriptor, obtainTokenDescriptor, registerUserDescriptor, getMyProfileDescriptor, getFriendsDescriptor, getCrowdsDescriptor, getLikesDescriptor, postLikesDescriptor, getCommentsDescriptor, postNewCommentDescriptor, errorDescriptor, addClipDescriptor];
+    NSArray *responseDescriptorArray = @[usersResponseDescriptor, sessionsResponseDescriptor, newSessionResponseDescriptor, obtainTokenDescriptor, registerUserDescriptor, getMyProfileDescriptor, getFriendsDescriptor, getCrowdsDescriptor, getLikesDescriptor, postLikesDescriptor, getCommentsDescriptor, postNewCommentDescriptor, errorDescriptor, addClipDescriptor];
     [objectManager addResponseDescriptorsFromArray:responseDescriptorArray];
     
     NSArray *requestDescriptorArray = @[addClipRequestDescriptor];

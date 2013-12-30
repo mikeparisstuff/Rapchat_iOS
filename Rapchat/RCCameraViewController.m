@@ -318,8 +318,8 @@ static const NSString *ItemStatusContext;
 #pragma mark Actions
 
 - (IBAction)recordingButtonDown:(UIButton *)sender {
-    [self startTimer];
     [self toggleMovieRecording];
+    [self startTimer];
 }
 
 - (IBAction)recordingButtonReleased:(UIButton *)sender {

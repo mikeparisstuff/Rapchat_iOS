@@ -13,6 +13,8 @@
 #import "RCPreviewFileViewController.h"
 #import "RCPreviewVideoNoNavbarViewController.h"
 
+#import "RCUrlPaths.h"
+
 @interface RCFeedViewController ()
 
 @property (nonatomic, strong) NSArray *sessions;
@@ -41,7 +43,7 @@
     RKObjectManager *objectManager = [RKObjectManager sharedManager];
     
     [self.refreshControl beginRefreshing];
-    [objectManager getObjectsAtPath:@"/sessions/"
+    [objectManager getObjectsAtPath:mySessionsEndpoint
                          parameters:nil
                             success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                                 NSArray *sessions = [mappingResult array];
@@ -235,7 +237,7 @@
     RCSession *session = [sender getCellSession];
     RKObjectManager *objectManager = [RKObjectManager sharedManager];
     [objectManager postObject:nil
-                         path:@"/users/me/likes/"
+                         path:myLikesEndpoint
                    parameters:@{@"session":session.sessionId}
                       success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                           NSLog(@"Toggling like for session: %@", session.sessionId);

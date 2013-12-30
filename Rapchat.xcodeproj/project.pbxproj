@@ -116,6 +116,7 @@
 		3F53EB2C18602E7D00BDE733 /* RCLike.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RCLike.m; path = Model/RCLike.m; sourceTree = "<group>"; };
 		3F53EB2E18603BF600BDE733 /* RCBaseModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RCBaseModel.h; path = Model/RCBaseModel.h; sourceTree = "<group>"; };
 		3F53EB2F18603BF600BDE733 /* RCBaseModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RCBaseModel.m; path = Model/RCBaseModel.m; sourceTree = "<group>"; };
+		3F559917186F6D8B0052F0C7 /* RCUrlPaths.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCUrlPaths.h; sourceTree = "<group>"; };
 		3F5610BD186A47A0001F7829 /* RCChooseExistingCrowdViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCChooseExistingCrowdViewController.h; sourceTree = "<group>"; };
 		3F5610BE186A47A0001F7829 /* RCChooseExistingCrowdViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCChooseExistingCrowdViewController.m; sourceTree = "<group>"; };
 		3F572E51185557A200CADD95 /* Rapchat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Rapchat.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -246,6 +247,14 @@
 			name = bars;
 			sourceTree = "<group>";
 		};
+		3F559916186F6D590052F0C7 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				3F559917186F6D8B0052F0C7 /* RCUrlPaths.h */,
+			);
+			name = Utilities;
+			sourceTree = "<group>";
+		};
 		3F572E48185557A200CADD95 = {
 			isa = PBXGroup;
 			children = (
@@ -290,6 +299,7 @@
 		3F572E5A185557A200CADD95 /* Rapchat */ = {
 			isa = PBXGroup;
 			children = (
+				3F559916186F6D590052F0C7 /* Utilities */,
 				3FA58EB6185BA898004C8BDB /* API */,
 				3F74A6CA185AB8A500B6BDB9 /* Views */,
 				3F572E8B18555C0700CADD95 /* Controllers */,

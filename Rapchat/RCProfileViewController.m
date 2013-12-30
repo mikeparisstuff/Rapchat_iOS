@@ -14,6 +14,8 @@
 #import "RCCrowdTableViewCell.h"
 #import "RCSessionTableViewCell.h"
 
+#import "RCUrlPaths.h"
+
 @interface RCProfileViewController ()
 
 
@@ -73,7 +75,7 @@
     [self.refreshControl beginRefreshing];
     if (!self.myCrowds) {
         RKObjectManager *objectManager = [RKObjectManager sharedManager];
-        [objectManager getObjectsAtPath:@"/users/me/crowds/"
+        [objectManager getObjectsAtPath:myCrowdsEndpoint
                          parameters:nil
                             success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                                 self.myCrowds = [mappingResult array];
@@ -97,7 +99,7 @@
     [self.refreshControl beginRefreshing];
     NSLog(@"Loading Likes");
     RKObjectManager *objectManager = [RKObjectManager sharedManager];
-    [objectManager getObjectsAtPath:@"/users/me/likes/"
+    [objectManager getObjectsAtPath:myLikesEndpoint
                          parameters:nil
                             success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                                 self.myLikes = [mappingResult array];
@@ -118,7 +120,7 @@
 {
     [self.refreshControl beginRefreshing];
     RKObjectManager *objectManager = [RKObjectManager sharedManager];
-    [objectManager getObjectsAtPath:@"/users/me/"
+    [objectManager getObjectsAtPath:myProfileEndpoint
                          parameters:nil
                             success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                                 self.myProfile = [mappingResult firstObject];
@@ -142,7 +144,7 @@
     if (!self.myFriends) {
         RKObjectManager *objectManager = [RKObjectManager sharedManager];
         
-        [objectManager getObjectsAtPath:@"/users/friends/"
+        [objectManager getObjectsAtPath:myFriendsEndpoint
                              parameters:nil
                                 success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                                     self.myFriends = [mappingResult array];

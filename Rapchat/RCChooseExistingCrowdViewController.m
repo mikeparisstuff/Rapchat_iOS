@@ -10,6 +10,8 @@
 #import "RCCrowdTableViewCell.h"
 #import "RCCrowd.h"
 
+#import "RCUrlPaths.h"
+
 @interface RCChooseExistingCrowdViewController ()
 
 @property (nonatomic, strong) NSArray *crowds;
@@ -136,7 +138,7 @@
 - (void)loadCrowds
 {
     RKObjectManager *objectManager = [RKObjectManager sharedManager];
-    [objectManager getObjectsAtPath:@"users/me/crowds/"
+    [objectManager getObjectsAtPath:myCrowdsEndpoint
                          parameters:nil
                             success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                                 self.crowds = [mappingResult array];

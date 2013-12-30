@@ -11,6 +11,7 @@
 
 @interface RCCrowd : RCBaseModel
 
+@property (nonatomic, copy) NSNumber *crowdId;
 @property (nonatomic, copy) NSString *title;
 @property (nonatomic, copy) NSDate *created;
 @property (nonatomic, copy) NSDate *modified;

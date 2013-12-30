@@ -8,7 +8,7 @@
 
 #import "RCViewController.h"
 
-@interface RCNewSessionInfoViewController : RCViewController
+@interface RCNewSessionInfoViewController : RCViewController <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, strong) NSURL *videoURL;
 @property (nonatomic, strong) NSURL *thumbnailImageURL;
