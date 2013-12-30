@@ -15,6 +15,11 @@
 
 @implementation RCReplyToSessionCameraViewController
 
+- (BOOL)prefersStatusBarHidden
+{
+    return NO;
+}
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -28,6 +33,9 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
+    
+    UIBarButtonItem *rotateButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ic_spin"] style:UIBarButtonItemStylePlain target:self action:@selector(changeCamera:)];
+    self.navigationItem.rightBarButtonItem = rotateButton;
 }
 
 - (void)didReceiveMemoryWarning

@@ -15,4 +15,6 @@
 // Thumbnail
 @property (nonatomic, strong) NSURL *thumbnailImageUrl;
 
+- (void)changeCamera:(id)sender;
+
 @end

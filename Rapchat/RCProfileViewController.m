@@ -208,7 +208,15 @@
 //    self.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@""];
     [self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
     tableViewController.refreshControl = self.refreshControl;
-
+    
+    // Bar button items
+    UIBarButtonItem *closeButton = [[UIBarButtonItem alloc] initWithTitle:@"Close" style:UIBarButtonItemStyleBordered target:self action:@selector(closeProfileScreen)];
+    self.navigationItem.rightBarButtonItem = closeButton;
+    
+    UIBarButtonItem *logoutButton = [[UIBarButtonItem alloc] initWithTitle:@"Logout" style:UIBarButtonItemStyleBordered target:self action:@selector(logout)];
+    self.navigationItem.leftBarButtonItem = logoutButton;
+    
+    
 //    self.refreshControl = [[UIRefreshControl alloc] init];
 //    self.refreshControl.tag = 99;
 //    [self.tableView addSubview:self.refreshControl];
@@ -363,5 +371,15 @@
     return cell;
 }
 
+#pragma mark Segues
+- (void)logout
+{
+    [self performSegueWithIdentifier:@"Logout Segue" sender:self];
+}
+
+- (void) closeProfileScreen
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
 
 @end

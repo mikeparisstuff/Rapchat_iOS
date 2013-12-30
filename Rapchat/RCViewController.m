@@ -66,6 +66,11 @@
     [self setTabBarVisible];
 }
 
+- (BOOL)prefersStatusBarHidden
+{
+    return NO;
+}
+
 - (void)setTabBarVisible
 {
     if (self.showTabBar) {

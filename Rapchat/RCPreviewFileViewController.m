@@ -26,6 +26,11 @@ static const NSString *ItemStatusContext;
 
 @implementation RCPreviewFileViewController
 
+- (BOOL)prefersStatusBarHidden
+{
+    return NO;
+}
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];

@@ -45,12 +45,12 @@
     // Hide the navigation bar
     NSLog(@"Previewing video with URL: %@", self.videoURL);
     self.navigationController.navigationBarHidden = NO;
-    [self makeNavBarInvisible];
+//    [self makeNavBarInvisible];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    [self undoNavBarChanges];
+//    [self undoNavBarChanges];
     [super viewWillDisappear:animated];
 }
 

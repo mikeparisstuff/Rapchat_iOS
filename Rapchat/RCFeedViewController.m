@@ -8,6 +8,7 @@
 
 #import "RCFeedViewController.h"
 #import "RCSession.h"
+#import "RCLike.h"
 #import "RCSessionTableViewCell.h"
 #import "RCCommentsViewController.h"
 #import "RCPreviewFileViewController.h"
@@ -21,6 +22,7 @@
 @property (nonatomic, strong) RCSession *commentsSession;
 @property (nonatomic, strong) NSURL *clipUrl;
 @property (nonatomic, strong) NSNumber *selectedSessionId;
+@property (nonatomic, strong) NSMutableSet *likesSet;
 
 @end
 
@@ -30,11 +32,12 @@
 // Control dragged from refreshController so that dragging down will
 // refresh the page
 - (IBAction)refresh:(id)sender {
-    [self loadSessions];
+    [self updateUI];
 }
 
 - (void) updateUI {
     [self loadSessions];
+    [self loadLikes];
 }
 
 - (void)loadSessions
@@ -54,6 +57,29 @@
                                     [self.refreshControl endRefreshing];
                                 }
                             }failure:^(RKObjectRequestOperation *operation, NSError *error) {
+                                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"error"
+                                                                                message:[error localizedDescription]
+                                                                               delegate:nil
+                                                                      cancelButtonTitle:@"OK"
+                                                                      otherButtonTitles:nil, nil];
+                                [alert show];
+                                NSLog(@"Hit error: %@", error);
+                            }];
+}
+
+- (void)loadLikes
+{
+    RKObjectManager *objectManager = [RKObjectManager sharedManager];
+    
+    [objectManager getObjectsAtPath:myLikesEndpoint
+                         parameters:nil
+                            success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+                                NSMutableArray *likes = [[NSMutableArray alloc] init];
+                                for (RCLike *like in [mappingResult array]) {
+                                    [likes addObject:like.session.sessionId];
+                                }
+                                self.likesSet = [NSMutableSet setWithArray:likes];
+                            } failure:^(RKObjectRequestOperation *operation, NSError *error) {
                                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"error"
                                                                                 message:[error localizedDescription]
                                                                                delegate:nil
@@ -94,6 +120,13 @@
 
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
+    
+    // Add profile and new session bar button items
+    UIBarButtonItem *newSessionButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ic_microphone"] style:UIBarButtonItemStyleBordered target:self action:@selector(segueToNewSessionWorkflow)];
+    self.navigationItem.rightBarButtonItem = newSessionButton;
+    
+    UIBarButtonItem *profileButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ic_man"] style:UIBarButtonItemStyleBordered target:self action:@selector(segueToProfileScreen)];
+    self.navigationItem.leftBarButtonItem = profileButton;
  
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
@@ -114,7 +147,7 @@
 //    self.view.frame = frame;
 //    UIView *statusBarBackground = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 20)];
 //    statusBarBackground.backgroundColor = [UIColor colorWithRed:231.0/255.0 green:76.0/255.0 blue:60.0/255.0 alpha:1.0];
-    
+    [self loadLikes];
     [self updateUI];
     [super viewWillAppear:animated];
 }
@@ -148,6 +181,11 @@
     // Configure the cell...
     RCSession *session = [self.sessions objectAtIndex:indexPath.row];
     [cell setCellSession:session];
+    if ([self.likesSet containsObject:session.sessionId]) {
+        [cell.likesButton setSelected:YES];
+    } else {
+        [cell.likesButton setSelected:NO];
+    }
     cell.delegate = self;
     return cell;
 }
@@ -268,6 +306,17 @@
     self.selectedSessionId = session.sessionId;
     NSLog(@"Clicking on video with url: %@", self.clipUrl);
     [self performSegueWithIdentifier:@"PlayVideoSegue" sender:self];
+}
+
+#pragma mark Segues
+- (void)segueToNewSessionWorkflow
+{
+    [self performSegueWithIdentifier:@"segueToNewSessionWorkflow" sender:self];
+}
+
+- (void)segueToProfileScreen
+{
+    [self performSegueWithIdentifier:@"segueToProfileScreen" sender:self];
 }
 
 

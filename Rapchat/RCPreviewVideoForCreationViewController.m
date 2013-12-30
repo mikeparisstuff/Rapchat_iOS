@@ -32,8 +32,8 @@ static NSString *NEW_SESSION_INFO_SEGUE =  @"NewSessionInfoSegue";
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     
-    UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithTitle:@"Next" style:UIBarButtonItemStylePlain target:self action:@selector(nextButtonClicked)];
-    self.navigationItem.rightBarButtonItem = doneButton;
+//    UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithTitle:@"Next" style:UIBarButtonItemStylePlain target:self action:@selector(nextButtonClicked)];
+//    self.navigationItem.rightBarButtonItem = doneButton;
 }
 
 - (void)didReceiveMemoryWarning
@@ -57,8 +57,7 @@ static NSString *NEW_SESSION_INFO_SEGUE =  @"NewSessionInfoSegue";
 
 
 #pragma mark Actions
-- (void)nextButtonClicked
-{
+- (IBAction)nextButtonClicked:(UIButton *)sender {
     [self performSegueWithIdentifier:NEW_SESSION_INFO_SEGUE sender:self];
 }
 

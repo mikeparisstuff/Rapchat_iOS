@@ -29,8 +29,8 @@
 	// Do any additional setup after loading the view.
     
     // Add right navigation button to submit the video
-    UIBarButtonItem *submitButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(submitClip)];
-    self.navigationItem.rightBarButtonItem = submitButton;
+//    UIBarButtonItem *submitButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(submitClip)];
+//    self.navigationItem.rightBarButtonItem = submitButton;
 }
 
 - (void)didReceiveMemoryWarning
@@ -40,6 +40,10 @@
 }
 
 #pragma mark Actions
+- (IBAction)submitButtonClicked:(UIButton *)sender {
+    [self submitClip];
+}
+
 - (void)submitClip
 {
     NSLog(@"Submitting Clip");

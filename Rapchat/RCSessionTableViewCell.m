@@ -81,7 +81,22 @@
     self.crowdTitleLabel.text = [NSString stringWithFormat:@"Crowd: %@", session.crowd.title];
     self.likesLabel.text = [NSString stringWithFormat:@"  %@ likes", session.numberOfLikes];
     self.commentsLabel.text = [NSString stringWithFormat:@"  %lu comments", (unsigned long)[session.comments count]];
+    
+    
+//    // Set title label size
+//    UIFont* titleFont = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
+//    NSAttributedString *sessionTitle = [[NSAttributedString alloc] initWithString:session.title attributes:@{NSFontAttributeName: titleFont}];
+//    CGRect titleFrame = [sessionTitle boundingRectWithSize:CGSizeMake(320, 50) options:NSStringDrawingUsesLineFragmentOrigin context:nil];
+//    self.titleLabel.frame = CGRectMake(self.titleLabel.frame.origin.x, self.titleLabel.frame.origin.y, titleFrame.size.width + 50, self.titleLabel.frame.size.height);
+//    
+//    // Set crowd label size
+//    UIFont *crowdFont = [UIFont fontWithName:@"Helvetica Neue" size:14.0f];
+//    NSAttributedString *crowdTitle = [[NSAttributedString alloc] initWithString:self.crowdTitleLabel.text attributes:@{NSFontAttributeName: crowdFont}];
+//    CGRect crowdFrame = [crowdTitle boundingRectWithSize:CGSizeMake(320, 50) options:NSStringDrawingUsesLineFragmentOrigin context:nil];
+//    self.crowdTitleLabel.frame = CGRectMake(self.crowdTitleLabel.frame.origin.x, self.crowdTitleLabel.frame.origin.y, crowdFrame.size.width + 14, self.crowdTitleLabel.frame.size.height);
 }
+
+
 
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated

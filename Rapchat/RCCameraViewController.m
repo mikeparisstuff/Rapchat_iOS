@@ -71,6 +71,11 @@ static const NSString *ItemStatusContext;
     float timerCount;
 }
 
+- (BOOL)prefersStatusBarHidden
+{
+    return YES;
+}
+
 - (BOOL)isSessionRunningAndDeviceAuthorized
 {
     return [[self session] isRunning] && [self isDeviceAuthorized];
@@ -89,7 +94,7 @@ static const NSString *ItemStatusContext;
     
     // Create the AVCaptureSession
     AVCaptureSession *session = [[AVCaptureSession alloc] init];
-//    [session setSessionPreset:AVCaptureSessionPresetMedium];
+    [session setSessionPreset:AVCaptureSessionPresetMedium];
     [self setSession:session];
     
     // Setup the preview view
@@ -158,9 +163,10 @@ static const NSString *ItemStatusContext;
     
     // Create the progress view
     // On the custome view you need to set the frame twice because it overwrites the frame in init
-    self.progressView=[[RCProgressView alloc] initWithFrame:CGRectMake(0, 0, 325, 20)];
-    self.progressView.frame = CGRectMake(0, 0, 325, 20);
+    self.progressView=[[RCProgressView alloc] initWithFrame:CGRectMake(0, 0, 325, 62)];
+    self.progressView.frame = CGRectMake(0, 0, 325, 62);
     [self.view addSubview:self.progressView];
+    [self.view sendSubviewToBack:self.progressView];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -219,11 +225,6 @@ static const NSString *ItemStatusContext;
     return self.videoURL;
 }
 
-- (BOOL)prefersStatusBarHidden
-{
-    return NO;
-}
-
 - (BOOL)shouldAutorotate
 {
     // Disable autorotation of the interface when recording is in progress.
@@ -259,13 +260,13 @@ static const NSString *ItemStatusContext;
             if (isRecording)
             {
                 [[self cameraButton] setEnabled:NO];
-                [[self recordButton] setTitle:NSLocalizedString(@"Stop", @"Recording button stop title") forState:UIControlStateNormal];
+                [[self recordButton] setTitle:NSLocalizedString(@"Release To Stop", @"Recording button stop title") forState:UIControlStateNormal];
                 [[self recordButton] setEnabled:YES];
             }
             else
             {
                 [[self cameraButton] setEnabled:YES];
-                [[self recordButton] setTitle:NSLocalizedString(@"Record", @"Recording button record title") forState:UIControlStateNormal];
+                [[self recordButton] setTitle:NSLocalizedString(@"Hold To Record", @"Recording button record title") forState:UIControlStateNormal];
                 [[self recordButton] setEnabled:YES];
             }
         });

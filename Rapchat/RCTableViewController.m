@@ -28,15 +28,15 @@
 {
     [super viewDidLoad];
     
-    UIBarButtonItem *searchItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(searchButtonClicked:)];
-    NSArray *actionButtonItems = @[searchItem];
-    self.navigationItem.rightBarButtonItems = actionButtonItems;
+//    UIBarButtonItem *searchItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(searchButtonClicked:)];
+//    NSArray *actionButtonItems = @[searchItem];
+//    self.navigationItem.rightBarButtonItems = actionButtonItems;
     
     // Set translucent no so that the statusbar color matches
     [self.navigationController.navigationBar setTranslucent:NO];
     self.extendedLayoutIncludesOpaqueBars = YES;
     
-    self.showTabBar = YES;
+//    self.showTabBar = YES;
     
 
     // Uncomment the following line to preserve selection between presentations.
@@ -49,30 +49,36 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [self setTabBarVisible];
+//    [self setTabBarVisible];
 }
 
-- (void)setTabBarVisible
-{
-    if (self.showTabBar) {
-        RCTabBarController *tabBarController = (RCTabBarController *)self.tabBarController;
-        [tabBarController setTabBarHidden:NO animated:YES];
-    } else {
-        RCTabBarController *tabBarController = (RCTabBarController *)self.tabBarController;
-        [tabBarController setTabBarHidden:YES animated:YES];
-    }
-}
+//- (void)setTabBarVisible
+//{
+//    if (self.showTabBar) {
+//        RCTabBarController *tabBarController = (RCTabBarController *)self.tabBarController;
+//        [tabBarController setTabBarHidden:NO animated:YES];
+//    } else {
+//        RCTabBarController *tabBarController = (RCTabBarController *)self.tabBarController;
+//        [tabBarController setTabBarHidden:YES animated:YES];
+//    }
+//}
 
-- (void)searchButtonClicked:(id)sender
-{
-    NSLog(@"Search Clicked");
-}
+//- (void)searchButtonClicked:(id)sender
+//{
+//    NSLog(@"Search Clicked");
+//}
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+- (BOOL)prefersStatusBarHidden
+{
+    return NO;
+}
+
 
 /*
 // Override to support conditional editing of the table view.

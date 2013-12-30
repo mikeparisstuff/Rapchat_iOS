@@ -10,6 +10,6 @@
 #import "RCContractableTableViewController.h"
 #import "RCSessionTableViewCell.h"
 
-@interface RCFeedViewController : RCContractableTableViewController <RCSessionCellProtocol>
+@interface RCFeedViewController : RCTableViewController <RCSessionCellProtocol>
 
 @end

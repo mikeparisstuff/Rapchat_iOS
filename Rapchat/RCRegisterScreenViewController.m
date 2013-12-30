@@ -75,7 +75,7 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if ([segue.identifier isEqualToString:@"Push To Home From Register Segue"]) {
+    if ([segue.identifier isEqualToString:@"SegueToHomeFromRegisterScreen"]) {
         NSLog(@"Preparing for segue");
         self.navigationController.navigationBarHidden = YES;
         

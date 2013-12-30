@@ -39,7 +39,7 @@
 //                              RKObjectManager *objectManager = [RKObjectManager sharedManager];
                               [objectManager.HTTPClient setDefaultHeader:@"Authorization" value:[NSString stringWithFormat:@"Token %@", self.token.accessToken]];
                               // May not be the best way to get rid of the nav bar
-                              [self performSegueWithIdentifier:@"Push To Home From Login Segue" sender:self];
+                              [self performSegueWithIdentifier:@"SegueToHomeFromLoginScreen" sender:self];
                           } else {
                               NSLog(@"Access Token was nil");
                           }
