@@ -163,6 +163,7 @@ static const NSString *ItemStatusContext;
     
     // Create the progress view
     // On the custome view you need to set the frame twice because it overwrites the frame in init
+    [self.navigationController.navigationBar setTranslucent:YES];
     self.progressView=[[RCProgressView alloc] initWithFrame:CGRectMake(0, 0, 325, 62)];
     self.progressView.frame = CGRectMake(0, 0, 325, 62);
     [self.view addSubview:self.progressView];

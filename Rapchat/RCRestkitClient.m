@@ -17,14 +17,17 @@
 #import "RCComment.h"
 #import "RCBaseModel.h"
 #import "RCClip.h"
+#import "RCFriendRequest.h"
 
 #import "RCUrlPaths.h"
+
+#import <RestKit/RestKit.h>
+#import <RestKit/CoreData.h>
 
 @implementation RCRestkitClient
 
 static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
 //static const NSString *BASE_URL = @"http://10.0.1.39:8000";
-
 
 +(void)setupRestkit
 {
@@ -44,6 +47,13 @@ static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
     
     // Initialize RestKit
     RKObjectManager *objectManager = [[RKObjectManager alloc] initWithHTTPClient:client];
+    
+    NSURL *modelURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Rapchat" ofType:@"momd"]];
+    NSManagedObjectModel *managedObjectModel = [[[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL] mutableCopy];
+//    NSManagedObjectModel *managedObjectModel = [NSManagedObjectModel mergedModelFromBundles:nil];
+    RKManagedObjectStore *managedObjectStore = [[RKManagedObjectStore alloc] initWithManagedObjectModel:managedObjectModel];
+    objectManager.managedObjectStore = managedObjectStore;
+    
     
     //    RKObjectManager *objectManager = [RKObjectManager sharedManager];
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
@@ -65,6 +75,7 @@ static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
     [RKObjectMapping addDefaultDateFormatterForString:@"yyyy-MM-dd'T'HH:mm:ss'Z'" inTimeZone:EST];
     [RKObjectMapping setPreferredDateFormatter:dateFormatter];
     
+    
     /*
      *  Base Model Mappings
      */
@@ -78,7 +89,10 @@ static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
     [profileMapping addAttributeMappingsFromDictionary:@{
                                                          @"id": @"profileId",
                                                          @"phone_number": @"phoneNumber",
-                                                         @"token":@"accessToken"
+                                                         @"token":@"accessToken",
+                                                         @"num_raps": @"numberOfRaps",
+                                                         @"num_likes": @"numberOfLikes",
+                                                         @"num_friends": @"numberOfFriends"
                                                          }];
     
     RKObjectMapping *userMapping = [RKObjectMapping mappingForClass:[RCUser class]];
@@ -133,6 +147,19 @@ static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
                                                          @"commenter":@"commenter",
                                                          @"created":@"created",
                                                          @"modified":@"modified"}];
+    
+    /*
+     *  Setup FriendRequest Mappings
+     */
+    RKObjectMapping *friendRequestMapping = [RKObjectMapping mappingForClass:[RCFriendRequest class]];
+    [friendRequestMapping addAttributeMappingsFromDictionary:@{@"id": @"friendRequestId",
+                                                               @"created": @"created",
+                                                               @"modified": @"modified"}];
+    
+    RKRelationshipMapping *requestSenderRelationship = [RKRelationshipMapping relationshipMappingFromKeyPath:@"sender" toKeyPath:@"sender" withMapping:userMapping];
+    RKRelationshipMapping *requestRequestedRelationship = [RKRelationshipMapping relationshipMappingFromKeyPath:@"requested" toKeyPath:@"requested" withMapping:userMapping];
+    [friendRequestMapping addPropertyMapping:requestSenderRelationship];
+    [friendRequestMapping addPropertyMapping:requestRequestedRelationship];
     
     /*
      Setup Sessions and Crowds relationships
@@ -191,13 +218,13 @@ static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
     /*
      *  Error Message Mapping
      */
+    
     RKObjectMapping *errorMapping = [RKObjectMapping mappingForClass:[RKErrorMessage class]];
-    [errorMapping addPropertyMapping:[RKAttributeMapping attributeMappingFromKeyPath:@"error_description" toKeyPath:@"errorMessage"]];
+    [errorMapping addPropertyMapping:
+     [RKAttributeMapping attributeMappingFromKeyPath:nil toKeyPath:@"errorMessage"]];
     RKResponseDescriptor *errorDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:errorMapping
-                                                                                         method:RKRequestMethodAny
                                                                                     pathPattern:nil
-                                                                                        keyPath:nil
-                                                                                    statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassClientError)];
+                                                                                        keyPath:@"error" statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassClientError)];
     
     
     // Register out mapping with the provider using a response descriptor
@@ -294,6 +321,12 @@ static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
                                                                                           keyPath:@"clip"
                                                                                       statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     
+    RKResponseDescriptor *pendingFriendRequestsDescriptor = [RKResponseDescriptor
+                                                             responseDescriptorWithMapping:friendRequestMapping
+                                                             method:RKRequestMethodGET
+                                                             pathPattern:myFriendRequestsEndpoint
+                                                             keyPath:@"pending_me"
+                                                             statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
 #pragma mark Request Descriptors
     
     
@@ -311,7 +344,7 @@ static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
     
     
 #pragma mark Register Descriptors
-    NSArray *responseDescriptorArray = @[usersResponseDescriptor, sessionsResponseDescriptor, newSessionResponseDescriptor, obtainTokenDescriptor, registerUserDescriptor, getMyProfileDescriptor, getFriendsDescriptor, getCrowdsDescriptor, getLikesDescriptor, postLikesDescriptor, getCommentsDescriptor, postNewCommentDescriptor, errorDescriptor, addClipDescriptor];
+    NSArray *responseDescriptorArray = @[usersResponseDescriptor, sessionsResponseDescriptor, newSessionResponseDescriptor, obtainTokenDescriptor, registerUserDescriptor, getMyProfileDescriptor, getFriendsDescriptor, getCrowdsDescriptor, getLikesDescriptor, postLikesDescriptor, getCommentsDescriptor, postNewCommentDescriptor, errorDescriptor, addClipDescriptor, pendingFriendRequestsDescriptor, errorDescriptor];
     [objectManager addResponseDescriptorsFromArray:responseDescriptorArray];
     
     NSArray *requestDescriptorArray = @[addClipRequestDescriptor];

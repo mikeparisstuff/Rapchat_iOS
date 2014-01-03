@@ -10,7 +10,8 @@
 #import "RCProfile.h"
 #import "RCCrowd.h"
 #import "RClike.h"
-#import "RCFriendTableViewCell.h"
+#import "RCFriendRequest.h"
+#import "RCFriendRequestTableViewCell.h"
 #import "RCCrowdTableViewCell.h"
 #import "RCSessionTableViewCell.h"
 
@@ -24,15 +25,25 @@
 @property (nonatomic, strong) NSArray *myCrowds;
 @property (nonatomic, strong) NSArray *myRaps;
 @property (nonatomic, strong) NSArray *myFriends;
+@property (nonatomic, strong) NSArray *myFriendRequests;
 @property (nonatomic, strong) NSString *currentSection;
 @property (nonatomic) NSInteger currentSectionIndex;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (nonatomic, strong) NSArray *tabs;
 @property (nonatomic) UIRefreshControl *refreshControl;
 
+@property (weak, nonatomic) IBOutlet UIButton *numberOfRapsButton;
+@property (weak, nonatomic) IBOutlet UIButton *numberOfLikesButton;
+@property (weak, nonatomic) IBOutlet UIButton *numberOfFriendsButton;
+
 @end
 
 @implementation RCProfileViewController
+
+- (BOOL)prefersStatusBarHidden
+{
+    return YES;
+}
 
 - (IBAction)segmentItemChanged:(UISegmentedControl *)sender
 {
@@ -48,7 +59,7 @@
     return @{@"Raps": NSStringFromSelector(@selector(loadRaps)),
              @"Crowds": NSStringFromSelector(@selector(loadCrowds)),
              @"Likes": NSStringFromSelector(@selector(loadLikes)),
-             @"Friends": NSStringFromSelector(@selector(loadFriends))
+             @"Requests": NSStringFromSelector(@selector(loadFriendRequests))
              };
 }
 
@@ -57,12 +68,19 @@
     NSDictionary *dataSources = @{@"Raps": self.myRaps,
                                  @"Crowds": self.myCrowds,
                                  @"Likes": self.myLikes,
-                                 @"Friends": self.myFriends
+                                 @"Requests": self.myFriendRequests
                                  };
     return dataSources[section];
 }
 
 # pragma mark API call methods
+
+- (void)setProfileHeaderInfo
+{
+    [self.numberOfFriendsButton setTitle:[NSString stringWithFormat:@"%@", self.myProfile.numberOfFriends] forState:UIControlStateNormal];
+    [self.numberOfLikesButton setTitle:[NSString stringWithFormat:@"%@", self.myProfile.numberOfLikes] forState:UIControlStateNormal];
+    [self.numberOfRapsButton setTitle:[NSString stringWithFormat:@"%@", self.myProfile.numberOfRaps] forState:UIControlStateNormal];
+}
 
 - (void)loadRaps
 {
@@ -126,6 +144,7 @@
                                 self.myProfile = [mappingResult firstObject];
                                 NSLog(@"Got Profile: %@", self.myProfile.user.username);
                                 self.myFriends = self.myProfile.friends;
+                                [self setProfileHeaderInfo];
                                 [self updateGui];
                             }failure:^(RKObjectRequestOperation *operation, NSError *error) {
                                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"error"
@@ -135,6 +154,33 @@
                                                                       otherButtonTitles:nil, nil];
                                 [alert show];
                             }];
+}
+
+- (void) loadFriendRequests
+{
+    NSLog(@"Load Friend Requests");
+    [self.refreshControl beginRefreshing];
+    if (!self.myFriendRequests) {
+        RKObjectManager *objectManager = [RKObjectManager sharedManager];
+        
+        [objectManager getObjectsAtPath:myFriendRequestsEndpoint
+                             parameters:nil
+                                success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+                                    self.myFriendRequests = [mappingResult array];
+                                    NSLog(@"Loading Requests: %@", self.myFriendRequests);
+                                    [self updateGui];
+                                }failure:^(RKObjectRequestOperation *operation, NSError *error) {
+                                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"error"
+                                                                                    message:[error localizedDescription]
+                                                                                   delegate:nil
+                                                                          cancelButtonTitle:@"OK"
+                                                                          otherButtonTitles:nil, nil];
+                                    [alert show];
+                                }];
+    } else {
+        [self updateGui];
+    }
+    
 }
 
 - (void)loadFriends
@@ -195,7 +241,7 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
-    self.tabs = @[@"Raps", @"Crowds", @"Likes", @"Friends"];
+    self.tabs = @[@"Raps", @"Crowds", @"Likes", @"Requests"];
     
 
     // Because refreshControl is made to be used with UItvc we need to create on and
@@ -210,11 +256,12 @@
     tableViewController.refreshControl = self.refreshControl;
     
     // Bar button items
-    UIBarButtonItem *closeButton = [[UIBarButtonItem alloc] initWithTitle:@"Close" style:UIBarButtonItemStyleBordered target:self action:@selector(closeProfileScreen)];
+    UIBarButtonItem *closeButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ic_house"] style:UIBarButtonItemStyleBordered target:self action:@selector(closeProfileScreen)];
     self.navigationItem.rightBarButtonItem = closeButton;
     
-    UIBarButtonItem *logoutButton = [[UIBarButtonItem alloc] initWithTitle:@"Logout" style:UIBarButtonItemStyleBordered target:self action:@selector(logout)];
+    UIBarButtonItem *logoutButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"add_friend_icon"] style:UIBarButtonItemStyleBordered target:self action:@selector(logout)];
     self.navigationItem.leftBarButtonItem = logoutButton;
+ 
     
     
 //    self.refreshControl = [[UIRefreshControl alloc] init];
@@ -248,19 +295,19 @@
     
 }
 
-- (RCFriendTableViewCell *)createFriendCellForTable:(UITableView *)tableView atIndexPath:(NSIndexPath *)indexPath
+- (RCFriendRequestTableViewCell *)createFriendRequestCellForTable:(UITableView *)tableView atIndexPath:(NSIndexPath *)indexPath
 {
-    NSString *reuseIdentifier = @"Friend Cell";
-    RCFriendTableViewCell *cell = (RCFriendTableViewCell *)[self.tableView dequeueReusableCellWithIdentifier:reuseIdentifier forIndexPath:indexPath];
+    NSString *reuseIdentifier = @"FriendRequestCell";
+    RCFriendRequestTableViewCell *cell = (RCFriendRequestTableViewCell *)[self.tableView dequeueReusableCellWithIdentifier:reuseIdentifier forIndexPath:indexPath];
     
     if (cell == nil) {
-        cell = [[RCFriendTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
+        cell = [[RCFriendRequestTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
     }
     
     // Configure the cell...
-    RCProfile *friend = [self.myFriends objectAtIndex:indexPath.row];
-    cell.usernameLabel.text = friend.user.username;
+    RCFriendRequest *friendRequest = [self.myFriendRequests objectAtIndex:indexPath.row];
     NSLog(@"Inserting Cell with Profile: %@", cell);
+    cell.usernameLabel.text = friendRequest.sender.username;
     return cell;
 }
 
@@ -281,10 +328,11 @@
 
 - (RCSessionTableViewCell *)createSessionCellForTable:(UITableView *)tableView forIndexPath:(NSIndexPath *)indexPath
 {
-    NSString *reuseIdentifier = @"Session Cell";
+    NSString *reuseIdentifier = @"SessionCell";
     RCSessionTableViewCell *cell = (RCSessionTableViewCell *)[tableView dequeueReusableCellWithIdentifier:reuseIdentifier forIndexPath:indexPath];
     RCSession *session = [(RCLike *)[self.myLikes objectAtIndex:indexPath.row] session];
     [cell setCellSession:session];
+    [cell.likesButton setSelected:YES];
     return cell;
 }
 
@@ -321,7 +369,7 @@
             NSLog(@"loading %lu likes", numElements);
             break;
         case 3:
-            numElements = [self.myFriends count];
+            numElements = [self.myFriendRequests count];
             break;
     }
     return numElements;
@@ -341,7 +389,7 @@
             height = 70;
             break;
         case 2:
-            height = 455;
+            height = 428;
             break;
         case 3:
             height = 45;
@@ -364,7 +412,7 @@
             cell = [self createSessionCellForTable:tableView forIndexPath:indexPath];
             break;
         case 3:
-            cell = [self createFriendCellForTable:tableView atIndexPath:indexPath];
+            cell = [self createFriendRequestCellForTable:tableView atIndexPath:indexPath];
             break;
     }
     

@@ -14,6 +14,11 @@
 
 @implementation RCPreviewVideoForReplyViewController
 
+- (BOOL)prefersStatusBarHidden
+{
+    return YES;
+}
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -28,6 +33,7 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     
+    [self setExtendedLayoutIncludesOpaqueBars:YES];
     // Add right navigation button to submit the video
 //    UIBarButtonItem *submitButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(submitClip)];
 //    self.navigationItem.rightBarButtonItem = submitButton;

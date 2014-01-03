@@ -11,6 +11,7 @@
 		3F19CBC0185F98E7008BBA85 /* RCCameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F19CBBF185F98E7008BBA85 /* RCCameraViewController.m */; };
 		3F19CBC3185FD859008BBA85 /* RCFilePlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F19CBC2185FD859008BBA85 /* RCFilePlayerView.m */; };
 		3F19CBC6185FF1CF008BBA85 /* RCPreviewFileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F19CBC5185FF1CF008BBA85 /* RCPreviewFileViewController.m */; };
+		3F1A12F91871F0FE0012CFF5 /* RCNonScrollableTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F1A12F81871F0FE0012CFF5 /* RCNonScrollableTextView.m */; };
 		3F3511A118622DE30056ACBF /* RCReplyToSessionCameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F3511A018622DE30056ACBF /* RCReplyToSessionCameraViewController.m */; };
 		3F3511A418622E130056ACBF /* RCCreateNewSessionCameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F3511A318622E130056ACBF /* RCCreateNewSessionCameraViewController.m */; };
 		3F3511A7186234DD0056ACBF /* RCPreviewVideoInvisibleNavbarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F3511A6186234DD0056ACBF /* RCPreviewVideoInvisibleNavbarViewController.m */; };
@@ -56,6 +57,10 @@
 		3FB24C85186113300047FFF4 /* RCCommentsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FB24C84186113300047FFF4 /* RCCommentsViewController.m */; };
 		3FB24C88186141C80047FFF4 /* RCProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FB24C87186141C80047FFF4 /* RCProgressView.m */; };
 		3FB24C8E186176E50047FFF4 /* RCContractableTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FB24C8D186176E50047FFF4 /* RCContractableTableViewController.m */; };
+		3FD3BACC1874B7E6002EC6D2 /* RCSegmentedControlProfile.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FD3BACB1874B7E6002EC6D2 /* RCSegmentedControlProfile.m */; };
+		3FD3BACF1874C596002EC6D2 /* RCFriendRequestTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FD3BACE1874C596002EC6D2 /* RCFriendRequestTableViewCell.m */; };
+		3FD3BAD21874C75F002EC6D2 /* RCFriendRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FD3BAD11874C75F002EC6D2 /* RCFriendRequest.m */; };
+		3FD3BAD418767541002EC6D2 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F10B8C71859475300A9FD2F /* CoreData.framework */; };
 		3FD3DDF8185AEBFD0016E3F3 /* RKValueTransformers.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FD3DDF7185AEBFD0016E3F3 /* RKValueTransformers.m */; };
 		3FD3DDFF185B04510016E3F3 /* RCWelcomeScreenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FD3DDFE185B04510016E3F3 /* RCWelcomeScreenViewController.m */; };
 		3FD3DE02185B07FD0016E3F3 /* RCLoginScreenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FD3DE01185B07FD0016E3F3 /* RCLoginScreenViewController.m */; };
@@ -95,6 +100,8 @@
 		3F19CBC2185FD859008BBA85 /* RCFilePlayerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCFilePlayerView.m; sourceTree = "<group>"; };
 		3F19CBC4185FF1CF008BBA85 /* RCPreviewFileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCPreviewFileViewController.h; sourceTree = "<group>"; };
 		3F19CBC5185FF1CF008BBA85 /* RCPreviewFileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCPreviewFileViewController.m; sourceTree = "<group>"; };
+		3F1A12F71871F0FE0012CFF5 /* RCNonScrollableTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCNonScrollableTextView.h; sourceTree = "<group>"; };
+		3F1A12F81871F0FE0012CFF5 /* RCNonScrollableTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCNonScrollableTextView.m; sourceTree = "<group>"; };
 		3F35119F18622DE30056ACBF /* RCReplyToSessionCameraViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCReplyToSessionCameraViewController.h; sourceTree = "<group>"; };
 		3F3511A018622DE30056ACBF /* RCReplyToSessionCameraViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCReplyToSessionCameraViewController.m; sourceTree = "<group>"; };
 		3F3511A218622E130056ACBF /* RCCreateNewSessionCameraViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCCreateNewSessionCameraViewController.h; sourceTree = "<group>"; };
@@ -176,6 +183,12 @@
 		3FB24C87186141C80047FFF4 /* RCProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCProgressView.m; sourceTree = "<group>"; };
 		3FB24C8C186176E50047FFF4 /* RCContractableTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCContractableTableViewController.h; sourceTree = "<group>"; };
 		3FB24C8D186176E50047FFF4 /* RCContractableTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCContractableTableViewController.m; sourceTree = "<group>"; };
+		3FD3BACA1874B7E6002EC6D2 /* RCSegmentedControlProfile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCSegmentedControlProfile.h; sourceTree = "<group>"; };
+		3FD3BACB1874B7E6002EC6D2 /* RCSegmentedControlProfile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCSegmentedControlProfile.m; sourceTree = "<group>"; };
+		3FD3BACD1874C596002EC6D2 /* RCFriendRequestTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCFriendRequestTableViewCell.h; sourceTree = "<group>"; };
+		3FD3BACE1874C596002EC6D2 /* RCFriendRequestTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCFriendRequestTableViewCell.m; sourceTree = "<group>"; };
+		3FD3BAD01874C75F002EC6D2 /* RCFriendRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCFriendRequest.h; sourceTree = "<group>"; };
+		3FD3BAD11874C75F002EC6D2 /* RCFriendRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCFriendRequest.m; sourceTree = "<group>"; };
 		3FD3DDF7185AEBFD0016E3F3 /* RKValueTransformers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RKValueTransformers.m; path = "../../../../Downloads/RKValueTransformers-master/Code/RKValueTransformers.m"; sourceTree = "<group>"; };
 		3FD3DDF9185AEC0F0016E3F3 /* RKValueTransformers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RKValueTransformers.h; path = "../../../../Downloads/RKValueTransformers-master/Code/RKValueTransformers.h"; sourceTree = "<group>"; };
 		3FD3DDFD185B04510016E3F3 /* RCWelcomeScreenViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCWelcomeScreenViewController.h; sourceTree = "<group>"; };
@@ -203,6 +216,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3FD3BAD418767541002EC6D2 /* CoreData.framework in Frameworks */,
 				3FF9674C1866A2E100516152 /* ImageIO.framework in Frameworks */,
 				3F572E57185557A200CADD95 /* CoreGraphics.framework in Frameworks */,
 				3F572E59185557A200CADD95 /* UIKit.framework in Frameworks */,
@@ -304,6 +318,7 @@
 				3F74A6CA185AB8A500B6BDB9 /* Views */,
 				3F572E8B18555C0700CADD95 /* Controllers */,
 				3F572E8A185557E500CADD95 /* Model */,
+				3FD3BAD31876723A002EC6D2 /* CoreData */,
 				3F572E89185557C600CADD95 /* AppDelegate */,
 				3F572E66185557A200CADD95 /* Main.storyboard */,
 				3F572E6C185557A200CADD95 /* Images.xcassets */,
@@ -355,7 +370,6 @@
 		3F572E8A185557E500CADD95 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				3F515E331859558500C950E9 /* Rapchat.xcdatamodeld */,
 				3F515E36185965B300C950E9 /* RCProfile.h */,
 				3F515E37185965B300C950E9 /* RCProfile.m */,
 				3F515E391859665700C950E9 /* RCUser.h */,
@@ -374,6 +388,8 @@
 				3F53EB2C18602E7D00BDE733 /* RCLike.m */,
 				3F53EB2E18603BF600BDE733 /* RCBaseModel.h */,
 				3F53EB2F18603BF600BDE733 /* RCBaseModel.m */,
+				3FD3BAD01874C75F002EC6D2 /* RCFriendRequest.h */,
+				3FD3BAD11874C75F002EC6D2 /* RCFriendRequest.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -412,6 +428,12 @@
 				3FB24C7E1860FA510047FFF4 /* RCCommentTableViewCell.m */,
 				3FB24C86186141C80047FFF4 /* RCProgressView.h */,
 				3FB24C87186141C80047FFF4 /* RCProgressView.m */,
+				3F1A12F71871F0FE0012CFF5 /* RCNonScrollableTextView.h */,
+				3F1A12F81871F0FE0012CFF5 /* RCNonScrollableTextView.m */,
+				3FD3BACA1874B7E6002EC6D2 /* RCSegmentedControlProfile.h */,
+				3FD3BACB1874B7E6002EC6D2 /* RCSegmentedControlProfile.m */,
+				3FD3BACD1874C596002EC6D2 /* RCFriendRequestTableViewCell.h */,
+				3FD3BACE1874C596002EC6D2 /* RCFriendRequestTableViewCell.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -505,6 +527,14 @@
 				3FB24C84186113300047FFF4 /* RCCommentsViewController.m */,
 			);
 			name = Feed;
+			sourceTree = "<group>";
+		};
+		3FD3BAD31876723A002EC6D2 /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				3F515E331859558500C950E9 /* Rapchat.xcdatamodeld */,
+			);
+			name = CoreData;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -664,7 +694,9 @@
 				3FEA9B3F1862298500781346 /* RCPreviewVideoNoNavbarViewController.m in Sources */,
 				3F74A6C3185AAD3500B6BDB9 /* RCCrowd.m in Sources */,
 				3FA58EBC185BABEA004C8BDB /* RCTableViewController.m in Sources */,
+				3FD3BAD21874C75F002EC6D2 /* RCFriendRequest.m in Sources */,
 				3F74A6CD185AB8CA00B6BDB9 /* RCSessionTableViewCell.m in Sources */,
+				3FD3BACC1874B7E6002EC6D2 /* RCSegmentedControlProfile.m in Sources */,
 				3F74A6C6185AAD8F00B6BDB9 /* RCClip.m in Sources */,
 				3F572E941855619800CADD95 /* RCExploreViewController.m in Sources */,
 				3F37605F18559BEE004E83B0 /* RCNavigationController.m in Sources */,
@@ -676,12 +708,14 @@
 				3F19CBC6185FF1CF008BBA85 /* RCPreviewFileViewController.m in Sources */,
 				3F572E6B185557A200CADD95 /* RCViewController.m in Sources */,
 				3F53EB3018603BF600BDE733 /* RCBaseModel.m in Sources */,
+				3F1A12F91871F0FE0012CFF5 /* RCNonScrollableTextView.m in Sources */,
 				3FD3DE02185B07FD0016E3F3 /* RCLoginScreenViewController.m in Sources */,
 				3FB24C85186113300047FFF4 /* RCCommentsViewController.m in Sources */,
 				3FD3DE05185B08410016E3F3 /* RCRegisterScreenViewController.m in Sources */,
 				3FAB525E18692F0C00F49F9F /* RCNewSessionInfoViewController.m in Sources */,
 				3FAB5264186938A700F49F9F /* RCPreviewVideoForReplyViewController.m in Sources */,
 				3F53EB2D18602E7D00BDE733 /* RCLike.m in Sources */,
+				3FD3BACF1874C596002EC6D2 /* RCFriendRequestTableViewCell.m in Sources */,
 				3F572E971855669B00CADD95 /* RCActivityViewController.m in Sources */,
 				3F74A6C0185AAC3F00B6BDB9 /* RCSession.m in Sources */,
 				3F3511A418622E130056ACBF /* RCCreateNewSessionCameraViewController.m in Sources */,

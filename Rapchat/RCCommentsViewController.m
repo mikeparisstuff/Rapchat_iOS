@@ -169,17 +169,18 @@
 {
     CGFloat height = 0;
     height = [self textViewHeightForRowAtIndexPath:indexPath];
-    return (height > 65) ? height : 65;
+    return (height > 60) ? height : 60;
+    return 60;
 }
 
 - (CGFloat)textViewHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
     NSString *text = ((RCComment *)[self.comments objectAtIndex:indexPath.row]).text;
-    NSAttributedString *attributed = [[NSAttributedString alloc] initWithString:text attributes:@{NSFontAttributeName: [UIFont preferredFontForTextStyle:UIFontTextStyleBody]}];
+    NSAttributedString *attributed = [[NSAttributedString alloc] initWithString:text attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:14.0f]}];
     
     UITextView *calculationView = [[UITextView alloc] init];
     [calculationView setAttributedText:attributed];
-    CGSize size = [calculationView sizeThatFits:CGSizeMake(300, FLT_MAX)];
-    return size.height;
+    CGSize size = [calculationView sizeThatFits:CGSizeMake(280, FLT_MAX)];
+    return size.height + 20;
 }
 
 

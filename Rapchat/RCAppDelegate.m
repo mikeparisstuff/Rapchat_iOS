@@ -20,12 +20,12 @@
     // Override point for customization after application launch.
     [[UINavigationBar appearance] setBarTintColor:[UIColor colorWithRed:231.0/255.0 green:76.0/255.0 blue:60.0/255.0 alpha:1.0]];
     //[UIColor colorWithHue:0.0 saturation:0.06 brightness:0.14 alpha:1.0] -- Dark
-    //[UIColor colorWithRed:231.0/255.0 green:76.0/255.0 blue:60.0/255.0 alpha:1.0]
+    //[UIColor colorWithRed:231.0/255.0 green:76.0/255.0 blue:60.0/255.0 alpha:1.0] -- Red
 //    [[UITabBar appearance] setBarTintColor:[UIColor colorWithHue:0.0 saturation:0.06 brightness:0.14 alpha:1.0]];
     [[UIToolbar appearance] setBarTintColor:[UIColor colorWithHue:0.0 saturation:0.06 brightness:0.14 alpha:1.0]];
 //    [[UITabBar appearance] setTintColor:[UIColor whiteColor]];
     [[UIToolbar appearance] setTintColor:[UIColor whiteColor]];
-    [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
+    [[UINavigationBar appearance] setTintColor:[UIColor colorWithHue:0.0 saturation:0.06 brightness:0.14 alpha:1.0]];
     
 
     
@@ -33,7 +33,7 @@
     shadow.shadowColor = [UIColor colorWithRed:255.0/255.0 green:84.0/255.0 blue:66.0/255.0 alpha:0.8];
     //[UIColor colorWithRed:245.0/255.0 green:245.0/255.0 blue:245.0/255.0 alpha:0.8]
     shadow.shadowOffset = CGSizeMake(0, 1);
-    [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName: [UIColor colorWithRed:255.0/255.0 green:255.0/255.0 blue:255.0/255.0 alpha:1.0], NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue-Light" size:25.0]}];
+    [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName: [UIColor colorWithHue:0.0 saturation:0.06 brightness:0.14 alpha:1.0], NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue-Light" size:25.0]}];
     //[UIColor colorWithRed:231.0/255.0 green:76.0/255.0 blue:60.0/255.0 alpha:1.0]
                                                            
 //                                                           NSShadowAttributeName: shadow}];

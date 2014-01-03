@@ -18,6 +18,11 @@
 
 static NSString *NEW_SESSION_INFO_SEGUE =  @"NewSessionInfoSegue";
 
+- (BOOL)prefersStatusBarHidden
+{
+    return YES;
+}
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -60,5 +65,6 @@ static NSString *NEW_SESSION_INFO_SEGUE =  @"NewSessionInfoSegue";
 - (IBAction)nextButtonClicked:(UIButton *)sender {
     [self performSegueWithIdentifier:NEW_SESSION_INFO_SEGUE sender:self];
 }
+
 
 @end

@@ -33,8 +33,12 @@
 //    self.navigationItem.rightBarButtonItems = actionButtonItems;
     
     // Set translucent no so that the statusbar color matches
-    [self.navigationController.navigationBar setTranslucent:NO];
-    self.extendedLayoutIncludesOpaqueBars = YES;
+    [self.navigationController.navigationBar setTranslucent:YES];
+    self.extendedLayoutIncludesOpaqueBars = NO;
+    
+    // Set background
+    [self.refreshControl setTintColor:[UIColor colorWithHue:0.0 saturation:0.06 brightness:0.14 alpha:1.0]];
+    [self.refreshControl setBackgroundColor:[UIColor colorWithRed:231.0/255.0 green:76.0/255.0 blue:60.0/255.0 alpha:1.0]];
     
 //    self.showTabBar = YES;
     
@@ -78,7 +82,6 @@
 {
     return NO;
 }
-
 
 /*
 // Override to support conditional editing of the table view.

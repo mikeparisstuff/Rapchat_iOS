@@ -28,7 +28,7 @@ static const NSString *ItemStatusContext;
 
 - (BOOL)prefersStatusBarHidden
 {
-    return NO;
+    return YES;
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -36,6 +36,7 @@ static const NSString *ItemStatusContext;
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
+        [self.navigationController.navigationBar setTranslucent:YES];
     }
     return self;
 }
@@ -43,7 +44,6 @@ static const NSString *ItemStatusContext;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
     
     
     self.showTabBar = NO;
@@ -110,6 +110,7 @@ static const NSString *ItemStatusContext;
                                                      AVKeyValueStatus status = [videoAsset statusOfValueForKey:tracksKey
                                                                                                          error:&error];
                                                      if (status == AVKeyValueStatusLoaded) {
+                                                         
                                                          NSLog(@"Status is of type ABKeyValueStatusLoaded");
                                                          self.playerItem = [AVPlayerItem playerItemWithAsset:videoAsset];
                                                          [self.playerItem addObserver:self
@@ -118,12 +119,14 @@ static const NSString *ItemStatusContext;
                                                                               context:&ItemStatusContext];
                                                          self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
                                                          self.player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
+                                                         
                                                          [self.playerView setPlayer:self.player];
                                                          [[NSNotificationCenter defaultCenter] addObserver:self
                                                                                                   selector:@selector(playerItemDidReachEnd:)
                                                                                                       name:AVPlayerItemDidPlayToEndTimeNotification
                                                                                                     object:[self.player currentItem]];
-                                                         [self.player play];
+                                                         NSLog(@"Would Be Playing");
+//                                                         [self.player play];
                                                      } else {
                                                          // Deal with the error
                                                          NSLog(@"The asset's tracks were not loaded: \n%@", [error localizedDescription]);
@@ -146,6 +149,17 @@ static const NSString *ItemStatusContext;
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object
                         change:(NSDictionary *)change context:(void *)context {
+    
+    if ([keyPath isEqualToString:@"status"]) {
+        if (self.player.status == AVPlayerStatusReadyToPlay) {
+//            playButton.enabled = YES;
+            [self.player play];
+            NSLog(@"Player ready to play");
+        } else if (self.player.status == AVPlayerStatusFailed) {
+            // something went wrong. player.error should contain some information
+            NSLog(@"Player Failed");
+        }
+    }
     
     if (context == &ItemStatusContext) {
         NSLog(@"Item Status Context Change");

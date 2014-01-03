@@ -33,6 +33,11 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
+    
+    // Set close button
+    [self setExtendedLayoutIncludesOpaqueBars:YES];
+    UIBarButtonItem *closeButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ic_house"] style:UIBarButtonItemStylePlain target:self action:@selector(dismissModalVideoPreview:)];
+    self.navigationItem.leftBarButtonItem = closeButton;
 }
 
 - (void)didReceiveMemoryWarning
@@ -45,7 +50,7 @@
 {
     [super viewWillAppear:animated];
     // Hide the navigation bar
-    self.navigationController.navigationBarHidden = YES;
+//    self.navigationController.navigationBarHidden = YES;
 }
 
 // In a story board-based application, you will often want to do a little preparation before navigation
