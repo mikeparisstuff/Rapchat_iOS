@@ -18,6 +18,7 @@
 #import "RCBaseModel.h"
 #import "RCClip.h"
 #import "RCFriendRequest.h"
+#import "RCPaginationItem.h"
 
 #import "RCUrlPaths.h"
 
@@ -48,11 +49,11 @@ static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
     // Initialize RestKit
     RKObjectManager *objectManager = [[RKObjectManager alloc] initWithHTTPClient:client];
     
-    NSURL *modelURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Rapchat" ofType:@"momd"]];
-    NSManagedObjectModel *managedObjectModel = [[[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL] mutableCopy];
-//    NSManagedObjectModel *managedObjectModel = [NSManagedObjectModel mergedModelFromBundles:nil];
-    RKManagedObjectStore *managedObjectStore = [[RKManagedObjectStore alloc] initWithManagedObjectModel:managedObjectModel];
-    objectManager.managedObjectStore = managedObjectStore;
+//    NSURL *modelURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Rapchat" ofType:@"momd"]];
+//    NSManagedObjectModel *managedObjectModel = [[[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL] mutableCopy];
+////    NSManagedObjectModel *managedObjectModel = [NSManagedObjectModel mergedModelFromBundles:nil];
+//    RKManagedObjectStore *managedObjectStore = [[RKManagedObjectStore alloc] initWithManagedObjectModel:managedObjectModel];
+//    objectManager.managedObjectStore = managedObjectStore;
     
     
     //    RKObjectManager *objectManager = [RKObjectManager sharedManager];
@@ -128,6 +129,14 @@ static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
                                                          @"modified":@"modified",
                                                          @"clip_url":@"mostRecentClipUrl",
                                                          @"thumbnail_url": @"thumbnailUrl"}];
+    
+    /*
+     *  Pagination Mapping
+     */
+    RKObjectMapping *paginationMapping = [RKObjectMapping mappingForClass:[RCPaginationItem class]];
+    [paginationMapping addAttributeMappingsFromDictionary:@{@"count": @"itemCount",
+                                                            @"next": @"nextUrl",
+                                                            @"previous": @"previousUrl"}];
     
     /*
      Setup Crowds Mappings
@@ -243,6 +252,12 @@ static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
                                                         pathPattern:mySessionsEndpoint
                                                         keyPath:@"sessions"
                                                         statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+
+//    RKResponseDescriptor *paginationItemDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:paginationMapping
+//                                                                                                  method:RKRequestMethodGET
+//                                                                                             pathPattern:mySessionsEndpoint
+//                                                                                                 keyPath:nil
+//                                                                                             statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     
     RKResponseDescriptor *newSessionResponseDescriptor = [RKResponseDescriptor
                                                           responseDescriptorWithMapping:sessionMapping

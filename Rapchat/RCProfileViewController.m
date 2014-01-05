@@ -15,6 +15,8 @@
 #import "RCCrowdTableViewCell.h"
 #import "RCSessionTableViewCell.h"
 
+#import <SVProgressHUD.h>
+
 #import "RCUrlPaths.h"
 
 @interface RCProfileViewController ()
@@ -40,10 +42,6 @@
 
 @implementation RCProfileViewController
 
-- (BOOL)prefersStatusBarHidden
-{
-    return YES;
-}
 
 - (IBAction)segmentItemChanged:(UISegmentedControl *)sender
 {
@@ -73,8 +71,6 @@
     return dataSources[section];
 }
 
-# pragma mark API call methods
-
 - (void)setProfileHeaderInfo
 {
     [self.numberOfFriendsButton setTitle:[NSString stringWithFormat:@"%@", self.myProfile.numberOfFriends] forState:UIControlStateNormal];
@@ -82,136 +78,10 @@
     [self.numberOfRapsButton setTitle:[NSString stringWithFormat:@"%@", self.myProfile.numberOfRaps] forState:UIControlStateNormal];
 }
 
-- (void)loadRaps
-{
-    NSLog(@"Load Raps Clicked");
-}
-
-- (void)loadCrowds
-{
-    NSLog(@"Load Crowds Clicked");
-    [self.refreshControl beginRefreshing];
-    if (!self.myCrowds) {
-        RKObjectManager *objectManager = [RKObjectManager sharedManager];
-        [objectManager getObjectsAtPath:myCrowdsEndpoint
-                         parameters:nil
-                            success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-                                self.myCrowds = [mappingResult array];
-                                NSLog(@"Got Crowds: %@", self.myCrowds);
-                                [self updateGui];
-                            }failure:^(RKObjectRequestOperation *operation, NSError *error) {
-                                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"error"
-                                                                                message:[error localizedDescription]
-                                                                               delegate:nil
-                                                                      cancelButtonTitle:@"OK"
-                                                                      otherButtonTitles:nil, nil];
-                                [alert show];
-                            }];
-    } else {
-        [self updateGui];
-    }
-}
-
-- (void)loadLikes
-{
-    [self.refreshControl beginRefreshing];
-    NSLog(@"Loading Likes");
-    RKObjectManager *objectManager = [RKObjectManager sharedManager];
-    [objectManager getObjectsAtPath:myLikesEndpoint
-                         parameters:nil
-                            success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-                                self.myLikes = [mappingResult array];
-                                NSLog(@"Got Likes: %@", self.myLikes);
-                                [self updateGui];
-                            }failure:^(RKObjectRequestOperation *operation, NSError *error) {
-                                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"error"
-                                                                                message:[error localizedDescription]
-                                                                               delegate:nil
-                                                                      cancelButtonTitle:@"OK"
-                                                                      otherButtonTitles:nil, nil];
-                                [alert show];
-                            }];
-    NSLog(@"Load Likes Clicked");
-}
-
-- (void)loadProfile
-{
-    [self.refreshControl beginRefreshing];
-    RKObjectManager *objectManager = [RKObjectManager sharedManager];
-    [objectManager getObjectsAtPath:myProfileEndpoint
-                         parameters:nil
-                            success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-                                self.myProfile = [mappingResult firstObject];
-                                NSLog(@"Got Profile: %@", self.myProfile.user.username);
-                                self.myFriends = self.myProfile.friends;
-                                [self setProfileHeaderInfo];
-                                [self updateGui];
-                            }failure:^(RKObjectRequestOperation *operation, NSError *error) {
-                                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"error"
-                                                                                message:[error localizedDescription]
-                                                                               delegate:nil
-                                                                      cancelButtonTitle:@"OK"
-                                                                      otherButtonTitles:nil, nil];
-                                [alert show];
-                            }];
-}
-
-- (void) loadFriendRequests
-{
-    NSLog(@"Load Friend Requests");
-    [self.refreshControl beginRefreshing];
-    if (!self.myFriendRequests) {
-        RKObjectManager *objectManager = [RKObjectManager sharedManager];
-        
-        [objectManager getObjectsAtPath:myFriendRequestsEndpoint
-                             parameters:nil
-                                success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-                                    self.myFriendRequests = [mappingResult array];
-                                    NSLog(@"Loading Requests: %@", self.myFriendRequests);
-                                    [self updateGui];
-                                }failure:^(RKObjectRequestOperation *operation, NSError *error) {
-                                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"error"
-                                                                                    message:[error localizedDescription]
-                                                                                   delegate:nil
-                                                                          cancelButtonTitle:@"OK"
-                                                                          otherButtonTitles:nil, nil];
-                                    [alert show];
-                                }];
-    } else {
-        [self updateGui];
-    }
-    
-}
-
-- (void)loadFriends
-{
-    NSLog(@"Load Friends");
-    [self.refreshControl beginRefreshing];
-    if (!self.myFriends) {
-        RKObjectManager *objectManager = [RKObjectManager sharedManager];
-        
-        [objectManager getObjectsAtPath:myFriendsEndpoint
-                             parameters:nil
-                                success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-                                    self.myFriends = [mappingResult array];
-                                    [self updateGui];
-                                }failure:^(RKObjectRequestOperation *operation, NSError *error) {
-                                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"error"
-                                                                                    message:[error localizedDescription]
-                                                                                   delegate:nil
-                                                                          cancelButtonTitle:@"OK"
-                                                                          otherButtonTitles:nil, nil];
-                                    [alert show];
-                                }];
-    } else {
-        [self updateGui];
-    }
-}
 
 - (void)refresh:(id)sender
 {
     [self performSelector:NSSelectorFromString([self validSelectorsForSegmentedControl][self.currentSection])];
-//    [self loadProfile];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
@@ -257,10 +127,10 @@
     
     // Bar button items
     UIBarButtonItem *closeButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ic_house"] style:UIBarButtonItemStyleBordered target:self action:@selector(closeProfileScreen)];
-    self.navigationItem.rightBarButtonItem = closeButton;
+    self.navigationItem.leftBarButtonItem = closeButton;
     
     UIBarButtonItem *logoutButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"add_friend_icon"] style:UIBarButtonItemStyleBordered target:self action:@selector(logout)];
-    self.navigationItem.leftBarButtonItem = logoutButton;
+    self.navigationItem.rightBarButtonItem = logoutButton;
  
     
     
@@ -289,10 +159,14 @@
 
 - (void)updateGui
 {
-    [self.refreshControl endRefreshing];
-    self.navigationItem.title = self.myProfile.user.username;
     [self.tableView reloadData];
-    
+    if (self.refreshControl.isRefreshing) {
+        [self.refreshControl endRefreshing];
+    }
+    if ([SVProgressHUD isVisible]) {
+        [SVProgressHUD showSuccessWithStatus:@"Success"];
+    }
+    self.navigationItem.title = self.myProfile.user.username;
 }
 
 - (RCFriendRequestTableViewCell *)createFriendRequestCellForTable:(UITableView *)tableView atIndexPath:(NSIndexPath *)indexPath
@@ -428,6 +302,112 @@
 - (void) closeProfileScreen
 {
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+#pragma mark API Calls
+- (void)loadRaps
+{
+    NSLog(@"Load Raps Clicked");
+}
+
+- (void)loadCrowds
+{
+    NSLog(@"Load Crowds Clicked");
+    if (!self.myCrowds) {
+        RKObjectManager *objectManager = [RKObjectManager sharedManager];
+        [SVProgressHUD showWithStatus:@"Loading Crowds" maskType:SVProgressHUDMaskTypeGradient];
+        [objectManager getObjectsAtPath:myCrowdsEndpoint
+                             parameters:nil
+                                success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+                                    self.myCrowds = [mappingResult array];
+                                    NSLog(@"Got Crowds: %@", self.myCrowds);
+                                    [self updateGui];
+                                }failure:^(RKObjectRequestOperation *operation, NSError *error) {
+                                    [SVProgressHUD showErrorWithStatus:@"Network Error"];
+                                }];
+    } else {
+        [self updateGui];
+    }
+}
+
+- (void)loadLikes
+{
+    NSLog(@"Loading Likes");
+    if (!self.myLikes) {
+        RKObjectManager *objectManager = [RKObjectManager sharedManager];
+        [SVProgressHUD showWithStatus:@"Loading Likes" maskType:SVProgressHUDMaskTypeGradient];
+        [objectManager getObjectsAtPath:myLikesEndpoint
+                             parameters:nil
+                                success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+                                    self.myLikes = [mappingResult array];
+                                    NSLog(@"Got Likes: %@", self.myLikes);
+                                    [self updateGui];
+                                }failure:^(RKObjectRequestOperation *operation, NSError *error) {
+                                    [SVProgressHUD showErrorWithStatus:@"Network Error"];
+                                }];
+    } else {
+        [self updateGui];
+    }
+    NSLog(@"Load Likes Clicked");
+}
+
+- (void)loadProfile
+{
+    RKObjectManager *objectManager = [RKObjectManager sharedManager];
+    [SVProgressHUD showWithStatus:@"Loading Profile" maskType:SVProgressHUDMaskTypeGradient];
+    [objectManager getObjectsAtPath:myProfileEndpoint
+                         parameters:nil
+                            success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+                                self.myProfile = [mappingResult firstObject];
+                                NSLog(@"Got Profile: %@", self.myProfile.user.username);
+                                self.myFriends = self.myProfile.friends;
+                                [self setProfileHeaderInfo];
+                                [self updateGui];
+                            }failure:^(RKObjectRequestOperation *operation, NSError *error) {
+                                [SVProgressHUD showErrorWithStatus:@"Network Error"];
+                            }];
+}
+
+- (void) loadFriendRequests
+{
+    NSLog(@"Load Friend Requests");
+    if (!self.myFriendRequests) {
+        [SVProgressHUD showWithStatus:@"Loading Friend Requests" maskType:SVProgressHUDMaskTypeGradient];
+        RKObjectManager *objectManager = [RKObjectManager sharedManager];
+        
+        [objectManager getObjectsAtPath:myFriendRequestsEndpoint
+                             parameters:nil
+                                success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+                                    self.myFriendRequests = [mappingResult array];
+                                    NSLog(@"Loading Requests: %@", self.myFriendRequests);
+                                    [self updateGui];
+                                }failure:^(RKObjectRequestOperation *operation, NSError *error) {
+                                    [SVProgressHUD showErrorWithStatus:@"Network Error"];
+                                }];
+    } else {
+        [self updateGui];
+    }
+    
+}
+
+- (void)loadFriends
+{
+    NSLog(@"Load Friends");
+    if (!self.myFriends) {
+        [SVProgressHUD showWithStatus:@"Loading Friends" maskType:SVProgressHUDMaskTypeGradient];
+        RKObjectManager *objectManager = [RKObjectManager sharedManager];
+        
+        [objectManager getObjectsAtPath:myFriendsEndpoint
+                             parameters:nil
+                                success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+                                    self.myFriends = [mappingResult array];
+                                    [self updateGui];
+                                }failure:^(RKObjectRequestOperation *operation, NSError *error) {
+                                    [SVProgressHUD showErrorWithStatus:@"Network Error"];
+                                }];
+    } else {
+        [self updateGui];
+    }
 }
 
 @end

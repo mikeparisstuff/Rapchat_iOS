@@ -5,6 +5,7 @@
 //  Created by Michael Paris on 12/12/13.
 //  Copyright (c) 2013 Michael Paris. All rights reserved.
 //
+#import <SVProgressHUD.h>
 
 #import "RCFeedViewController.h"
 #import "RCSession.h"
@@ -13,6 +14,8 @@
 #import "RCCommentsViewController.h"
 #import "RCPreviewFileViewController.h"
 #import "RCPreviewVideoNoNavbarViewController.h"
+
+#include "REMenu.h"
 
 #import "RCUrlPaths.h"
 
@@ -24,6 +27,8 @@
 @property (nonatomic, strong) NSNumber *selectedSessionId;
 @property (nonatomic, strong) NSMutableSet *likesSet;
 
+@property (nonatomic, strong) REMenu *menu;
+
 @end
 
 @implementation RCFeedViewController
@@ -32,12 +37,24 @@
 // Control dragged from refreshController so that dragging down will
 // refresh the page
 - (IBAction)refresh:(id)sender {
-    [self updateUI];
+    [self.refreshControl beginRefreshing];
+    [self reloadData];
+}
+
+- (void)reloadData
+{
+    [self loadSessions];
+    [self loadLikes];
 }
 
 - (void) updateUI {
-    [self loadSessions];
-    [self loadLikes];
+    if(self.isViewLoaded) {
+        [self.tableView reloadData];
+        [self.refreshControl endRefreshing];
+        if ([SVProgressHUD isVisible]) {
+            [SVProgressHUD showSuccessWithStatus:@"Success"];
+        }
+    }
 }
 
 - (void)loadSessions
@@ -45,25 +62,15 @@
     // Load the object model via RestKit
     RKObjectManager *objectManager = [RKObjectManager sharedManager];
     
-    [self.refreshControl beginRefreshing];
     [objectManager getObjectsAtPath:mySessionsEndpoint
                          parameters:nil
                             success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                                 NSArray *sessions = [mappingResult array];
                                 NSLog(@"Loaded sessions: %@", sessions);
                                 self.sessions = sessions;
-                                if(self.isViewLoaded) {
-                                    [self.tableView reloadData];
-                                    [self.refreshControl endRefreshing];
-                                }
+                                [self updateUI];
                             }failure:^(RKObjectRequestOperation *operation, NSError *error) {
-                                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"error"
-                                                                                message:[error localizedDescription]
-                                                                               delegate:nil
-                                                                      cancelButtonTitle:@"OK"
-                                                                      otherButtonTitles:nil, nil];
-                                [alert show];
-                                NSLog(@"Hit error: %@", error);
+                                [SVProgressHUD showErrorWithStatus:@"Network Error"];
                             }];
 }
 
@@ -80,13 +87,7 @@
                                 }
                                 self.likesSet = [NSMutableSet setWithArray:likes];
                             } failure:^(RKObjectRequestOperation *operation, NSError *error) {
-                                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"error"
-                                                                                message:[error localizedDescription]
-                                                                               delegate:nil
-                                                                      cancelButtonTitle:@"OK"
-                                                                      otherButtonTitles:nil, nil];
-                                [alert show];
-                                NSLog(@"Hit error: %@", error);
+                                [SVProgressHUD showErrorWithStatus:@"Network Error"];
                             }];
 }
 
@@ -127,7 +128,21 @@
     
     UIBarButtonItem *profileButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ic_man"] style:UIBarButtonItemStyleBordered target:self action:@selector(segueToProfileScreen)];
     self.navigationItem.leftBarButtonItem = profileButton;
+    
+    [self.refreshControl setBackgroundColor:[UIColor colorWithRed:82.0/255.0 green:187.0/255.0 blue:193.0/255.0 alpha:1.0]];
+    [self.refreshControl setTintColor:[UIColor redColor]];
+    
+//    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(titleViewClicked)];
+    UIButton *titleButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [titleButton setTitleEdgeInsets:UIEdgeInsetsMake(0, -15, 0, 0)];
+    NSAttributedString *titleString = [[NSAttributedString alloc] initWithString:@"Rapchat" attributes:@{NSForegroundColorAttributeName: [UIColor whiteColor], NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue-Bold" size:24.0]}];
+    [titleButton setAttributedTitle:titleString forState:UIControlStateNormal];
+    [titleButton setImage:[UIImage imageNamed:@"ic_triangle"] forState:UIControlStateNormal];
+    [titleButton setImageEdgeInsets:UIEdgeInsetsMake(20, 50, -11, 0)];
+    [titleButton addTarget:self action:@selector(titleViewClicked) forControlEvents:UIControlEventTouchUpInside];
+    self.navigationItem.titleView = titleButton;
  
+    [self setupREMenu];
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 //    self.extendedLayoutIncludesOpaqueBars = YES;
@@ -147,15 +162,67 @@
 //    self.view.frame = frame;
 //    UIView *statusBarBackground = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 20)];
 //    statusBarBackground.backgroundColor = [UIColor colorWithRed:231.0/255.0 green:76.0/255.0 blue:60.0/255.0 alpha:1.0];
-    [self loadLikes];
-    [self updateUI];
     [super viewWillAppear:animated];
+    [SVProgressHUD showWithStatus:@"Loading Sessions" maskType:SVProgressHUDMaskTypeGradient];
+    [self loadSessions];
+    [self loadLikes];
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+#pragma mark REMenu
+- (void) setupREMenu
+{
+    REMenuItem *mySessionsItem = [[REMenuItem alloc] initWithTitle:@"Stage"
+                                                       subtitle:nil//@"View my crowds competed sessions"
+                                                          image:nil
+                                               highlightedImage:nil
+                                                         action:^(REMenuItem *item) {
+                                                             NSLog(@"Item: %@", item);
+                                                         }];
+    
+//    REMenuItem *myPendingSessionsItem = [[REMenuItem alloc] initWithTitle:@"My Pending Sessions"
+//                                                          subtitle:nil//@"View my crowds incomplete sessions"
+//                                                             image:nil
+//                                                  highlightedImage:nil
+//                                                            action:^(REMenuItem *item) {
+//                                                                NSLog(@"Item: %@", item);
+//                                                            }];
+    
+    REMenuItem *searchItem = [[REMenuItem alloc] initWithTitle:@"Search"
+                                                      subtitle:nil
+                                                         image:nil
+                                              highlightedImage:nil
+                                                        action:^(REMenuItem *item) {
+                                                            NSLog(@"Item: %@", item);
+                                                        }];
+    
+    REMenuItem *liveSessionsItem = [[REMenuItem alloc] initWithTitle:@"Live"
+                                                       subtitle:nil//@"Explore your friends and followers"
+                                                          image:nil
+                                               highlightedImage:nil
+                                                         action:^(REMenuItem *item) {
+                                                             NSLog(@"Item: %@", item);
+                                                         }];
+
+    self.menu = [[REMenu alloc] initWithItems:@[searchItem, mySessionsItem, liveSessionsItem]];
+}
+
+#pragma mark Actions
+- (void)titleViewClicked
+{
+    NSLog(@"Clicked Title");
+    if ([self.menu isOpen]) {
+        [self.menu close];
+        [(UIButton *)self.navigationItem.titleView setImage:[UIImage imageNamed:@"ic_triangle"] forState:UIControlStateNormal];
+    } else {
+        [(UIButton *)self.navigationItem.titleView setImage:[UIImage imageNamed:@"ic_triangle_upright"] forState:UIControlStateNormal];
+        [self.menu showFromNavigationController:self.navigationController];
+    }
 }
 
 #pragma mark - Table view data source
@@ -280,7 +347,8 @@
                       success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                           NSLog(@"Toggling like for session: %@", session.sessionId);
                           // We can further optimize this so there is no delay when you are refreshing the tableview
-                          [self updateUI];
+                          [SVProgressHUD showWithStatus:@"Liking that shit" maskType:SVProgressHUDMaskTypeGradient];
+                          [self reloadData];
                       }failure:^(RKObjectRequestOperation *operation, NSError *error) {
                           UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"error"
                                                                           message:[error localizedDescription]

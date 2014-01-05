@@ -12,6 +12,6 @@
 
 @property (nonatomic) BOOL showTabBar;
 
-- (void)setTabBarVisible;
+//- (void)setTabBarVisible;
 
 @end

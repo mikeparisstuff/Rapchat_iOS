@@ -12,6 +12,7 @@ PODS:
     - MMDrawerController/Core
   - MMDrawerController/Subclass (0.4.0):
     - MMDrawerController/Core
+  - REMenu (1.7.1)
   - RestKit (0.20.3):
     - RestKit/Core
   - RestKit/Core (0.20.3):
@@ -28,17 +29,22 @@ PODS:
   - RestKit/Support (0.20.3):
     - TransitionKit (= 1.1.1)
   - SOCKit (1.1)
+  - SVProgressHUD (1.0)
   - TransitionKit (1.1.1)
 
 DEPENDENCIES:
   - MMDrawerController (~> 0.4.0)
+  - REMenu (~> 1.7.1)
   - RestKit (~> 0.20.0)
+  - SVProgressHUD
 
 SPEC CHECKSUMS:
   AFNetworking: 61fdd49e2ffe6380378df37b3b6e70630bb9dd66
   MMDrawerController: 44baaee6b79487b4681eb61597fb790586909c0c
+  REMenu: 4c85fa951c74b41b1eb7f9a31ebed2da8ae3f7d7
   RestKit: 1f181c180105a92f11ec4f6cd7de37625e516d83
   SOCKit: 2f3bc4d07910de12dcc202815e07db68a3802581
+  SVProgressHUD: 5e10939a296debf5fe5a5895eda9539b8b2114f1
   TransitionKit: d0e3344aac92991395d4c2e72d9c5a8ceeb12910
 
 COCOAPODS: 0.28.0
