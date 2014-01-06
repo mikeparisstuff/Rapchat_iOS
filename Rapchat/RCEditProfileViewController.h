@@ -7,7 +7,10 @@
 //
 
 #import "RCViewController.h"
+#import "RCProfile.h"
 
-@interface RCEditProfileViewController : RCViewController
+@interface RCEditProfileViewController : UIViewController
+
+@property (nonatomic, strong) RCProfile *profile;
 
 @end

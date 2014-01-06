@@ -39,9 +39,6 @@
     [self.navigationController setNavigationBarHidden:NO animated:YES];
     self.navigationItem.rightBarButtonItem = nil;
     
-    // Hides the tab bar and middle tab bar button in the tab bar
-    self.showTabBar = NO;
-    
     // Add gesture recognizer to dismiss the keyboard on downward swipe
     UISwipeGestureRecognizer *swipeRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipe:)];
     [swipeRecognizer setDirection:UISwipeGestureRecognizerDirectionDown];

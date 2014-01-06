@@ -14,6 +14,7 @@
 #import "RCFriendRequestTableViewCell.h"
 #import "RCCrowdTableViewCell.h"
 #import "RCSessionTableViewCell.h"
+#import "RCEditProfileViewController.h"
 
 #import <SVProgressHUD.h>
 
@@ -84,20 +85,6 @@
     [self performSelector:NSSelectorFromString([self validSelectorsForSegmentedControl][self.currentSection])];
 }
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    if ([segue.identifier isEqualToString:@"Logout Segue"]) {
-        NSLog(@"Preparing for logout");
-        [[NSUserDefaults standardUserDefaults] setObject:nil forKey:@"accessToken"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-//        self.navigationController.navigationBarHidden = YES;
-        //        if ([segue.destinationViewController isKindOfClass:[RCViewController class]]) {
-        //            TextStatsViewController *tsvc = (TextStatsViewController *)segue.destinationViewController;
-        //            tsvc.textToAnalyze = self.body.textStorage;
-        //        }
-    }
-}
-
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -126,10 +113,11 @@
     tableViewController.refreshControl = self.refreshControl;
     
     // Bar button items
-    UIBarButtonItem *closeButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ic_house"] style:UIBarButtonItemStyleBordered target:self action:@selector(closeProfileScreen)];
-    self.navigationItem.leftBarButtonItem = closeButton;
+//    UIBarButtonItem *closeButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ic_house"] style:UIBarButtonItemStyleBordered target:self action:@selector(closeProfileScreen)];
+//    self.navigationItem.leftBarButtonItem = closeButton;
+    [self.navigationItem.leftBarButtonItem setImage:[UIImage imageNamed:@"ic_profile"]];
     
-    UIBarButtonItem *logoutButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"add_friend_icon"] style:UIBarButtonItemStyleBordered target:self action:@selector(logout)];
+    UIBarButtonItem *logoutButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"add_friend_icon"] style:UIBarButtonItemStyleBordered target:self action:@selector(findFriends)];
     self.navigationItem.rightBarButtonItem = logoutButton;
  
     
@@ -302,6 +290,26 @@
 - (void) closeProfileScreen
 {
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)findFriends
+{
+    [self performSegueWithIdentifier:@"segueToFindFriends" sender:self];
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([segue.identifier isEqualToString:@"segueToEditProfile"]) {
+        if ([segue.destinationViewController isKindOfClass:[RCEditProfileViewController class]]) {
+            RCEditProfileViewController *controller = segue.destinationViewController;
+            controller.profile = self.myProfile;
+        }
+    }
+    if ([segue.identifier isEqualToString:@"Logout Segue"]) {
+        NSLog(@"Preparing for logout");
+        [[NSUserDefaults standardUserDefaults] setObject:nil forKey:@"accessToken"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
 }
 
 #pragma mark API Calls

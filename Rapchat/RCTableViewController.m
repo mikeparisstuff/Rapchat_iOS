@@ -8,6 +8,7 @@
 
 #import "RCTableViewController.h"
 #import "RCTabBarController.h"
+#import "RCNavigationController.h"
 
 @interface RCTableViewController ()
 
@@ -40,6 +41,9 @@
     [self.refreshControl setTintColor:[UIColor colorWithHue:0.0 saturation:0.06 brightness:0.14 alpha:1.0]];
     [self.refreshControl setBackgroundColor:[UIColor colorWithRed:231.0/255.0 green:76.0/255.0 blue:60.0/255.0 alpha:1.0]];
     
+    if ([self.navigationController isKindOfClass:[RCNavigationController class]]) {
+        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Menu" style:UIBarButtonItemStyleBordered target:self.navigationController action:@selector(toggleMenu)];
+    }
 //    self.showTabBar = YES;
     
 

@@ -7,7 +7,7 @@
 //
 
 #import "RCReplyToSessionCameraViewController.h"
-#import "RCPreviewVideoInvisibleNavbarViewController.h"
+#import "RCPreviewFileViewController.h"
 
 @interface RCReplyToSessionCameraViewController ()
 
@@ -74,8 +74,8 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if([segue.identifier isEqualToString:@"PreviewVideoSegue"]) {
-        if ([segue.destinationViewController isKindOfClass:[RCPreviewVideoInvisibleNavbarViewController class]]) {
-            RCPreviewVideoInvisibleNavbarViewController *controller = segue.destinationViewController;
+        if ([segue.destinationViewController isKindOfClass:[RCPreviewFileViewController class]]) {
+            RCPreviewFileViewController *controller = segue.destinationViewController;
             controller.sessionId = self.sessionId;
             controller.videoURL = [self getVideoUrl];
             controller.thumbnailImageUrl = self.thumbnailImageUrl;

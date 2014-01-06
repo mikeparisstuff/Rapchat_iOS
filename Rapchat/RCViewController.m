@@ -8,6 +8,7 @@
 
 #import "RCViewController.h"
 #import "RCTabBarController.h"
+#import "RCNavigationController.h"
 
 @interface RCViewController ()
 
@@ -27,10 +28,9 @@
     self.showTabBar = YES;
 	// Do any additional setup after loading the view, typically from a nib.
     
-    //Create search item in the tab bar
-//    UIBarButtonItem *searchItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(searchButtonClicked:)];
-//    NSArray *actionButtonItems = @[searchItem];
-//    self.navigationItem.rightBarButtonItems = actionButtonItems;
+    if ([self.navigationController isKindOfClass:[RCNavigationController class]]) {
+        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Menu" style:UIBarButtonItemStyleBordered target:self.navigationController action:@selector(toggleMenu)];
+    }
     
     // Disable middle button with red button overlay
     

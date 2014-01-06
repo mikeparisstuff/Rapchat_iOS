@@ -288,6 +288,13 @@ static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
                                                     keyPath:nil
                                                     statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     
+    RKResponseDescriptor *putMyProfileDescriptor = [RKResponseDescriptor
+                                                    responseDescriptorWithMapping:profileMapping
+                                                    method:RKRequestMethodPUT
+                                                    pathPattern:myProfileEndpoint
+                                                    keyPath:@"profile"
+                                                    statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+    
     RKResponseDescriptor *getFriendsDescriptor = [RKResponseDescriptor
                                                   responseDescriptorWithMapping:profileMapping
                                                   method:RKRequestMethodGET
@@ -359,7 +366,7 @@ static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
     
     
 #pragma mark Register Descriptors
-    NSArray *responseDescriptorArray = @[usersResponseDescriptor, sessionsResponseDescriptor, newSessionResponseDescriptor, obtainTokenDescriptor, registerUserDescriptor, getMyProfileDescriptor, getFriendsDescriptor, getCrowdsDescriptor, getLikesDescriptor, postLikesDescriptor, getCommentsDescriptor, postNewCommentDescriptor, errorDescriptor, addClipDescriptor, pendingFriendRequestsDescriptor, errorDescriptor];
+    NSArray *responseDescriptorArray = @[usersResponseDescriptor, sessionsResponseDescriptor, newSessionResponseDescriptor, obtainTokenDescriptor, registerUserDescriptor, getMyProfileDescriptor, putMyProfileDescriptor, getFriendsDescriptor, getCrowdsDescriptor, getLikesDescriptor, postLikesDescriptor, getCommentsDescriptor, postNewCommentDescriptor, errorDescriptor, addClipDescriptor, pendingFriendRequestsDescriptor, errorDescriptor];
     [objectManager addResponseDescriptorsFromArray:responseDescriptorArray];
     
     NSArray *requestDescriptorArray = @[addClipRequestDescriptor];

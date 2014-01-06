@@ -6,8 +6,8 @@
 //  Copyright (c) 2013 Michael Paris. All rights reserved.
 //
 
-#import "RCPreviewVideoInvisibleNavbarViewController.h"
+#import "RCPreviewFileViewController.h"
 
-@interface RCPreviewVideoForCreationViewController : RCPreviewVideoInvisibleNavbarViewController
+@interface RCPreviewVideoForCreationViewController : RCPreviewFileViewController 
 
 @end

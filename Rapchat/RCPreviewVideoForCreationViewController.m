@@ -35,6 +35,7 @@ static NSString *NEW_SESSION_INFO_SEGUE =  @"NewSessionInfoSegue";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.navigationController.navigationBarHidden = NO;
 	// Do any additional setup after loading the view.
     
 //    UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithTitle:@"Next" style:UIBarButtonItemStylePlain target:self action:@selector(nextButtonClicked)];
