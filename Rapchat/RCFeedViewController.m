@@ -14,10 +14,15 @@
 #import "RCCommentsViewController.h"
 #import "RCPreviewFileViewController.h"
 #import "RCPreviewVideoNoNavbarViewController.h"
+#import "RCSessionPaginator.h"
+
 
 #include "REMenu.h"
 
 #import "RCUrlPaths.h"
+#import "RCConstants.h"
+
+#define RELOAD_OFFSET 5
 
 @interface RCFeedViewController ()
 
@@ -26,11 +31,16 @@
 @property (nonatomic, strong) NSURL *clipUrl;
 @property (nonatomic, strong) NSNumber *selectedSessionId;
 @property (nonatomic, strong) NSMutableSet *likesSet;
-
+@property (nonatomic, strong) NSMutableArray *allSessions;
+@property (nonatomic, strong) RCSessionPaginator *sessionsPaginator;
 
 @end
 
 @implementation RCFeedViewController
+{
+    BOOL scrolledToBottom;
+    BOOL alreadyLoading;
+}
 
 
 // Control dragged from refreshController so that dragging down will
@@ -42,14 +52,29 @@
 
 - (void)reloadData
 {
-    [self loadSessions];
     [self loadLikes];
+    [self loadSessions];
 }
 
 - (void) updateUI {
     if(self.isViewLoaded) {
         [self.tableView reloadData];
         [self.refreshControl endRefreshing];
+        scrolledToBottom = NO;
+        alreadyLoading = NO;
+        if ([SVProgressHUD isVisible]) {
+            [SVProgressHUD showSuccessWithStatus:@"Success"];
+        }
+    }
+}
+
+- (void)updateUIAtIndexPaths:(NSArray *)indexPaths
+{
+    if(self.isViewLoaded) {
+        [self.tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationLeft];
+        [self.refreshControl endRefreshing];
+        scrolledToBottom = NO;
+        alreadyLoading = NO;
         if ([SVProgressHUD isVisible]) {
             [SVProgressHUD showSuccessWithStatus:@"Success"];
         }
@@ -58,25 +83,56 @@
 
 - (void)loadSessions
 {
+    NSLog(@"Loading Sessions");
     // Load the object model via RestKit
     RKObjectManager *objectManager = [RKObjectManager sharedManager];
-    
+    alreadyLoading = YES;
     [objectManager getObjectsAtPath:mySessionsEndpoint
                          parameters:nil
                             success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-                                NSArray *sessions = [mappingResult array];
-                                NSLog(@"Loaded sessions: %@", sessions);
-                                self.sessions = sessions;
+//                                NSArray *sessions = [mappingResult array];
+                                self.sessionsPaginator = [mappingResult firstObject];
+//                                self.sessions = sessions;
+                                self.allSessions = [self.sessionsPaginator.currentPageSessions mutableCopy];
                                 [self updateUI];
                             }failure:^(RKObjectRequestOperation *operation, NSError *error) {
                                 [SVProgressHUD showErrorWithStatus:@"Network Error"];
                             }];
 }
 
+- (void)loadNextSessions
+{
+    NSLog(@"Load next sessions");
+    if (self.sessionsPaginator.nextUrl) {
+        alreadyLoading = YES;
+        RKObjectManager *objectManager = [RKObjectManager sharedManager];
+        [objectManager getObjectsAtPath:self.sessionsPaginator.nextUrl
+                             parameters:nil
+                                success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+                                    //                                NSArray *sessions = [mappingResult array];
+                                    self.sessionsPaginator = [mappingResult firstObject];
+                                    //                                self.sessions = sessions;
+                                    int firstIndex = (int)[self.allSessions count];
+                                    [self.allSessions addObjectsFromArray:self.sessionsPaginator.currentPageSessions];
+                                    int lastIndex = (int)[self.allSessions count];
+                                    NSMutableArray *indexes = [[NSMutableArray alloc] init];
+                                    for (int i = firstIndex; i < lastIndex; i++) {
+                                        NSLog(@"Inserting row with index %d", i);
+                                        [indexes addObject:[NSIndexPath indexPathForRow:i inSection:0]];
+                                    }
+                                    [self.tableView insertRowsAtIndexPaths:indexes withRowAnimation:UITableViewRowAnimationLeft];
+                                    [self updateUI];
+                                }failure:^(RKObjectRequestOperation *operation, NSError *error) {
+                                    [SVProgressHUD showErrorWithStatus:@"Network Error"];
+                                }];
+
+    }
+}
+
 - (void)loadLikes
 {
     RKObjectManager *objectManager = [RKObjectManager sharedManager];
-    
+    alreadyLoading = YES;
     [objectManager getObjectsAtPath:myLikesEndpoint
                          parameters:nil
                             success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
@@ -85,6 +141,24 @@
                                     [likes addObject:like.session.sessionId];
                                 }
                                 self.likesSet = [NSMutableSet setWithArray:likes];
+                            } failure:^(RKObjectRequestOperation *operation, NSError *error) {
+                                [SVProgressHUD showErrorWithStatus:@"Network Error"];
+                            }];
+}
+
+- (void)loadLikesAndReloadAtIndexPaths:(NSArray *)indexPaths
+{
+    RKObjectManager *objectManager = [RKObjectManager sharedManager];
+    alreadyLoading = YES;
+    [objectManager getObjectsAtPath:myLikesEndpoint
+                         parameters:nil
+                            success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+                                NSMutableArray *likes = [[NSMutableArray alloc] init];
+                                for (RCLike *like in [mappingResult array]) {
+                                    [likes addObject:like.session.sessionId];
+                                }
+                                self.likesSet = [NSMutableSet setWithArray:likes];
+                                [self updateUIAtIndexPaths:indexPaths];
                             } failure:^(RKObjectRequestOperation *operation, NSError *error) {
                                 [SVProgressHUD showErrorWithStatus:@"Network Error"];
                             }];
@@ -117,7 +191,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
+    NSLog(@"Creating Live Feed");
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
@@ -125,49 +199,23 @@
     UIBarButtonItem *newSessionButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ic_microphone"] style:UIBarButtonItemStyleBordered target:self action:@selector(segueToNewSessionWorkflow)];
     self.navigationItem.rightBarButtonItem = newSessionButton;
     
-//    UIBarButtonItem *profileButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ic_man"] style:UIBarButtonItemStyleBordered target:self action:@selector(segueToProfileScreen)];
-//    self.navigationItem.leftBarButtonItem = profileButton;
-    
-    [self.navigationItem.leftBarButtonItem setImage:[UIImage imageNamed:@"ic_home"]];
+    [self.navigationItem.leftBarButtonItem setImage:[UIImage imageNamed:@"ic_heart_rate_nav"]];
     [self.navigationItem.leftBarButtonItem setImageInsets:UIEdgeInsetsZero];
     
-    [self.refreshControl setBackgroundColor:[UIColor colorWithRed:82.0/255.0 green:187.0/255.0 blue:193.0/255.0 alpha:1.0]];
-    [self.refreshControl setTintColor:[UIColor redColor]];
+    [self setTitle:@"Live Feed"];
     
-
-
-//    UIButton *titleButton = [UIButton buttonWithType:UIButtonTypeCustom];
-//    [titleButton setTitleEdgeInsets:UIEdgeInsetsMake(0, -15, 0, 0)];
-//    NSAttributedString *titleString = [[NSAttributedString alloc] initWithString:@"Rapchat" attributes:@{NSForegroundColorAttributeName: [UIColor whiteColor], NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue-Bold" size:24.0]}];
-//    [titleButton setAttributedTitle:titleString forState:UIControlStateNormal];
-//    [titleButton setImage:[UIImage imageNamed:@"ic_triangle"] forState:UIControlStateNormal];
-//    [titleButton setImageEdgeInsets:UIEdgeInsetsMake(20, 50, -11, 0)];
-//    [titleButton addTarget:self action:@selector(titleViewClicked) forControlEvents:UIControlEventTouchUpInside];
-//    self.navigationItem.titleView = titleButton;
- 
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
-//    self.extendedLayoutIncludesOpaqueBars = YES;
-//    self.navigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
-//    self.edgesForExtendedLayout = UIRectEdgeNone;
+    [self.refreshControl setBackgroundColor:[UIColor colorWithRed:189.0/255.0 green:195.0/255.0 blue:199.0/255.0 alpha:1.0]];
+    [self.refreshControl setTintColor:[UIColor redColor]];
     
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
-//    CGRect frame = self.view.frame;
-//    frame.origin.y = 20;
-//    if (self.view.frame.size.height == 1024 ||   self.view.frame.size.height == 768)
-//    {
-//        frame.size.height -= 20;
-//    }
-//    self.view.frame = frame;
-//    UIView *statusBarBackground = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 20)];
-//    statusBarBackground.backgroundColor = [UIColor colorWithRed:231.0/255.0 green:76.0/255.0 blue:60.0/255.0 alpha:1.0];
+
     [super viewWillAppear:animated];
-    [SVProgressHUD showWithStatus:@"Loading Sessions" maskType:SVProgressHUDMaskTypeGradient];
-    [self loadSessions];
-    [self loadLikes];
+//    [SVProgressHUD showWithStatus:@"Loading Sessions" maskType:SVProgressHUDMaskTypeGradient];
+    [self.refreshControl beginRefreshing];
+    [self reloadData];
 }
 
 - (void)didReceiveMemoryWarning
@@ -189,7 +237,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of %luws (unsigned long)in the section.
-    return [self.sessions count];
+    return [self.allSessions count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -198,12 +246,12 @@
     RCSessionTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
     // Configure the cell...
-    RCSession *session = [self.sessions objectAtIndex:indexPath.row];
+    RCSession *session = [self.allSessions objectAtIndex:indexPath.row];
     [cell setCellSession:session];
     if ([self.likesSet containsObject:session.sessionId]) {
-        [cell.likesButton setSelected:YES];
+        [cell.likeButton setSelected:YES];
     } else {
-        [cell.likesButton setSelected:NO];
+        [cell.likeButton setSelected:NO];
     }
     cell.delegate = self;
     return cell;
@@ -247,6 +295,29 @@
     return YES;
 }
 */
+
+#pragma mark ScrollViewDelegate
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    // UITableView only moves in one direction, y axis
+//    NSInteger currentOffset = scrollView.contentOffset.y;
+//    NSInteger maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height;
+    
+    NSArray *visibleIndexes = [self.tableView indexPathsForVisibleRows];
+    if ([visibleIndexes count]) {
+        NSIndexPath *topItem = (NSIndexPath *)visibleIndexes[0];
+        // load more data when we have scrolled to within 4 sessions of the end
+        if (!alreadyLoading && topItem.row > [self.allSessions count] - RELOAD_OFFSET) {
+            NSLog(@"Reloading data");
+            [self loadNextSessions];
+        }
+    }
+    
+//    if (maximumOffset - currentOffset <= 10.0 && !scrolledToBottom) {
+//        scrolledToBottom = YES;
+//        NSLog(@"Scrolled to bottom");
+//        [self loadNextSessions];
+//    }
+}
 
 
 #pragma mark - Navigation
@@ -299,8 +370,9 @@
                       success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                           NSLog(@"Toggling like for session: %@", session.sessionId);
                           // We can further optimize this so there is no delay when you are refreshing the tableview
-                          [SVProgressHUD showWithStatus:@"Liking that shit" maskType:SVProgressHUDMaskTypeGradient];
-                          [self reloadData];
+                          [SVProgressHUD showWithStatus:@"Liking That" maskType:SVProgressHUDMaskTypeGradient];
+                          NSIndexPath *selectedPath = [NSIndexPath indexPathForRow:[self.tableView indexPathForCell:sender].row inSection:0];
+                          [self loadLikesAndReloadAtIndexPaths:@[selectedPath]];
                       }failure:^(RKObjectRequestOperation *operation, NSError *error) {
                           UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"error"
                                                                           message:[error localizedDescription]
@@ -339,5 +411,21 @@
     [self performSegueWithIdentifier:@"segueToProfileScreen" sender:self];
 }
 
+#pragma mark Lazy Loading
+-(RCSessionPaginator *)sessionsPaginator
+{
+    if (!_sessionsPaginator) {
+        _sessionsPaginator = [[RCSessionPaginator alloc] init];
+    }
+    return _sessionsPaginator;
+}
+
+-(NSMutableArray *)allSessions
+{
+    if (!_allSessions) {
+        _allSessions = [[NSMutableArray alloc] init];
+    }
+    return _allSessions;
+}
 
 @end

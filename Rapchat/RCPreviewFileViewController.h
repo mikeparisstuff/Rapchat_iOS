@@ -14,5 +14,6 @@
 @property (nonatomic) NSURL *videoURL;
 @property (nonatomic) NSURL *thumbnailImageUrl;
 @property (nonatomic, strong)NSNumber *sessionId;
+@property (nonatomic) float progressValue;
 
 @end

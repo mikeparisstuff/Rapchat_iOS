@@ -84,6 +84,18 @@
 #define COCOAPODS_VERSION_MINOR_RestKit_Support 20
 #define COCOAPODS_VERSION_PATCH_RestKit_Support 3
 
+// SDWebImage
+#define COCOAPODS_POD_AVAILABLE_SDWebImage
+#define COCOAPODS_VERSION_MAJOR_SDWebImage 3
+#define COCOAPODS_VERSION_MINOR_SDWebImage 5
+#define COCOAPODS_VERSION_PATCH_SDWebImage 2
+
+// SDWebImage/Core
+#define COCOAPODS_POD_AVAILABLE_SDWebImage_Core
+#define COCOAPODS_VERSION_MAJOR_SDWebImage_Core 3
+#define COCOAPODS_VERSION_MINOR_SDWebImage_Core 5
+#define COCOAPODS_VERSION_PATCH_SDWebImage_Core 2
+
 // SOCKit
 #define COCOAPODS_POD_AVAILABLE_SOCKit
 #define COCOAPODS_VERSION_MAJOR_SOCKit 1
@@ -101,4 +113,10 @@
 #define COCOAPODS_VERSION_MAJOR_TransitionKit 1
 #define COCOAPODS_VERSION_MINOR_TransitionKit 1
 #define COCOAPODS_VERSION_PATCH_TransitionKit 1
+
+// UIActivityIndicator-for-SDWebImage
+#define COCOAPODS_POD_AVAILABLE_UIActivityIndicator_for_SDWebImage
+#define COCOAPODS_VERSION_MAJOR_UIActivityIndicator_for_SDWebImage 1
+#define COCOAPODS_VERSION_MINOR_UIActivityIndicator_for_SDWebImage 0
+#define COCOAPODS_VERSION_PATCH_UIActivityIndicator_for_SDWebImage 3
 

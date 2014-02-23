@@ -13,10 +13,13 @@
 
 @interface RCClip : RCBaseModel
 
+@property (nonatomic, copy) NSNumber *clipId;
+@property (nonatomic, copy) NSString *relativePath;
 @property (nonatomic, copy) NSNumber *clipNumber;
 @property (nonatomic, copy) NSURL *url;
 @property (nonatomic, copy) NSNumber *creator;
 @property (nonatomic, copy) NSNumber *session;
+@property (nonatomic, copy) NSURL *thumbnailUrl;
 @property (nonatomic, copy) NSDate *created;
 @property (nonatomic, copy) NSDate *modified;
 

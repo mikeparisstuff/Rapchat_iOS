@@ -14,30 +14,47 @@
 #import "RCFriendRequestTableViewCell.h"
 #import "RCCrowdTableViewCell.h"
 #import "RCSessionTableViewCell.h"
+#import "RCFriendTableViewCell.h"
+#import "RCClipTableviewCell.h"
 #import "RCEditProfileViewController.h"
+#import "RCCommentsViewController.h"
+#import "RCPreviewVideoNoNavbarViewController.h"
+#import "RCPublicProfileViewController.h"
+#import "RCCrowdMembersTableViewController.h"
 
+#import "UIImageView+UIActivityIndicatorForSDWebImage.h"
 #import <SVProgressHUD.h>
 
 #import "RCUrlPaths.h"
 
 @interface RCProfileViewController ()
 
+@property (nonatomic, strong) RCSession *commentsSession;
+@property (nonatomic, strong) NSURL *clipUrl;
+@property (nonatomic, strong) NSNumber *selectedSessionId;
 
 @property (nonatomic, strong) RCProfile *myProfile;
 @property (nonatomic, strong) NSArray *myLikes;
 @property (nonatomic, strong) NSArray *myCrowds;
 @property (nonatomic, strong) NSArray *myRaps;
 @property (nonatomic, strong) NSArray *myFriends;
+@property (nonatomic, strong) NSSet *friendIdSet;
+
 @property (nonatomic, strong) NSArray *myFriendRequests;
 @property (nonatomic, strong) NSString *currentSection;
 @property (nonatomic) NSInteger currentSectionIndex;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (nonatomic, strong) NSArray *tabs;
 @property (nonatomic) UIRefreshControl *refreshControl;
+@property (weak, nonatomic) IBOutlet UISegmentedControl *segmentedControl;
 
 @property (weak, nonatomic) IBOutlet UIButton *numberOfRapsButton;
 @property (weak, nonatomic) IBOutlet UIButton *numberOfLikesButton;
 @property (weak, nonatomic) IBOutlet UIButton *numberOfFriendsButton;
+@property (weak, nonatomic) IBOutlet UIImageView *profilePictureImageView;
+
+@property (nonatomic, strong) NSString *discoverUsername;
+@property (nonatomic, strong) NSIndexPath *selectedIndex;
 
 @end
 
@@ -50,21 +67,22 @@
     self.currentSection = [segmentedControl titleForSegmentAtIndex: [segmentedControl selectedSegmentIndex]];
     self.currentSectionIndex = [self.tabs indexOfObject:self.currentSection];
     // Call a different method here depending on the tab currently selected
-    [self performSelector:NSSelectorFromString([self validSelectorsForSegmentedControl][self.currentSection])];
+    NSLog(@"Calling %@", self.currentSection);
+    [self performSelector:NSSelectorFromString([self validSelectorsForSegmentedControl][self.currentSection]) withObject:[NSNumber numberWithBool:NO]];
 }
 
 - (NSDictionary *)validSelectorsForSegmentedControl
 {
-    return @{@"Raps": NSStringFromSelector(@selector(loadRaps)),
-             @"Crowds": NSStringFromSelector(@selector(loadCrowds)),
-             @"Likes": NSStringFromSelector(@selector(loadLikes)),
-             @"Requests": NSStringFromSelector(@selector(loadFriendRequests))
+    return @{@"Friends": NSStringFromSelector(@selector(loadFriends:)),
+             @"Crowds": NSStringFromSelector(@selector(loadCrowds:)),
+             @"Likes": NSStringFromSelector(@selector(loadLikes:)),
+             @"Requests": NSStringFromSelector(@selector(loadFriendRequests:))
              };
 }
 
 - (NSDictionary *)validDataSourceForSection:(NSString *)section
 {
-    NSDictionary *dataSources = @{@"Raps": self.myRaps,
+    NSDictionary *dataSources = @{@"Friends": self.myFriends,
                                  @"Crowds": self.myCrowds,
                                  @"Likes": self.myLikes,
                                  @"Requests": self.myFriendRequests
@@ -77,12 +95,16 @@
     [self.numberOfFriendsButton setTitle:[NSString stringWithFormat:@"%@", self.myProfile.numberOfFriends] forState:UIControlStateNormal];
     [self.numberOfLikesButton setTitle:[NSString stringWithFormat:@"%@", self.myProfile.numberOfLikes] forState:UIControlStateNormal];
     [self.numberOfRapsButton setTitle:[NSString stringWithFormat:@"%@", self.myProfile.numberOfRaps] forState:UIControlStateNormal];
+    if (self.myProfile.profilePictureURL) {
+        [self.profilePictureImageView setImageWithURL:self.myProfile.profilePictureURL
+                          usingActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    }
 }
 
 
 - (void)refresh:(id)sender
 {
-    [self performSelector:NSSelectorFromString([self validSelectorsForSegmentedControl][self.currentSection])];
+    [self performSelector:NSSelectorFromString([self validSelectorsForSegmentedControl][self.currentSection]) withObject:[NSNumber numberWithBool:YES]];
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -98,7 +120,7 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
-    self.tabs = @[@"Raps", @"Crowds", @"Likes", @"Requests"];
+    self.tabs = @[@"Friends", @"Crowds", @"Likes", @"Requests"];
     
 
     // Because refreshControl is made to be used with UItvc we need to create on and
@@ -115,7 +137,8 @@
     // Bar button items
 //    UIBarButtonItem *closeButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ic_house"] style:UIBarButtonItemStyleBordered target:self action:@selector(closeProfileScreen)];
 //    self.navigationItem.leftBarButtonItem = closeButton;
-    [self.navigationItem.leftBarButtonItem setImage:[UIImage imageNamed:@"ic_profile"]];
+    [self.navigationItem.leftBarButtonItem setImage:[UIImage imageNamed:@"ic_profile_nav"]];
+    [self.navigationItem.leftBarButtonItem setImageInsets:UIEdgeInsetsZero];
     
     UIBarButtonItem *logoutButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"add_friend_icon"] style:UIBarButtonItemStyleBordered target:self action:@selector(findFriends)];
     self.navigationItem.rightBarButtonItem = logoutButton;
@@ -134,7 +157,9 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    self.currentSection = [self.segmentedControl titleForSegmentAtIndex: [self.segmentedControl selectedSegmentIndex]];
     [self loadProfile];
+    [self refresh:self];
 }
 
 - (void)didReceiveMemoryWarning
@@ -157,6 +182,7 @@
     self.navigationItem.title = self.myProfile.user.username;
 }
 
+#pragma mark TBV Cell Factory
 - (RCFriendRequestTableViewCell *)createFriendRequestCellForTable:(UITableView *)tableView atIndexPath:(NSIndexPath *)indexPath
 {
     NSString *reuseIdentifier = @"FriendRequestCell";
@@ -169,7 +195,7 @@
     // Configure the cell...
     RCFriendRequest *friendRequest = [self.myFriendRequests objectAtIndex:indexPath.row];
     NSLog(@"Inserting Cell with Profile: %@", cell);
-    cell.usernameLabel.text = friendRequest.sender.username;
+    [cell setFriendRequest:friendRequest];
     return cell;
 }
 
@@ -183,8 +209,8 @@
     }
     //Configure the cell
     RCCrowd *crowd = [self.myCrowds objectAtIndex:indexPath.row];
-    cell.titleLabel.text = crowd.title;
-    cell.numberOfMembersLabel.text = [NSString stringWithFormat:@"%lu members", (unsigned long)[crowd.members count]];
+    [cell setCrowd: crowd];
+    cell.delegate = self;
     return cell;
 }
 
@@ -194,10 +220,20 @@
     RCSessionTableViewCell *cell = (RCSessionTableViewCell *)[tableView dequeueReusableCellWithIdentifier:reuseIdentifier forIndexPath:indexPath];
     RCSession *session = [(RCLike *)[self.myLikes objectAtIndex:indexPath.row] session];
     [cell setCellSession:session];
-    [cell.likesButton setSelected:YES];
+    [cell.likeButton setSelected:YES];
+    cell.delegate = self;
     return cell;
 }
 
+- (RCFriendTableViewCell *)createFriendCellForTable:(UITableView *)tableView forIndexPath:(NSIndexPath *)indexPath
+{
+    NSString *reuseIdentifier = @"FriendCell";
+    RCFriendTableViewCell *cell = (RCFriendTableViewCell *)[tableView dequeueReusableCellWithIdentifier:reuseIdentifier];
+    RCProfile *friend = [self.myFriends objectAtIndex:indexPath.row];
+    [cell setFriend:friend];
+    cell.delegate = self;
+    return cell;
+}
 
 
 
@@ -221,7 +257,7 @@
     unsigned long numElements = 0;
     switch (self.currentSectionIndex) {
         case 0:
-            numElements = [self.myRaps count];
+            numElements = [self.myFriends count];
             break;
         case 1:
             numElements = [self.myCrowds count];
@@ -245,16 +281,16 @@
     CGFloat height = 50;
     switch (self.currentSectionIndex) {
         case 0:
-            height = 50;
+            height = 75;
             break;
         case 1:
-            height = 70;
+            height = 100;
             break;
         case 2:
             height = 428;
             break;
         case 3:
-            height = 45;
+            height = 75;
             break;
     }
     return height;
@@ -266,6 +302,7 @@
     UITableViewCell *cell = [[UITableViewCell alloc] init];
     switch (self.currentSectionIndex) {
         case 0:
+            cell = [self createFriendCellForTable:tableView forIndexPath:indexPath];
             break;
         case 1:
             cell = [self createCrowdCellForTable:tableView forIndexPath:indexPath];
@@ -282,10 +319,6 @@
 }
 
 #pragma mark Segues
-- (void)logout
-{
-    [self performSegueWithIdentifier:@"Logout Segue" sender:self];
-}
 
 - (void) closeProfileScreen
 {
@@ -305,23 +338,120 @@
             controller.profile = self.myProfile;
         }
     }
-    if ([segue.identifier isEqualToString:@"Logout Segue"]) {
-        NSLog(@"Preparing for logout");
-        [[NSUserDefaults standardUserDefaults] setObject:nil forKey:@"accessToken"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
+    if([segue.identifier isEqualToString:@"GoToCommentsSegue"]) {
+        if ([segue.destinationViewController isKindOfClass:[RCCommentsViewController class]]) {
+            RCCommentsViewController *RCtvc = segue.destinationViewController;
+            RCtvc.comments = self.commentsSession.comments;
+            RCtvc.sessionId = self.commentsSession.sessionId;
+            NSLog(@"Prepared GoToCommentsSegue");
+        }
+    }
+    if([segue.identifier isEqualToString:@"PlayVideoSegue"]) {
+        if ([segue.destinationViewController isKindOfClass:[UINavigationController class]]) {
+            UINavigationController *navController = segue.destinationViewController;
+            if ([[navController topViewController] isKindOfClass:[RCPreviewVideoNoNavbarViewController class]]) {
+                RCPreviewVideoNoNavbarViewController *RCpfvc = (RCPreviewVideoNoNavbarViewController *)[navController topViewController];
+                RCpfvc.videoURL = self.clipUrl;
+                RCpfvc.sessionId = self.selectedSessionId;
+                NSLog(@"Prepared PlayVideoSegue");
+            }
+        }
+    }
+    if ([segue.identifier isEqualToString:@"GotoProfileSegue"]) {
+        if ([segue.destinationViewController isKindOfClass:[RCPublicProfileViewController class]]) {
+            RCPublicProfileViewController *controller = (RCPublicProfileViewController *)segue.destinationViewController;
+            NSMutableArray *idArray = [[NSMutableArray alloc] init];
+            for (RCProfile *friend in self.myFriends) {
+                [idArray addObject:friend.profileId];
+            }
+            self.friendIdSet = [NSSet setWithArray:idArray];
+            controller.discoverUsername = self.discoverUsername;
+            controller.friendIdSet = self.friendIdSet;
+            NSLog(@"Prepared GotoProfileSegue");
+        }
+    }
+    if ([segue.identifier isEqualToString:@"GoToCrowdMembersSegue"]) {
+        if([segue.destinationViewController isKindOfClass:[RCCrowdMembersTableViewController class]]) {
+            NSLog(@"Segueing to crowd members table view");
+            RCCrowdMembersTableViewController *controller = (RCCrowdMembersTableViewController *)segue.destinationViewController;
+            RCCrowd *crowd = (RCCrowd *)[self.myCrowds objectAtIndex:self.selectedIndex.row];
+            controller.crowd = crowd;
+        }
+    }
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+}
+
+#pragma mark Session cell Protocol
+
+- (void)likeButtonPressedInCell:(RCSessionTableViewCell *)sender
+{
+    //    NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
+    //    NSLog(@"Clicked on like button in cell: %ld", (long)indexPath.row);
+    //    RCSession *session = [self.sessions objectAtIndex:indexPath.row];
+    RCSession *session = [sender getCellSession];
+    RKObjectManager *objectManager = [RKObjectManager sharedManager];
+    [objectManager postObject:nil
+                         path:myLikesEndpoint
+                   parameters:@{@"session":session.sessionId}
+                      success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+                          NSLog(@"Toggling like for session: %@", session.sessionId);
+                          // We can further optimize this so there is no delay when you are refreshing the tableview
+                          [SVProgressHUD showWithStatus:@"Liking That" maskType:SVProgressHUDMaskTypeGradient];
+                          [self.tableView reloadData];
+                      }failure:^(RKObjectRequestOperation *operation, NSError *error) {
+                          UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"error"
+                                                                          message:[error localizedDescription]
+                                                                         delegate:nil
+                                                                cancelButtonTitle:@"OK"
+                                                                otherButtonTitles:nil, nil];
+                          [alert show];
+                          NSLog(@"Hit error: %@", error);
+                      }];
+    
+}
+
+- (void)commentButtonPressedInCell:(RCSessionTableViewCell *)sender
+{
+    self.commentsSession = [sender getCellSession];
+    [self performSegueWithIdentifier:@"GoToCommentsSegue" sender:self];
+}
+
+- (void)playVideoInCell:(id)sender
+{
+    if ([sender isKindOfClass:[RCSessionTableViewCell class]]) {
+        RCSession *session = [sender getCellSession];
+        self.clipUrl = session.mostRecentClipUrl;
+        self.selectedSessionId = session.sessionId;
+        NSLog(@"Clicking on video with url: %@", self.clipUrl);
+        [self performSegueWithIdentifier:@"PlayVideoSegue" sender:self];
+    } else if ([sender isKindOfClass:[RCClipTableviewCell class]]) {
+        RCClip *clip = [sender getCellClip];
+        self.clipUrl = clip.url;
+        self.selectedSessionId = clip.clipId;
+        [self performSegueWithIdentifier:@"PlayVideoSegue" sender:self];
     }
 }
 
-#pragma mark API Calls
-- (void)loadRaps
-{
-    NSLog(@"Load Raps Clicked");
+#pragma mark Crowd Cell Protocol
+- (void)viewCrowdMembers:(id)sender {
+    self.selectedIndex = [self.tableView indexPathForCell:sender];
+    [self performSegueWithIdentifier:@"GoToCrowdMembersSegue" sender:self];
 }
 
-- (void)loadCrowds
+#pragma mark Friend Cell Protocol
+- (void)gotoProfile:(NSString *)username
+{
+    self.discoverUsername = username;
+    [self performSegueWithIdentifier:@"GotoProfileSegue" sender:self];
+}
+
+#pragma mark API Calls
+
+- (void)loadCrowds:(NSNumber *)forceRefresh
 {
     NSLog(@"Load Crowds Clicked");
-    if (!self.myCrowds) {
+    if ((!self.myCrowds) || forceRefresh) {
         RKObjectManager *objectManager = [RKObjectManager sharedManager];
         [SVProgressHUD showWithStatus:@"Loading Crowds" maskType:SVProgressHUDMaskTypeGradient];
         [objectManager getObjectsAtPath:myCrowdsEndpoint
@@ -338,10 +468,10 @@
     }
 }
 
-- (void)loadLikes
+- (void)loadLikes:(NSNumber *)forceRefresh
 {
     NSLog(@"Loading Likes");
-    if (!self.myLikes) {
+    if ((!self.myLikes) || forceRefresh) {
         RKObjectManager *objectManager = [RKObjectManager sharedManager];
         [SVProgressHUD showWithStatus:@"Loading Likes" maskType:SVProgressHUDMaskTypeGradient];
         [objectManager getObjectsAtPath:myLikesEndpoint
@@ -376,10 +506,10 @@
                             }];
 }
 
-- (void) loadFriendRequests
+- (void) loadFriendRequests:(NSNumber *)forceRefresh
 {
     NSLog(@"Load Friend Requests");
-    if (!self.myFriendRequests) {
+    if ((!self.myFriendRequests) || forceRefresh) {
         [SVProgressHUD showWithStatus:@"Loading Friend Requests" maskType:SVProgressHUDMaskTypeGradient];
         RKObjectManager *objectManager = [RKObjectManager sharedManager];
         
@@ -398,10 +528,10 @@
     
 }
 
-- (void)loadFriends
+- (void)loadFriends:(NSNumber *)forceRefresh
 {
     NSLog(@"Load Friends");
-    if (!self.myFriends) {
+    if ((!self.myFriends) || forceRefresh) {
         [SVProgressHUD showWithStatus:@"Loading Friends" maskType:SVProgressHUDMaskTypeGradient];
         RKObjectManager *objectManager = [RKObjectManager sharedManager];
         

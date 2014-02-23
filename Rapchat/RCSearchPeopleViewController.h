@@ -7,7 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "RCTableViewController.h"
 
-@interface RCSearchPeopleViewController : UIViewController
+@interface RCSearchPeopleViewController : RCTableViewController <UISearchDisplayDelegate, UISearchBarDelegate>
+{
+    BOOL isSearching;
+    
+}
+
 
 @end

@@ -9,6 +9,10 @@
 #import "RCSendFriendRequestCell.h"
 #import "RCUrlPaths.h"
 
+@interface RCSendFriendRequestCell ()
+
+@end
+
 @implementation RCSendFriendRequestCell
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -34,6 +38,8 @@
                          path:myFriendRequestsEndpoint
                    parameters:@{@"username": self.usernameLabel.text}
                       success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+                          [self.completeButton setHidden:NO];
+                          [self.sendFriendRequestButton setHidden:YES];
                           NSLog(@"Successfully sent friend request");
                       } failure:^(RKObjectRequestOperation *operation, NSError *error) {
                           NSLog(@"Failed to send friend request");

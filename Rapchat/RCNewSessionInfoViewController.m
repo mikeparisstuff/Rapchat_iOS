@@ -11,7 +11,8 @@
 #import "RCCrowdTableViewCell.h"
 #import "RCProfile.h"
 #import "RCCrowd.h"
-
+#import "RCVideoReencoder.h"
+#import "RCConstants.h"
 #import "RCUrlPaths.h"
 
 @interface RCNewSessionInfoViewController ()
@@ -29,6 +30,9 @@
 // Data sources
 @property (nonatomic, strong) NSArray *myCrowds;
 @property (nonatomic, strong) NSArray *myFriends;
+
+// Video Reencoder
+@property (nonatomic) RCVideoReencoder *videoReencoder;
 
 @end
 
@@ -50,11 +54,14 @@
     self.titleTextField.delegate = self;
     
     [self setTitle:@"New Session"];
+
+    self.videoReencoder = [[RCVideoReencoder alloc] init];
+    [self.videoReencoder addObserver:self forKeyPath:@"status" options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) context:nil];
     
     NSLog(@"Loading image with url: %@", self.thumbnailImageURL);
 //    [self.backgroundImageView setImage:[[UIImage alloc] initWithContentsOfFile:[self.thumbnailImageURL absoluteString]]];
     
-    UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(submitSession)];
+    UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneButtonClicked)];
     self.navigationItem.rightBarButtonItem = doneButton;
 }
 
@@ -75,7 +82,25 @@
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark Observers
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([keyPath isEqualToString:@"status"] && [[change objectForKey:NSKeyValueChangeNewKey] isEqualToString:RCVideoReencoderDidFinishSuccessfully]) {
+        NSLog(@"keypath: %@", keyPath);
+        self.videoURL = [NSURL fileURLWithPath:self.videoReencoder.outputURL];
+        [self submitSession];
+    }
+    else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
+}
+
 #pragma mark Submit Session
+- (void)doneButtonClicked
+{
+    [self.videoReencoder loadAssetToReencode:self.videoURL];
+}
+
 - (void)submitSession {
     if ([self confirmValidData]) {
         switch ([self.segmentedControl selectedSegmentIndex]) {
@@ -93,6 +118,7 @@
 {
     RKObjectManager *objectManager = [RKObjectManager sharedManager];
 
+    NSLog(@"Submitting Clip with Existing Crowd");
     NSMutableURLRequest *request = [objectManager multipartFormRequestWithObject:nil
                                                                           method:RKRequestMethodPOST
                                                                             path:mySessionsEndpoint
@@ -142,7 +168,6 @@
     NSError *error = [[NSError alloc] init];
     NSData *memberData = [NSJSONSerialization dataWithJSONObject:crowdMembers options:NSJSONWritingPrettyPrinted error:&error];
     NSString *jsonString = [[NSString alloc] initWithData:memberData encoding:NSUTF8StringEncoding];
-    NSLog(@"jsonData as string:\n%@", jsonString);
     NSMutableURLRequest *request = [objectManager multipartFormRequestWithObject:nil
                                                                           method:RKRequestMethodPOST
                                                                             path:mySessionsEndpoint
@@ -266,7 +291,7 @@
             height = 70;
             break;
         case 1:
-            height = 50;
+            height = 60;
             break;
     }
     return height;
@@ -296,12 +321,14 @@
             // Only 1 crowd should be able to be selected
             [self clearCheckmarksForTableView:tableView];
             cell.accessoryType = UITableViewCellAccessoryCheckmark;
+            cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ic_checkbox_green"]];
             self.selectedCrowd = [self.myCrowds objectAtIndex:indexPath.row];
             break;
         case 1:
             if (cell.accessoryType == UITableViewCellAccessoryCheckmark)
             {
                 cell.accessoryType = UITableViewCellAccessoryNone;
+                cell.accessoryView = nil;
                 NSLog(@"Removing friend from cell %ld", (long)indexPath.row);
                 // Remove friend from array when deselecting row
                 [self.selectedFriendsForCrowd removeObject:[self.myFriends objectAtIndex:indexPath.row]];
@@ -309,6 +336,7 @@
             else
             {
                 cell.accessoryType = UITableViewCellAccessoryCheckmark;
+                cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ic_checkbox_green"]];
                 // Add friend when selecting row
                 NSLog(@"Adding friend from cell %ld", (long)indexPath.row);
                 [self.selectedFriendsForCrowd addObject:[self.myFriends objectAtIndex:indexPath.row]];
@@ -367,6 +395,7 @@
 {
     for (int i = 0; i < [self.myCrowds count]; i++) {
         [tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]].accessoryType = UITableViewCellAccessoryNone;
+        [tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]].accessoryView = nil;
     }
 }
 

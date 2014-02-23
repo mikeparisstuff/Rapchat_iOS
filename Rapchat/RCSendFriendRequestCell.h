@@ -10,6 +10,8 @@
 
 @interface RCSendFriendRequestCell : UITableViewCell
 @property (weak, nonatomic) IBOutlet UILabel *usernameLabel;
+@property (weak, nonatomic) IBOutlet UIButton *completeButton;
+@property (weak, nonatomic) IBOutlet UIButton *sendFriendRequestButton;
 
 - (IBAction)sendFriendRequest:(UIButton *)sender;
 

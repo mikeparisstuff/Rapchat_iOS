@@ -16,6 +16,7 @@
 @property (nonatomic, copy) NSString *firstName;
 @property (nonatomic, copy) NSString *lastName;
 @property (nonatomic, copy) NSString *email;
+@property (nonatomic, copy) NSURL *profilePictureURL;
 //@property (nonatomic, copy) NSDate *lastLogin;
 @property (nonatomic, copy) NSDate *dateJoined;
 

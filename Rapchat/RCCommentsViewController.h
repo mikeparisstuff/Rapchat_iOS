@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "RCViewController.h"
 
-@interface RCCommentsViewController : UIViewController <UITableViewDelegate, UITableViewDataSource>
+@interface RCCommentsViewController : RCViewController <UITableViewDelegate, UITableViewDataSource>
 
 @property (strong, nonatomic) NSNumber *sessionId;
 @property (strong, nonatomic) NSArray *comments;

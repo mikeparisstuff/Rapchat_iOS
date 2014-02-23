@@ -12,4 +12,6 @@
 
 @interface RCFeedViewController : RCTableViewController <RCSessionCellProtocol>
 
+
 @end
+

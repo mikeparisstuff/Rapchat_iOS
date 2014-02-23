@@ -7,9 +7,20 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "RCProfile.h"
+
+@protocol RCFriendCellProtocol <NSObject>
+
+- (void)gotoProfile:(NSString *)username;
+
+@end
 
 @interface RCFriendTableViewCell : UITableViewCell
 
 @property (weak, nonatomic) IBOutlet UILabel *usernameLabel;
+@property (weak, nonatomic) IBOutlet UILabel *fullNameLabel;
+@property (weak, nonatomic) id delegate;
 
+- (void)setFriend:(RCProfile *)friend;
+- (NSString *)getFriendsUsername;
 @end

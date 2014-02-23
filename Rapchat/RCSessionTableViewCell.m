@@ -9,13 +9,10 @@
 #import "RCSessionTableViewCell.h"
 #import <AVFoundation/AVFoundation.h>
 #import <SDWebImage/UIImageView+WebCache.h>
+#import "UIImageView+UIActivityIndicatorForSDWebImage.h"
 
 @interface RCSessionTableViewCell ()
 
-@property (weak, nonatomic) IBOutlet UIButton *likeButton;
-@property (weak, nonatomic) IBOutlet UIButton *commentButton;
-@property (weak, nonatomic) IBOutlet UILabel *commentsLabel;
-@property (weak, nonatomic) IBOutlet UILabel *likesLabel;
 @property (strong, nonatomic) RCSession* session;
 @property (weak, nonatomic) IBOutlet UIImageView *thumbnailImageView;
 
@@ -74,13 +71,17 @@
     NSArray *dateArray = [[dateFormatter stringFromDate:session.created] componentsSeparatedByString:@"/"];
     
 //    [self.thumbnailImageView setImage:[UIImage imageWithData:[NSData dataWithContentsOfURL:session.thumbnailUrl]]];
-    [self.thumbnailImageView setImageWithURL:session.thumbnailUrl placeholderImage:[UIImage imageNamed:@"session_placeholder"]];
+    
+//    [self.thumbnailImageView setImageWithURL:session.thumbnailUrl placeholderImage:[UIImage imageNamed:@"session_placeholder"]];
+    [self.thumbnailImageView setImageWithURL:session.thumbnailUrl usingActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     self.titleLabel.text = session.title;
     self.dateLabel.text = [NSString stringWithFormat:@"%@ %@", [months objectAtIndex:[dateArray[0] intValue]], dateArray[1]];
     self.numberOfMembersLabel.text = [NSString stringWithFormat:@"%d members", (int)[session.crowd.members count]];
     self.crowdTitleLabel.text = [NSString stringWithFormat:@"Crowd: %@", session.crowd.title];
-    self.likesLabel.text = [NSString stringWithFormat:@"  %@ likes", session.numberOfLikes];
-    self.commentsLabel.text = [NSString stringWithFormat:@"  %lu comments", (unsigned long)[session.comments count]];
+    NSString *likeFormat = ([session.numberOfLikes intValue]==1)? @"  %@ like" : @"  %@ likes";
+    self.likesLabel.text = [NSString stringWithFormat:likeFormat, session.numberOfLikes];
+    NSString *format = ([session.comments count]==1)? @"  %lu comment" : @"  %lu comments";
+    self.commentsLabel.text = [NSString stringWithFormat:format, (unsigned long)[session.comments count]];
     
     
 //    // Set title label size

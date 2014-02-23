@@ -10,7 +10,6 @@
 #import "RCPreviewVideoForCreationViewController.h"
 
 @interface RCCreateNewSessionCameraViewController ()
-
 @end
 
 @implementation RCCreateNewSessionCameraViewController
@@ -28,6 +27,7 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
+
 }
 
 - (void)didReceiveMemoryWarning
@@ -52,9 +52,15 @@
             RCPreviewVideoForCreationViewController *controller = segue.destinationViewController;
             controller.videoURL = [self getVideoUrl];
             controller.thumbnailImageUrl = self.thumbnailImageUrl;
+            controller.progressValue = self.timerProgress;
             NSLog(@"Prepared PreviewVideoSegue");
         }
     }
+}
+
+#pragma mark Actions
+- (IBAction)changeBeatsButtonClicked {
+    [self changeSong];
 }
 
 @end

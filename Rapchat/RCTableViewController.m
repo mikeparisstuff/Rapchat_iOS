@@ -42,7 +42,7 @@
     [self.refreshControl setBackgroundColor:[UIColor colorWithRed:231.0/255.0 green:76.0/255.0 blue:60.0/255.0 alpha:1.0]];
     
     if ([self.navigationController isKindOfClass:[RCNavigationController class]]) {
-        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Menu" style:UIBarButtonItemStyleBordered target:self.navigationController action:@selector(toggleMenu)];
+        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:nil style:UIBarButtonItemStyleBordered target:self.navigationController action:@selector(toggleMenu)];
     }
 //    self.showTabBar = YES;
     
@@ -57,24 +57,19 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-//    [self setTabBarVisible];
+    if ([[self.navigationController viewControllers] count] > 1) {
+        NSLog(@"Nav Controller is not nil");
+        UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ic_back"] style:UIBarButtonItemStylePlain target:self action:@selector(backPressed)];
+        self.navigationItem.leftBarButtonItem = backButton;
+    }
 }
 
-//- (void)setTabBarVisible
-//{
-//    if (self.showTabBar) {
-//        RCTabBarController *tabBarController = (RCTabBarController *)self.tabBarController;
-//        [tabBarController setTabBarHidden:NO animated:YES];
-//    } else {
-//        RCTabBarController *tabBarController = (RCTabBarController *)self.tabBarController;
-//        [tabBarController setTabBarHidden:YES animated:YES];
-//    }
-//}
-
-//- (void)searchButtonClicked:(id)sender
-//{
-//    NSLog(@"Search Clicked");
-//}
+- (void)backPressed
+{
+    if ([[self.navigationController viewControllers] count] > 1) {
+        [self.navigationController popViewControllerAnimated:YES];
+    }
+}
 
 - (void)didReceiveMemoryWarning
 {

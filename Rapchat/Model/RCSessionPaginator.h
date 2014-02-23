@@ -7,14 +7,10 @@
 //
 
 #import "RCPaginationItem.h"
+#import "RCSession.h"
 
 @interface RCSessionPaginator : RCPaginationItem
 
-@property (nonatomic, strong) NSMutableArray *allSessions;
 @property (nonatomic, strong) NSArray *currentPageSessions;
-
-- (void)getNextPage;
-- (NSArray *)getCurrentPage;
-- (NSArray *)getAllSessions;
 
 @end

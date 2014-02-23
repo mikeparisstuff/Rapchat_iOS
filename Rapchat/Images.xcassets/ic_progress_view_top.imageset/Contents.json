@@ -3,11 +3,12 @@
     {
       "idiom" : "universal",
       "scale" : "1x",
-      "filename" : "640x50transparent_red_pv.png"
+      "filename" : "progress-view-top-1.png"
     },
     {
       "idiom" : "universal",
-      "scale" : "2x"
+      "scale" : "2x",
+      "filename" : "progress-view-top.png"
     }
   ],
   "info" : {

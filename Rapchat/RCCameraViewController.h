@@ -7,14 +7,22 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "RCViewController.h"
 
-@interface RCCameraViewController : UIViewController
+@interface RCCameraViewController : RCViewController
 
 - (NSURL *)getVideoUrl;
 
 // Thumbnail
 @property (nonatomic, strong) NSURL *thumbnailImageUrl;
+@property (nonatomic, strong) NSString *currentBeat;
+@property (nonatomic) NSUInteger beatNumber;
+@property (nonatomic, strong)NSArray *beats;
+
+@property (nonatomic) float timerProgress;
 
 - (void)changeCamera:(id)sender;
+- (void)reloadAudio;
+- (void)changeSong;
 
 @end

@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "RCCrowd.h"
+#import "RCClip.h"
 #import "RCBaseModel.h"
 
 @interface RCSession : RCBaseModel
@@ -22,6 +23,7 @@
 @property (nonatomic, copy) NSArray *comments;
 @property (nonatomic, copy) NSURL *mostRecentClipUrl;
 @property (nonatomic, copy) NSURL *thumbnailUrl;
+@property (nonatomic, strong) NSArray *clips;
 
 // Probably need likes here as well
 

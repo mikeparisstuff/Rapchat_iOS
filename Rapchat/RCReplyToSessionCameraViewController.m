@@ -34,8 +34,19 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     
-    UIBarButtonItem *rotateButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ic_spin"] style:UIBarButtonItemStylePlain target:self action:@selector(changeCamera:)];
+    UIBarButtonItem *rotateButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ic_twist"] style:UIBarButtonItemStylePlain target:self action:@selector(changeCamera:)];
     self.navigationItem.rightBarButtonItem = rotateButton;
+    
+    [self setTitleButton];
+}
+
+- (void)setTitleButton
+{
+    UIButton * button = [[UIButton alloc]initWithFrame:CGRectZero];
+    [button addTarget:self action:@selector(changeBeatsButtonClicked) forControlEvents:UIControlEventTouchUpInside];
+    [button setImage:[UIImage imageNamed:@"ic_swapsong"] forState:UIControlStateNormal];
+    [button sizeToFit];
+    self.navigationItem.titleView = button;
 }
 
 - (void)didReceiveMemoryWarning
@@ -79,8 +90,13 @@
             controller.sessionId = self.sessionId;
             controller.videoURL = [self getVideoUrl];
             controller.thumbnailImageUrl = self.thumbnailImageUrl;
-            NSLog(@"Prepared PreviewVideoSegue");
+            NSLog(@"Prepared PreviewVideoSegue with url: %@", controller.videoURL);
         }
     }
+}
+
+#pragma mark Actions
+- (IBAction)changeBeatsButtonClicked {
+    [self changeSong];
 }
 @end

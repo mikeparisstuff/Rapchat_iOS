@@ -9,10 +9,12 @@
 #import "RCPreviewFileViewController.h"
 #import "RCFilePlayerView.h"
 #import "RCTabBarController.h"
+#import "RCProgressView.h"
 
 #import <AVFoundation/AVFoundation.h>
 
 static const NSString *ItemStatusContext;
+static const NSString *ItemPlaybackLikelyToKeepUpContext;
 
 @interface RCPreviewFileViewController ()
 
@@ -20,6 +22,10 @@ static const NSString *ItemStatusContext;
 @property (nonatomic) AVPlayer *player;
 @property (nonatomic) AVPlayerItem *playerItem;
 @property (weak, nonatomic) IBOutlet RCFilePlayerView *playerView;
+@property (nonatomic) RCProgressView *progressView;
+
+@property (nonatomic) NSTimer *myTimer;
+
 
 
 @end
@@ -44,9 +50,6 @@ static const NSString *ItemStatusContext;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    
-    self.showTabBar = NO;
 	// Do any additional setup after loading the view.
     
 //    // Create the AVPlayer
@@ -57,6 +60,20 @@ static const NSString *ItemStatusContext;
 //    [[self playerView] setPlayer:player];
 //    dispatch_queue_t playerQueue = dispatch_queue_create("player queue", DISPATCH_QUEUE_SERIAL);
 //    [self setPlayerQueue:playerQueue];
+
+}
+
+- (void) setupProgressView {
+    // Create the progress view
+    // On the custome view you need to set the frame twice because it overwrites the frame in init
+    [self.navigationController.navigationBar setTranslucent:YES];
+    self.progressView=[[RCProgressView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height-96, 325, 96)];
+    self.progressView.frame = CGRectMake(0, self.view.frame.size.height-96, 325, 96);
+    [self.view addSubview:self.progressView];
+    //    [self.view sendSubviewToBack:self.previewView];
+    [self.view sendSubviewToBack:self.progressView];
+    [self.progressView setProgress:self.progressValue animated:YES];
+//    [self startTimer];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -64,11 +81,28 @@ static const NSString *ItemStatusContext;
     NSLog(@"RCPreviewFileViewController will appear to show file at url: %@", self.videoURL);
     [super viewWillAppear:animated];
     [self loadAssetFromFile];
+    [self setupProgressView];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+//    [[NSFileManager defaultManager] removeItemAtPath:[self.thumbnailImageUrl absoluteString] error:nil];
     [self.player pause];
+    NSLog(@"Preview Disappearing. Pausing Playback");
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:AVPlayerItemDidPlayToEndTimeNotification
+                                                  object:[self.player currentItem]];
+    @try{
+        [self.playerItem removeObserver:self forKeyPath:@"status"];
+    }@catch(id anException){
+        //do nothing, obviously it wasn't attached because an exception was thrown
+    }
+    @try{
+        [self.playerItem removeObserver:self forKeyPath:@"playbackLikelyToKeepUp"];
+    }@catch(id anException){
+        //do nothing, obviously it wasn't attached because an exception was thrown
+    }
+    [super viewWillDisappear:animated];
 }
 
 - (void)didReceiveMemoryWarning
@@ -117,6 +151,11 @@ static const NSString *ItemStatusContext;
                                                                            forKeyPath:@"status"
                                                                               options:0
                                                                               context:&ItemStatusContext];
+                                                         [self.playerItem addObserver:self
+                                                                           forKeyPath:@"playbackLikelyToKeepUp"
+                                                                              options:0
+                                                                              context:&ItemPlaybackLikelyToKeepUpContext];
+                                                         [self.playerItem addObserver:self forKeyPath:@"currentTime.value" options:0 context:nil];
                                                          self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
                                                          self.player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
                                                          
@@ -136,28 +175,30 @@ static const NSString *ItemStatusContext;
                               }];
 }
 
-- (void)dealloc
-{
-    NSLog(@"Deleting file: %@", self.videoURL);
-//    [[NSFileManager defaultManager] removeItemAtURL:self.videoURL error:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:AVPlayerItemDidPlayToEndTimeNotification
-                                                  object:[self.player currentItem]];
-    [self.playerItem removeObserver:self forKeyPath:@"status"];
-    [[NSFileManager defaultManager] removeItemAtPath:[self.thumbnailImageUrl absoluteString] error:nil];
-}
-
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object
                         change:(NSDictionary *)change context:(void *)context {
-    
+
+    NSLog(@"Keypath: %@", keyPath);
     if ([keyPath isEqualToString:@"status"]) {
         if (self.player.status == AVPlayerStatusReadyToPlay) {
 //            playButton.enabled = YES;
-            [self.player play];
+
+//            while (CMTimeGetSeconds([[self.playerItem.loadedTimeRanges objectAtIndex:0] CMTimeRangeValue].duration) < 3) {
+//                NSLog(@"Loaded time ranges: %f", CMTimeGetSeconds([[self.playerItem.loadedTimeRanges objectAtIndex:0] CMTimeRangeValue].duration));
+//            }
+//            [self.player play];
             NSLog(@"Player ready to play");
         } else if (self.player.status == AVPlayerStatusFailed) {
             // something went wrong. player.error should contain some information
             NSLog(@"Player Failed");
+        }
+    }
+    if ([keyPath isEqualToString:@"playbackLikelyToKeepUp"]) {
+//        NSLog(@"Playback likely to keep up");
+        if (self.playerItem.playbackLikelyToKeepUp == YES) {
+            [self.player play];
+        } else {
+            [self.player pause];
         }
     }
     
@@ -170,9 +211,30 @@ static const NSString *ItemStatusContext;
 //                       });
         return;
     }
+    if (context == &ItemPlaybackLikelyToKeepUpContext) {
+        NSLog(@"Item Playback likely to keep up context change");
+        return;
+    }
+    if ([keyPath isEqualToString:@"currentTime.value"]) {
+        NSLog(@"Detecting change of value: %@", change);
+        [self.progressView setProgress:10.0];
+        return;
+    }
+    
     [super observeValueForKeyPath:keyPath ofObject:object
                            change:change context:context];
     return;
+}
+
+- (void)startTimer
+{
+    NSLog(@"Starting Timer");
+    self.myTimer = [NSTimer scheduledTimerWithTimeInterval:0.05 target:self selector:@selector(updateProgressView) userInfo:nil repeats:YES];
+}
+
+- (void)updateProgressView {
+    double progress = self.playerItem.currentTime.value ;
+    [self.progressView setProgress:progress];
 }
 
 
@@ -191,5 +253,4 @@ static const NSString *ItemStatusContext;
 - (IBAction)submitVideoForUpload:(UIButton *)sender {
     NSLog(@"Submit video and go to select crowd");
 }
-
 @end

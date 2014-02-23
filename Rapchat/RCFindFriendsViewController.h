@@ -6,7 +6,9 @@
 //  Copyright (c) 2014 Michael Paris. All rights reserved.
 //
 
+#import "RCViewController.h"
+#import <MessageUI/MessageUI.h>
 
-@interface RCFindFriendsViewController : UIViewController
+@interface RCFindFriendsViewController : RCViewController <MFMessageComposeViewControllerDelegate, MFMailComposeViewControllerDelegate>
 
 @end

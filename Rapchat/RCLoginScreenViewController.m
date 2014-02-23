@@ -44,10 +44,10 @@
                               NSLog(@"Access Token was nil");
                           }
                       }failure:^(RKObjectRequestOperation *operation, NSError *error) {
-                          UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"error"
-                                                                          message:[error localizedDescription]
+                          UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Could not find you"
+                                                                          message:@"Sorry, we were unable to log you in with those credentials."
                                                                          delegate:nil
-                                                                cancelButtonTitle:@"OK"
+                                                                cancelButtonTitle:@"Close"
                                                                 otherButtonTitles:nil, nil];
                           [alert show];
                           NSLog(@"Hit error: %@", error);

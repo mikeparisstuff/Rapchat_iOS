@@ -7,9 +7,19 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "RCCrowd.h"
+
+@protocol RCCrowdTableViewCellProtocol <NSObject>
+
+- (void)viewCrowdMembers:(UITableViewCell *)sender;
+
+@end
 
 @interface RCCrowdTableViewCell : UITableViewCell
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;
 @property (weak, nonatomic) IBOutlet UILabel *numberOfMembersLabel;
+@property (weak, nonatomic) id delegate;
+
+- (void)setCrowd:(RCCrowd *)crowd;
 
 @end

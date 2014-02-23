@@ -28,9 +28,9 @@
     //[UIColor colorWithRed:206.0/255.0 green:90.0/255.0 blue:17.0/255.0 alpha:1.0] - orange
     //[UIColor colorWithRed:199.0/255.0 green:65.0/255.0 blue:0.0/255.0 alpha:1.0] - Dark orange
 //    [[UITabBar appearance] setBarTintColor:[UIColor colorWithHue:0.0 saturation:0.06 brightness:0.14 alpha:1.0]];
-    [[UIToolbar appearance] setBarTintColor:[UIColor colorWithHue:0.0 saturation:0.06 brightness:0.14 alpha:1.0]];
+//    [[UIToolbar appearance] setBarTintColor:[UIColor colorWithHue:0.0 saturation:0.06 brightness:0.14 alpha:1.0]];
 //    [[UITabBar appearance] setTintColor:[UIColor whiteColor]];
-    [[UIToolbar appearance] setTintColor:[UIColor whiteColor]];
+//    [[UIToolbar appearance] setTintColor:[UIColor whiteColor]];
 
     
     NSShadow *shadow = [[NSShadow alloc] init];
@@ -73,9 +73,8 @@
 //    UIView *statusBar = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 20)];
 //    [statusBar setBackgroundColor:[UIColor colorWithRed:231.0/255.0 green:76.0/255.0 blue:60.0/255.0 alpha:1.0]];
 //    [self.window.rootViewController.view addSubview:statusBar];
-
+    [NSThread sleepForTimeInterval:1.0];
     [self.window makeKeyAndVisible];
-    
     return YES;
     
     

@@ -22,8 +22,11 @@
 @property (weak, nonatomic) IBOutlet UILabel *dateLabel;
 @property (weak, nonatomic) IBOutlet UILabel *numberOfMembersLabel;
 @property (weak, nonatomic) IBOutlet UILabel *crowdTitleLabel;
-@property (weak, nonatomic) IBOutlet UIButton *likesButton;
-@property (weak, nonatomic) IBOutlet UIButton *commentsButton;
+
+@property (weak, nonatomic) IBOutlet UIButton *likeButton;
+@property (weak, nonatomic) IBOutlet UIButton *commentButton;
+@property (weak, nonatomic) IBOutlet UILabel *commentsLabel;
+@property (weak, nonatomic) IBOutlet UILabel *likesLabel;
 @property (weak, nonatomic) id delegate;
 
 - (void) setCellSession:(RCSession *)session;

@@ -18,7 +18,8 @@
 #import "RCBaseModel.h"
 #import "RCClip.h"
 #import "RCFriendRequest.h"
-#import "RCPaginationItem.h"
+#import "RCSessionPaginator.h"
+#import "RCPublicProfile.h"
 
 #import "RCUrlPaths.h"
 
@@ -28,7 +29,7 @@
 @implementation RCRestkitClient
 
 static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
-//static const NSString *BASE_URL = @"http://10.0.1.39:8000";
+//static const NSString *BASE_URL = @"http://192.168.0.111:8000";
 
 +(void)setupRestkit
 {
@@ -91,6 +92,7 @@ static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
                                                          @"id": @"profileId",
                                                          @"phone_number": @"phoneNumber",
                                                          @"token":@"accessToken",
+                                                         @"profile_picture": @"profilePictureURL",
                                                          @"num_raps": @"numberOfRaps",
                                                          @"num_likes": @"numberOfLikes",
                                                          @"num_friends": @"numberOfFriends"
@@ -102,10 +104,12 @@ static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
                                                       @"first_name": @"firstName",
                                                       @"last_name": @"lastName",
                                                       @"email":@"email",
+                                                      @"profile_picture": @"profilePictureURL",
                                                       @"username": @"username",
                                                       @"date_joined": @"dateJoined"
                                                       //                                                      @"last_login": @"lastLogin"
                                                       }];
+    
     
     /*
      *  Setup profile_users relationship mapping
@@ -115,6 +119,7 @@ static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
     
     RKRelationshipMapping *friendsRelationshipMapping = [RKRelationshipMapping relationshipMappingFromKeyPath:@"friends" toKeyPath:@"friends" withMapping:profileMapping];
     [profileMapping addPropertyMapping:friendsRelationshipMapping];
+    
     
     /*
      Setup Sessions Crowds Mapping
@@ -129,14 +134,22 @@ static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
                                                          @"modified":@"modified",
                                                          @"clip_url":@"mostRecentClipUrl",
                                                          @"thumbnail_url": @"thumbnailUrl"}];
+
     
-    /*
-     *  Pagination Mapping
-     */
-    RKObjectMapping *paginationMapping = [RKObjectMapping mappingForClass:[RCPaginationItem class]];
-    [paginationMapping addAttributeMappingsFromDictionary:@{@"count": @"itemCount",
-                                                            @"next": @"nextUrl",
-                                                            @"previous": @"previousUrl"}];
+    RKObjectMapping *clipsMapping = [RKObjectMapping mappingForClass:[RCClip class]];
+    [clipsMapping addAttributeMappingsFromDictionary:@{@"id":@"clipId",
+                                                       @"clip": @"relativePath",
+                                                       @"url": @"url",
+                                                       @"clip_num": @"clipNumber",
+                                                       @"creator": @"creator",
+                                                       @"thumbnail_url": @"thumbnailUrl",
+                                                       @"created": @"created",
+                                                       @"modified": @"modified"}
+     ];
+    
+    RKRelationshipMapping *clipsSessionRelationshipMapping = [RKRelationshipMapping relationshipMappingFromKeyPath:@"clips" toKeyPath:@"clips" withMapping:clipsMapping];
+    [sessionMapping addPropertyMapping:clipsSessionRelationshipMapping];
+
     
     /*
      Setup Crowds Mappings
@@ -236,9 +249,30 @@ static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
                                                                                         keyPath:@"error" statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassClientError)];
     
     
+    /*
+     *  Pagination Mapping
+     */
+    RKObjectMapping *sessionsPaginationMapping = [RKObjectMapping mappingForClass:[RCSessionPaginator class]];
+    [sessionsPaginationMapping addAttributeMappingsFromDictionary:@{@"count": @"itemCount",
+                                                                    @"next": @"nextUrl",
+                                                                    @"previous": @"previousUrl"}];
+    
+    RKRelationshipMapping *sessionPaginatorResultsMapping = [RKRelationshipMapping relationshipMappingFromKeyPath:@"results" toKeyPath:@"currentPageSessions" withMapping:sessionMapping];
+    [sessionsPaginationMapping addPropertyMapping:sessionPaginatorResultsMapping];
+    
+    
+    
+    
+    RKObjectMapping *publicProfileMapping = [RKObjectMapping mappingForClass:[RCPublicProfile class]];
+    RKRelationshipMapping *publicProfileLikesMapping = [RKRelationshipMapping relationshipMappingFromKeyPath:@"likes" toKeyPath:@"likes" withMapping:likeMapping];
+    RKRelationshipMapping *publicProfileProfileMapping = [RKRelationshipMapping relationshipMappingFromKeyPath:@"profile" toKeyPath:@"profile" withMapping:profileMapping];
+    [publicProfileMapping addPropertyMappingsFromArray:@[publicProfileLikesMapping, publicProfileProfileMapping]];
+    
     // Register out mapping with the provider using a response descriptor
     
     // Mapping Descriptor for /users/ endpoint
+    
+#pragma mark Response Descriptors
     RKResponseDescriptor *usersResponseDescriptor = [RKResponseDescriptor
                                                      responseDescriptorWithMapping:profileMapping
                                                      method:RKRequestMethodGET
@@ -246,12 +280,20 @@ static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
                                                      keyPath:nil
                                                      statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     
+    // Wrapped up in the sessionsPaginationDescriptor
     RKResponseDescriptor *sessionsResponseDescriptor = [RKResponseDescriptor
-                                                        responseDescriptorWithMapping:sessionMapping
+                                                        responseDescriptorWithMapping:sessionsPaginationMapping
                                                         method:RKRequestMethodGET
                                                         pathPattern:mySessionsEndpoint
-                                                        keyPath:@"sessions"
+                                                        keyPath:nil
                                                         statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+    
+    RKResponseDescriptor *completedSessionsResponseDescriptor = [RKResponseDescriptor
+                                                                 responseDescriptorWithMapping:sessionsPaginationMapping
+                                                                 method:RKRequestMethodGET
+                                                                 pathPattern:myCompletedSessionsEndpoint
+                                                                 keyPath:nil
+                                                                 statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
 
 //    RKResponseDescriptor *paginationItemDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:paginationMapping
 //                                                                                                  method:RKRequestMethodGET
@@ -301,6 +343,13 @@ static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
                                                   pathPattern:myFriendsEndpoint
                                                   keyPath:@"friends"
                                                   statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+    
+    RKResponseDescriptor *deleteFriendDescriptor = [RKResponseDescriptor
+                                                    responseDescriptorWithMapping:profileMapping
+                                                    method:RKRequestMethodDELETE
+                                                    pathPattern:myFriendsEndpoint
+                                                    keyPath:@"friend"
+                                                    statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
 
     RKResponseDescriptor *getCrowdsDescriptor = [RKResponseDescriptor
                                                  responseDescriptorWithMapping:crowdMapping
@@ -343,12 +392,52 @@ static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
                                                                                           keyPath:@"clip"
                                                                                       statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     
+    RKResponseDescriptor *sessionClipsDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:clipsMapping
+                                                                                           method:RKRequestMethodGET
+                                                                                      pathPattern:@"/sessions/:sessionId/clips/"
+                                                                                          keyPath:@"clips"
+                                                                                      statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+    
     RKResponseDescriptor *pendingFriendRequestsDescriptor = [RKResponseDescriptor
                                                              responseDescriptorWithMapping:friendRequestMapping
                                                              method:RKRequestMethodGET
                                                              pathPattern:myFriendRequestsEndpoint
                                                              keyPath:@"pending_me"
                                                              statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+    
+    RKResponseDescriptor *searchUsersDescriptor = [RKResponseDescriptor
+                                                   responseDescriptorWithMapping:userMapping
+                                                   method:RKRequestMethodGET
+                                                   pathPattern:searchPeopleEndpoint
+                                                   keyPath:@"profiles"
+                                                   statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+    
+    RKResponseDescriptor *myClipsDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:clipsMapping
+                                                                                           method:RKRequestMethodGET
+                                                                                      pathPattern:myClipsEndpoint
+                                                                                          keyPath:@"clips"
+                                                                                      statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+
+    RKResponseDescriptor *publicProfileDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:publicProfileMapping
+                                                                                                 method:RKRequestMethodGET
+                                                                                            pathPattern:@"/users/:username/"
+                                                                                                keyPath:nil
+                                                                                            statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+
+    RKResponseDescriptor *sendFriendRequestDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:friendRequestMapping
+                                                                                                     method:RKRequestMethodPOST
+                                                                                                pathPattern:myFriendRequestsEndpoint
+                                                                                                    keyPath:@"request"
+                                                                                                statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+    
+    RKResponseDescriptor *postFeedbackResponseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:baseModelMapping
+                                                                                                        method:RKRequestMethodPOST
+                                                                                                   pathPattern:feedbackEndpoint
+                                                                                                       keyPath:nil
+                                                                                                   statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+    
+    RKResponseDescriptor *replyToFriendRequestDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:friendRequestMapping method:RKRequestMethodPOST pathPattern:replyToFriendRequestEndpoint keyPath:@"request" statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+    
 #pragma mark Request Descriptors
     
     
@@ -366,7 +455,9 @@ static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
     
     
 #pragma mark Register Descriptors
-    NSArray *responseDescriptorArray = @[usersResponseDescriptor, sessionsResponseDescriptor, newSessionResponseDescriptor, obtainTokenDescriptor, registerUserDescriptor, getMyProfileDescriptor, putMyProfileDescriptor, getFriendsDescriptor, getCrowdsDescriptor, getLikesDescriptor, postLikesDescriptor, getCommentsDescriptor, postNewCommentDescriptor, errorDescriptor, addClipDescriptor, pendingFriendRequestsDescriptor, errorDescriptor];
+    
+    // Putting public profile first is important becuase it needs to be checked after /users/me/
+    NSArray *responseDescriptorArray = @[publicProfileDescriptor, usersResponseDescriptor, newSessionResponseDescriptor, obtainTokenDescriptor, registerUserDescriptor, getMyProfileDescriptor, putMyProfileDescriptor, getFriendsDescriptor, getCrowdsDescriptor, getLikesDescriptor, postLikesDescriptor, getCommentsDescriptor, postNewCommentDescriptor, errorDescriptor, addClipDescriptor, pendingFriendRequestsDescriptor, errorDescriptor, searchUsersDescriptor, sessionsResponseDescriptor, myClipsDescriptor, sendFriendRequestDescriptor, sessionClipsDescriptor, completedSessionsResponseDescriptor, replyToFriendRequestDescriptor, deleteFriendDescriptor, postFeedbackResponseDescriptor];
     [objectManager addResponseDescriptorsFromArray:responseDescriptorArray];
     
     NSArray *requestDescriptorArray = @[addClipRequestDescriptor];

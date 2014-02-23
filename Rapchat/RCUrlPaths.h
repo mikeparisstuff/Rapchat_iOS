@@ -10,6 +10,9 @@
 
 // Sessions Urls
 static NSString * const mySessionsEndpoint = @"/users/me/sessions/";
+static NSString * const myLiveSessionsEndpoint = @"/users/me/sessions/live/";
+static NSString * const myCompletedSessionsEndpoint = @"/users/me/sessions/complete/";
+static NSString * const myClipsEndpoint = @"/users/me/clips/";
 
 // Crowds Urls
 static NSString * const myCrowdsEndpoint = @"/users/me/crowds/";
@@ -25,3 +28,7 @@ static NSString * const myProfileEndpoint = @"/users/me/";
 static NSString * const myLikesEndpoint = @"/users/me/likes/";
 static NSString * const usersEndpoint = @"/users/";
 static NSString * const replyToFriendRequestEndpoint = @"/users/me/friends/requests/reply/";
+
+static NSString * const searchPeopleEndpoint = @"/search/";
+
+static NSString * const feedbackEndpoint = @"/feedback/";

@@ -9,7 +9,7 @@
 #import "RCViewController.h"
 #import "RCProfile.h"
 
-@interface RCEditProfileViewController : UIViewController
+@interface RCEditProfileViewController : RCViewController <UIImagePickerControllerDelegate, UIPickerViewDataSource, UIPickerViewDelegate>
 
 @property (nonatomic, strong) RCProfile *profile;
 

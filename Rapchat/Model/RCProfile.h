@@ -17,6 +17,7 @@
 @property (nonatomic, copy) NSString *accessToken;
 @property (nonatomic, strong) RCUser *user;
 @property (nonatomic, strong) NSArray *friends;
+@property (nonatomic, copy) NSURL *profilePictureURL;
 
 @property (nonatomic, copy) NSNumber *numberOfFriends;
 @property (nonatomic, copy) NSNumber *numberOfLikes;

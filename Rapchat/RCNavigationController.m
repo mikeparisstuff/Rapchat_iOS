@@ -7,6 +7,8 @@
 //
 
 #import "RCNavigationController.h"
+#import "RCFeedViewController.h"
+#import "RCConstants.h"
 
 @interface RCNavigationController ()
 
@@ -41,7 +43,7 @@
     __typeof (self) __weak weakSelf = self;
     REMenuItem *liveItem = [[REMenuItem alloc] initWithTitle:@"Live"
                                                     subtitle:nil
-                                                       image:[UIImage imageNamed:@"ic_music_note"]
+                                                       image:[UIImage imageNamed:@"ic_health_gray"]
                                             highlightedImage:nil
                                                       action:^(REMenuItem *item) {
                                                           NSLog(@"Item: %@", item);
@@ -52,17 +54,17 @@
     
     REMenuItem *stageItem = [[REMenuItem alloc] initWithTitle:@"Stage"
                                                        subtitle:nil
-                                                          image:[UIImage imageNamed:@"ic_home"]
+                                                          image:[UIImage imageNamed:@"ic_spotlight_gray"]
                                                highlightedImage:nil
                                                          action:^(REMenuItem *item) {
                                                              NSLog(@"Item: %@", item);
                                                              UIStoryboard* storyboard = [UIStoryboard storyboardWithName:[[NSBundle mainBundle].infoDictionary objectForKey:@"UIMainStoryboardFile"] bundle:nil];
-                                                             UIViewController* controller = [storyboard instantiateViewControllerWithIdentifier:@"LiveFeedController"];
+                                                             UIViewController* controller = [storyboard instantiateViewControllerWithIdentifier:@"CompletedFeedController"];
                                                              [weakSelf setViewControllers:@[controller] animated:NO];
                                                          }];
     
     REMenuItem *profileItem = [[REMenuItem alloc] initWithTitle:@"Profile"
-                                                          image:[UIImage imageNamed:@"ic_profile"]
+                                                          image:[UIImage imageNamed:@"ic_profile_gray"]
                                                highlightedImage:nil
                                                          action:^(REMenuItem *item) {
                                                              NSLog(@"Item: %@", item);
@@ -70,6 +72,16 @@
                                                              UIViewController* controller = [storyboard instantiateViewControllerWithIdentifier:@"ProfileController"];
                                                              [weakSelf setViewControllers:@[controller] animated:NO];
                                                          }];
+    
+    REMenuItem *feedbackItem = [[REMenuItem alloc] initWithTitle:@"Feedback"
+                                                           image:[UIImage imageNamed:@"ic_feedback"]
+                                                highlightedImage:nil
+                                                          action:^(REMenuItem *item) {
+                                                    NSLog(@"Item: %@", item);
+                                                    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:[[NSBundle mainBundle].infoDictionary objectForKey:@"UIMainStoryboardFile"] bundle:nil];
+                                                    UIViewController *controller = [storyboard instantiateViewControllerWithIdentifier:@"FeedbackController"];
+                                                    [weakSelf setViewControllers:@[controller] animated:NO];
+                                                }];
     
     
     // You can also assign a custom view for any particular item
@@ -89,7 +101,7 @@
     stageItem.tag = 1;
     profileItem.tag = 2;
     
-    self.menu = [[REMenu alloc] initWithItems:@[liveItem, stageItem, profileItem]];
+    self.menu = [[REMenu alloc] initWithItems:@[liveItem, stageItem, profileItem, feedbackItem]];
     
     // Background view
     //
@@ -120,8 +132,6 @@
         badgeLabel.backgroundColor = [UIColor colorWithRed:0 green:179/255.0 blue:134/255.0 alpha:1];
         badgeLabel.layer.borderColor = [UIColor colorWithRed:0.000 green:0.648 blue:0.507 alpha:1.000].CGColor;
     };
-    
-    
 }
 
 - (void)toggleMenu

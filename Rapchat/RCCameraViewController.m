@@ -14,8 +14,10 @@
 #import <AVFoundation/AVFoundation.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "RCProgressView.h"
+#import "RCUtility.h"
 
 #define TIMER_INTERVAL 0.05
+#define MAX_CLIP_LENGTH 15.0
 
 static void * CapturingStillImageContext = &CapturingStillImageContext;
 static void * RecordingContext = &RecordingContext;
@@ -31,6 +33,8 @@ static const NSString *ItemStatusContext;
 @property (weak, nonatomic) IBOutlet UIButton *recordButton;
 @property (weak, nonatomic) IBOutlet UIButton *stillButton;
 @property (weak, nonatomic) IBOutlet UIButton *cameraButton;
+@property (weak, nonatomic) IBOutlet UIButton *homeButton;
+@property (weak, nonatomic) IBOutlet UIButton *swapsongButton;
 
 // Progress View
 @property (nonatomic, strong) RCProgressView *progressView;
@@ -53,6 +57,9 @@ static const NSString *ItemStatusContext;
 @property (nonatomic) AVCaptureMovieFileOutput *movieFileOutput;
 @property (nonatomic) AVCaptureStillImageOutput *stillImageOutput;
 @property (nonatomic) NSURL *videoURL;
+
+// Audio Player
+@property (nonatomic, strong) AVAudioPlayer *audioPlayer;
 
 // Thumbnail
 @property (nonatomic) NSURL *thumbnailUrl;
@@ -94,7 +101,12 @@ static const NSString *ItemStatusContext;
     
     // Create the AVCaptureSession
     AVCaptureSession *session = [[AVCaptureSession alloc] init];
+
     [session setSessionPreset:AVCaptureSessionPresetMedium];
+    
+    
+//    [session setSessionPreset:AVCaptureSessionPreset640x480];
+    
     [self setSession:session];
     
     // Setup the preview view
@@ -161,17 +173,45 @@ static const NSString *ItemStatusContext;
         }
     });
     
+//    [self.view sendSubviewToBack:self.progressView];
+    [self setupProgressView];
+    [self setupIphone5Screen];
+    
+    //Detect Screen Size and hide use normal progress bar
+    if ([RCUtility hasIphone5Screen]) {
+        [self setupIphone5Screen];
+    } else {
+        [self setupIphone4Screen];
+    }
+    
+    [self setupAudio];
+}
+
+- (void) setupProgressView {
     // Create the progress view
     // On the custome view you need to set the frame twice because it overwrites the frame in init
     [self.navigationController.navigationBar setTranslucent:YES];
-    self.progressView=[[RCProgressView alloc] initWithFrame:CGRectMake(0, 0, 325, 62)];
-    self.progressView.frame = CGRectMake(0, 0, 325, 62);
+    self.progressView=[[RCProgressView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height-96, 325, 96)];
+    self.progressView.frame = CGRectMake(0, self.view.frame.size.height-96, 325, 96);
     [self.view addSubview:self.progressView];
+//    [self.view sendSubviewToBack:self.previewView];
     [self.view sendSubviewToBack:self.progressView];
+}
+
+- (void)setupIphone5Screen {
+    // Setup iphone 5 screen
+    NSLog(@"Setup iphone 5 screen");
+
+}
+
+- (void)setupIphone4Screen {
+    // Setup iphone 4 screen
+    NSLog(@"Setting up iphone 4 screen");
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [self disableButtons];
     // Reset the progress view
     timerCount = 0.0;
     [self.progressView setProgress:0 animated:NO];
@@ -192,11 +232,25 @@ static const NSString *ItemStatusContext;
             });
         }]];
         [[self session] startRunning];
+        [self enableButtons];
+        [self playAudio];
     });
+}
+
+
+- (void) enableButtons
+{
+    [self.recordButton setEnabled:YES];
+}
+
+- (void)disableButtons
+{
+    [self.recordButton setEnabled:NO];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
 {
+    [[self audioPlayer] stop];
     dispatch_async([self sessionQueue], ^{
         [[self session] stopRunning];
         
@@ -261,13 +315,18 @@ static const NSString *ItemStatusContext;
             if (isRecording)
             {
                 [[self cameraButton] setEnabled:NO];
-                [[self recordButton] setTitle:NSLocalizedString(@"Release To Stop", @"Recording button stop title") forState:UIControlStateNormal];
+                [[self homeButton] setEnabled:NO];
+                [[self swapsongButton] setEnabled:NO];
+//                [[self recordButton] setTitle:NSLocalizedString(@"Release To Stop", @"Recording button stop title") forState:UIControlStateNormal];
+//                [self.recordButton setAlpha:0.0f];
                 [[self recordButton] setEnabled:YES];
             }
             else
             {
                 [[self cameraButton] setEnabled:YES];
-                [[self recordButton] setTitle:NSLocalizedString(@"Hold To Record", @"Recording button record title") forState:UIControlStateNormal];
+                [[self homeButton] setEnabled:YES];
+                [[self swapsongButton] setEnabled:YES];
+//                [[self recordButton] setTitle:NSLocalizedString(@"Hold To Record", @"Recording button record title") forState:UIControlStateNormal];
                 [[self recordButton] setEnabled:YES];
             }
         });
@@ -297,6 +356,45 @@ static const NSString *ItemStatusContext;
     }
 }
 
+#pragma mark Audio
+- (void)setupAudio
+{
+    self.beats = @[@"flipwhip", @"simple_beat1", @"simple_beat2", @"simple_beat3", @"beatbox100bpm", @"simple_beat6", @"nil"];
+    self.beatNumber = 0;
+    self.currentBeat = [self.beats objectAtIndex:self.beatNumber];
+}
+
+- (void)playAudio
+{
+    NSLog(@"Play Audio");
+//    NSString *soundFilePath = [NSString stringWithFormat:@"%@/test.mp3", [[NSBundle mainBundle] resourcePath]];
+    if (![self.currentBeat isEqualToString:@"nil"]) {
+        NSString *soundFilePath = [[NSBundle mainBundle] pathForResource:self.currentBeat ofType:@"mp3"];
+        NSURL *soundFileURL = [NSURL fileURLWithPath:soundFilePath];
+        
+        self.audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:soundFileURL error:nil];
+        self.audioPlayer.numberOfLoops = -1; //Infinite
+        
+        [self.audioPlayer play];
+    } else {
+        [self.audioPlayer pause];
+    }
+    
+}
+
+- (void)reloadAudio
+{
+    [self.audioPlayer stop];
+    [self playAudio];
+}
+
+- (void)changeSong
+{
+    self.beatNumber = (self.beatNumber + 1) % [self.beats count];
+    self.currentBeat = [self.beats objectAtIndex:self.beatNumber];
+    [self reloadAudio];
+}
+
 #pragma mark Timer
 
 - (void)startTimer
@@ -305,12 +403,14 @@ static const NSString *ItemStatusContext;
     self.myTimer = [NSTimer scheduledTimerWithTimeInterval:0.05 target:self selector:@selector(updateProgressView) userInfo:nil repeats:YES];
 }
 
+
 - (void)updateProgressView
 {
-    timerCount += 0.05;
+    timerCount += TIMER_INTERVAL;
 //    NSLog(@"Timer set with count: %f", timerCount);
-    if (timerCount <= 7.0) {
-        [self.progressView setProgress:(float)timerCount/7.0f animated:YES];
+    if (timerCount <= MAX_CLIP_LENGTH) {
+        [self.progressView setProgress:(float)timerCount/MAX_CLIP_LENGTH animated:YES];
+        self.timerProgress =(float) timerCount/MAX_CLIP_LENGTH;
     } else {
         [self recordingButtonReleased:nil];
     }
@@ -356,7 +456,7 @@ static const NSString *ItemStatusContext;
             [RCCameraViewController setFlashMode:AVCaptureFlashModeOff forDevice:[[self videoDeviceInput] device]];
             
             // Start recording to a temporary file.
-            NSString *outputFilePath = [NSTemporaryDirectory() stringByAppendingPathComponent:[@"movie" stringByAppendingPathExtension:@"mp4"]];
+            NSString *outputFilePath = [NSTemporaryDirectory() stringByAppendingPathComponent:[@"movie" stringByAppendingPathExtension:@"mov"]];
             if ([[NSFileManager defaultManager] fileExistsAtPath:outputFilePath]) {
                 [[NSFileManager defaultManager] removeItemAtPath:outputFilePath error:nil];
             }
@@ -457,6 +557,8 @@ static const NSString *ItemStatusContext;
 {
     CGPoint devicePoint = [(AVCaptureVideoPreviewLayer *)[[self previewView] layer] captureDevicePointOfInterestForPoint:[gestureRecognizer locationInView:[gestureRecognizer view]]];
     [self focusWithMode:AVCaptureFocusModeAutoFocus exposeWithMode:AVCaptureExposureModeAutoExpose atDevicePoint:devicePoint monitorSubjectAreaChange:YES];
+    
+    
 }
 
 - (void)subjectAreaDidChange:(NSNotification *)notification
@@ -491,6 +593,7 @@ static const NSString *ItemStatusContext;
 //        if (backgroundRecordingID != UIBackgroundTaskInvalid)
 //            [[UIApplication sharedApplication] endBackgroundTask:backgroundRecordingID];
 //    }];
+//    [self convertVideoToMp4];
     [self generateImage];
     [self performSegueWithIdentifier:@"PreviewVideoSegue" sender:self];
 
@@ -614,7 +717,7 @@ static const NSString *ItemStatusContext;
         
 //        [self.thumbnailImageView setImage:[UIImage imageWithCGImage:im]];
         
-        NSData *thumbnailImageData=UIImageJPEGRepresentation([UIImage imageWithCGImage:im], 0.75);
+        NSData *thumbnailImageData=UIImageJPEGRepresentation([UIImage imageWithCGImage:im], 0.6);
         if ([[NSFileManager defaultManager] fileExistsAtPath:[self.thumbnailImageUrl absoluteString]]) {
             [[NSFileManager defaultManager] removeItemAtPath:[self.thumbnailImageUrl absoluteString] error:nil];
         }

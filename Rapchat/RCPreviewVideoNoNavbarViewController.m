@@ -36,7 +36,7 @@
     
     // Set close button
     [self setExtendedLayoutIncludesOpaqueBars:YES];
-    UIBarButtonItem *closeButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ic_house"] style:UIBarButtonItemStylePlain target:self action:@selector(dismissModalVideoPreview:)];
+    UIBarButtonItem *closeButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ic_home"] style:UIBarButtonItemStylePlain target:self action:@selector(dismissModalVideoPreview:)];
     self.navigationItem.leftBarButtonItem = closeButton;
 }
 

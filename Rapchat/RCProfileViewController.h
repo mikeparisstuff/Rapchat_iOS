@@ -7,7 +7,10 @@
 //
 
 #import "RCViewController.h"
+#import "RCSessionTableViewCell.h"
+#import "RCFriendTableViewCell.h"
+#import "RCCrowdTableViewCell.h"
 
-@interface RCProfileViewController : RCViewController <UITableViewDelegate, UITableViewDataSource>
+@interface RCProfileViewController : RCViewController <UITableViewDelegate, UITableViewDataSource, RCSessionCellProtocol, RCFriendCellProtocol, RCCrowdTableViewCellProtocol>
 
 @end
