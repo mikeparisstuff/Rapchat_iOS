@@ -18,7 +18,7 @@
 
 @implementation RCFeedbackViewController
 
-static NSString *STARTING_TEXT = @"Help us make Rapback even better!";
+static NSString *STARTING_TEXT = @"Find any bugs, problems, or have any better ideas? Let us know and help make Rapback even better!";
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {

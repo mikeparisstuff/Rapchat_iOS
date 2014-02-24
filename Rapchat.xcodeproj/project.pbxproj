@@ -1054,7 +1054,7 @@
 				INFOPLIST_FILE = "Rapchat/Rapchat-Info.plist";
 				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_NAME = Rapback;
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "2822D308-26D5-4205-AAE4-634406906205";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1081,7 +1081,7 @@
 				INFOPLIST_FILE = "Rapchat/Rapchat-Info.plist";
 				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_NAME = Rapback;
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "12C6C1C8-DA6C-40D6-B8D2-9E5B29703415";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

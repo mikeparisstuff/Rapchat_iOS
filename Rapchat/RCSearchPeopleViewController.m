@@ -91,6 +91,12 @@
                             success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                                 NSLog(@"Successfully Got Results");
                                 self.contentList = [mappingResult array];
+                                self.contentList = [self.contentList sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+                                    RCUser *u1 = (RCUser *)obj1;
+                                    RCUser *u2 = (RCUser *)obj2;
+                                    return [u1.username localizedCaseInsensitiveCompare:u2.username];
+                                }];
+                                
 //                                [self.searchController.searchResultsTableView reloadData];
                                 [self.tableView reloadData];
                             } failure:^(RKObjectRequestOperation *operation, NSError *error) {

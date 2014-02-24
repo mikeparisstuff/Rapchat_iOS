@@ -106,6 +106,7 @@
     typeOfCameraPickerView.dataSource = self;
     typeOfCameraPickerView.delegate = self;
     typeOfCameraPickerView.showsSelectionIndicator = YES;
+    [typeOfCameraPickerView setBackgroundColor:[UIColor whiteColor]];
     [self.view addSubview:typeOfCameraPickerView];
     
     UIToolbar *pickerToolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0,0,320,44)];

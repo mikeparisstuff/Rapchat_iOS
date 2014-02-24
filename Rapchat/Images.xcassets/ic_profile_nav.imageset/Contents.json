@@ -2,12 +2,13 @@
   "images" : [
     {
       "idiom" : "universal",
-      "scale" : "1x"
+      "scale" : "1x",
+      "filename" : "ic_profile_nav21.png"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "ic_profile_nav.png"
+      "filename" : "ic_profile_nav2.png"
     }
   ],
   "info" : {

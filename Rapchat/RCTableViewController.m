@@ -34,7 +34,7 @@
 //    self.navigationItem.rightBarButtonItems = actionButtonItems;
     
     // Set translucent no so that the statusbar color matches
-    [self.navigationController.navigationBar setTranslucent:YES];
+//    [self.navigationController.navigationBar setTranslucent:YES];
     self.extendedLayoutIncludesOpaqueBars = NO;
     
     // Set background

@@ -159,7 +159,6 @@
 {
     self.currentSection = [self.segmentedControl titleForSegmentAtIndex: [self.segmentedControl selectedSegmentIndex]];
     [self loadProfile];
-    [self refresh:self];
 }
 
 - (void)didReceiveMemoryWarning
@@ -498,8 +497,17 @@
                             success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                                 self.myProfile = [mappingResult firstObject];
                                 NSLog(@"Got Profile: %@", self.myProfile.user.username);
-                                self.myFriends = self.myProfile.friends;
+                                self.myFriends = [self.myProfile.friends sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+                                    RCProfile *prof1 = (RCProfile *)obj1;
+                                    RCProfile *prof2 = (RCProfile *)obj2;
+                                    NSLog(@"Comparing: %@ to %@", prof1.user.username, prof2.user.username);
+                                    return [prof1.user.username localizedCaseInsensitiveCompare:prof2.user.username];
+                                }];
                                 [self setProfileHeaderInfo];
+                                if ([self.segmentedControl selectedSegmentIndex] != 0) {
+                                    // If friend tab is currently highlighted, don't reload the same data
+                                    [self refresh:self];
+                                }
                                 [self updateGui];
                             }failure:^(RKObjectRequestOperation *operation, NSError *error) {
                                 [SVProgressHUD showErrorWithStatus:@"Network Error"];
@@ -539,6 +547,12 @@
                              parameters:nil
                                 success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                                     self.myFriends = [mappingResult array];
+                                    self.myFriends = [self.myFriends sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+                                        RCProfile *prof1 = (RCProfile *)obj1;
+                                        RCProfile *prof2 = (RCProfile *)obj2;
+                                        NSLog(@"Comparing: %@ to %@", prof1.user.username, prof2.user.username);
+                                        return [prof1.user.username localizedCaseInsensitiveCompare:prof2.user.username];
+                                    }];
                                     [self updateGui];
                                 }failure:^(RKObjectRequestOperation *operation, NSError *error) {
                                     [SVProgressHUD showErrorWithStatus:@"Network Error"];

@@ -58,7 +58,7 @@
     self.videoReencoder = [[RCVideoReencoder alloc] init];
     [self.videoReencoder addObserver:self forKeyPath:@"status" options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) context:nil];
     
-    NSLog(@"Loading image with url: %@", self.thumbnailImageURL);
+//    NSLog(@"Loading image with url: %@", self.thumbnailImageURL);
 //    [self.backgroundImageView setImage:[[UIImage alloc] initWithContentsOfFile:[self.thumbnailImageURL absoluteString]]];
     
     UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneButtonClicked)];
@@ -86,7 +86,7 @@
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
     if ([keyPath isEqualToString:@"status"] && [[change objectForKey:NSKeyValueChangeNewKey] isEqualToString:RCVideoReencoderDidFinishSuccessfully]) {
-        NSLog(@"keypath: %@", keyPath);
+//        NSLog(@"keypath: %@", keyPath);
         self.videoURL = [NSURL fileURLWithPath:self.videoReencoder.outputURL];
         [self submitSession];
     }
@@ -412,7 +412,7 @@
     RCProfile *friend = [self.myFriends objectAtIndex:indexPath.row];
     cell.accessoryType = UITableViewCellAccessoryNone;
     cell.usernameLabel.text = friend.user.username;
-    NSLog(@"Inserting Cell with Profile: %@", cell);
+//    NSLog(@"Inserting Cell with Profile: %@", cell);
     return cell;
 }
 
@@ -441,7 +441,12 @@
                              parameters:nil
                                 success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                                     self.myCrowds = [mappingResult array];
-                                    NSLog(@"Got Crowds: %@", self.myCrowds);
+//                                    NSLog(@"Got Crowds: %@", self.myCrowds);
+                                    self.myCrowds = [self.myCrowds sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+                                        RCCrowd *c1 = (RCCrowd *)obj1;
+                                        RCCrowd *c2 = (RCCrowd *)obj2;
+                                        return [c1.title compare:c2.title];
+                                    }];
                                     [self updateGui];
                                 }failure:^(RKObjectRequestOperation *operation, NSError *error) {
                                     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"error"
@@ -466,6 +471,12 @@
                              parameters:nil
                                 success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                                     self.myFriends = [mappingResult array];
+                                    self.myFriends = [self.myFriends sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+                                        RCProfile *prof1 = (RCProfile *)obj1;
+                                        RCProfile *prof2 = (RCProfile *)obj2;
+                                        NSLog(@"Comparing: %@ to %@", prof1.user.username, prof2.user.username);
+                                        return [prof1.user.username localizedCaseInsensitiveCompare:prof2.user.username];
+                                    }];
                                     [self updateGui];
                                 }failure:^(RKObjectRequestOperation *operation, NSError *error) {
                                     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"error"

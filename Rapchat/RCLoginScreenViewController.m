@@ -97,4 +97,9 @@
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark Actions
+- (IBAction)textFieldShouldReturn:(UITextField *)sender {
+    [self.view endEditing:YES];
+}
+
 @end

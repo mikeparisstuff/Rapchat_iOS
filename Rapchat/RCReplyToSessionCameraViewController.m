@@ -34,8 +34,9 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     
-    UIBarButtonItem *rotateButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ic_twist"] style:UIBarButtonItemStylePlain target:self action:@selector(changeCamera:)];
+    UIBarButtonItem *rotateButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"spinner_white"] style:UIBarButtonItemStylePlain target:self action:@selector(changeCamera:)];
     self.navigationItem.rightBarButtonItem = rotateButton;
+    [self.navigationController.navigationBar setTintColor:[UIColor whiteColor]];
     
     [self setTitleButton];
 }
@@ -44,7 +45,7 @@
 {
     UIButton * button = [[UIButton alloc]initWithFrame:CGRectZero];
     [button addTarget:self action:@selector(changeBeatsButtonClicked) forControlEvents:UIControlEventTouchUpInside];
-    [button setImage:[UIImage imageNamed:@"ic_swapsong"] forState:UIControlStateNormal];
+    [button setImage:[UIImage imageNamed:@"music_white"] forState:UIControlStateNormal];
     [button sizeToFit];
     self.navigationItem.titleView = button;
 }
@@ -70,13 +71,13 @@
     [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
                                                   forBarMetrics:UIBarMetricsDefault];
     self.navigationController.navigationBar.shadowImage = [UIImage new];
-    self.navigationController.navigationBar.translucent = YES;
+//    self.navigationController.navigationBar.translucent = YES;
     self.navigationController.view.backgroundColor = [UIColor clearColor];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    self.navigationController.navigationBar.translucent = NO;
+//    self.navigationController.navigationBar.translucent = NO;
     [super viewWillDisappear:animated];
 }
 

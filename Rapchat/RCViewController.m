@@ -22,7 +22,7 @@
     
     // Set translucent no so that the statusbar color matches
     // THIS HAS CAUSED ISSUES SO WATCH IT
-    [self.navigationController.navigationBar setTranslucent:YES];
+//    [self.navigationController.navigationBar setTranslucent:YES];
     self.extendedLayoutIncludesOpaqueBars = NO;
     
 	// Do any additional setup after loading the view, typically from a nib.

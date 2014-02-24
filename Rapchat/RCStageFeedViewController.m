@@ -34,6 +34,9 @@
 @property (nonatomic, strong) NSMutableArray *allSessions;
 @property (nonatomic, strong) RCSessionPaginator *sessionsPaginator;
 
+@property (nonatomic) BOOL stillLoadingLikes;
+@property (nonatomic) BOOL stillLoadingSessions;
+
 @end
 
 @implementation RCStageFeedViewController
@@ -87,6 +90,7 @@
     // Load the object model via RestKit
     RKObjectManager *objectManager = [RKObjectManager sharedManager];
     alreadyLoading = YES;
+    self.stillLoadingSessions = YES;
     [objectManager getObjectsAtPath:myCompletedSessionsEndpoint
                          parameters:nil
                             success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
@@ -94,7 +98,12 @@
                                 self.sessionsPaginator = [mappingResult firstObject];
                                 //                                self.sessions = sessions;
                                 self.allSessions = [self.sessionsPaginator.currentPageSessions mutableCopy];
-                                [self updateUI];
+
+                                if (!self.stillLoadingLikes) {
+                                    // If we are done loading likes, reload page
+                                    [self updateUI];
+                                } 
+                                self.stillLoadingSessions = NO;
                             }failure:^(RKObjectRequestOperation *operation, NSError *error) {
                                 [SVProgressHUD showErrorWithStatus:@"Network Error"];
                             }];
@@ -133,6 +142,7 @@
 {
     RKObjectManager *objectManager = [RKObjectManager sharedManager];
     alreadyLoading = YES;
+    self.stillLoadingLikes = YES;
     [objectManager getObjectsAtPath:myLikesEndpoint
                          parameters:nil
                             success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
@@ -141,6 +151,12 @@
                                     [likes addObject:like.session.sessionId];
                                 }
                                 self.likesSet = [NSMutableSet setWithArray:likes];
+                                
+                                if (!self.stillLoadingSessions) {
+                                    // If done loading sessions, update UI
+                                    [self updateUI];
+                                }
+                                self.stillLoadingLikes = NO;
                             } failure:^(RKObjectRequestOperation *operation, NSError *error) {
                                 [SVProgressHUD showErrorWithStatus:@"Network Error"];
                             }];

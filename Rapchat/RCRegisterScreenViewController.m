@@ -221,9 +221,20 @@
 }
 
 #pragma mark Actions
+- (BOOL)validateFields {
+    if ([self.passwordTextfield.text isEqualToString:self.passwordTextfield2.text] && [self.passwordTextfield.text length] > 5) {
+        if ([self.firstNameTextField.text length] > 0 && [self.lastNameTextField.text length] > 0) {
+            // Name fields validated
+            if ([self.usernameTextfield.text length] > 0 && [self.emailTextfield.text length] > 0) {
+                return YES;
+            }
+        }
+    }
+    return NO;
+}
 
 - (IBAction)registerButtonClicked {
-    if ([self.passwordTextfield.text isEqualToString:self.passwordTextfield2.text]) {
+    if ([self validateFields]) {
 
         [self.view endEditing:YES];
         if (needsImageUpdate) {
@@ -232,8 +243,8 @@
             [self registerProfile];
         }
     } else {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Password Error"
-                                                        message:@"The passwords you entered do not match."
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Try Again"
+                                                        message:@"Please enter a value for each box and a password greater than 5 characters long"
                                                        delegate:nil
                                               cancelButtonTitle:@"Try Again"
                                               otherButtonTitles:nil, nil];

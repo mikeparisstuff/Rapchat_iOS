@@ -106,6 +106,12 @@
                                 RCPublicProfile *publicProfile = [mappingResult firstObject];
                                 self.likes = publicProfile.likes;
                                 self.profile = publicProfile.profile;
+                                self.profile.friends = [self.profile.friends sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+                                    RCProfile *prof1 = (RCProfile *)obj1;
+                                    RCProfile *prof2 = (RCProfile *)obj2;
+                                    NSLog(@"Comparing: %@ to %@", prof1.user.username, prof2.user.username);
+                                    return [prof1.user.username localizedCaseInsensitiveCompare:prof2.user.username];
+                                }];
                                 NSLog(@"Got Public Profile");
                                 [self updateProfile];
                             } failure:^(RKObjectRequestOperation *operation, NSError *error) {

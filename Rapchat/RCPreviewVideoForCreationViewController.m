@@ -36,6 +36,7 @@ static NSString *NEW_SESSION_INFO_SEGUE =  @"NewSessionInfoSegue";
 {
     [super viewDidLoad];
     self.navigationController.navigationBarHidden = NO;
+    [self setExtendedLayoutIncludesOpaqueBars:YES];
     
     
 	// Do any additional setup after loading the view.

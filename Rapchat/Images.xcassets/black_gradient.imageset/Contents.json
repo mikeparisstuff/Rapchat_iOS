@@ -3,12 +3,12 @@
     {
       "idiom" : "universal",
       "scale" : "1x",
-      "filename" : "user-1.png"
+      "filename" : "black_gradient.png"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "user.png"
+      "filename" : "black_gradient@2x.png"
     }
   ],
   "info" : {

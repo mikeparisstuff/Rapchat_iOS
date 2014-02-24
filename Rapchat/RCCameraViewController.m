@@ -235,8 +235,22 @@ static const NSString *ItemStatusContext;
         [self enableButtons];
         [self playAudio];
     });
+    
+    // Set back button if necessary
+    if ([[self.navigationController viewControllers] count] > 1) {
+        NSLog(@"Nav Controller is not nil");
+        UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ic_back"] style:UIBarButtonItemStylePlain target:self action:@selector(backPressed)];
+        self.navigationItem.leftBarButtonItem = backButton;
+    }
+    [super viewWillAppear:animated];
 }
 
+- (void)backPressed
+{
+    if ([[self.navigationController viewControllers] count] > 1) {
+        [self.navigationController popViewControllerAnimated:YES];
+    }
+}
 
 - (void) enableButtons
 {
