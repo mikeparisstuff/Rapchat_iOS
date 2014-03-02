@@ -76,10 +76,10 @@
         }
     }
     
-    self.titleLabel.text = session.title;
+    self.titleLabel.text = [session.title uppercaseString];
     self.dateLabel.text = [NSString stringWithFormat:@"%@ %@", [months objectAtIndex:[dateArray[0] intValue]], dateArray[1]];
-    self.numberOfMembersLabel.text = [NSString stringWithFormat:@"%d members", (int)[session.crowd.members count]];
-    self.crowdTitleLabel.text = [NSString stringWithFormat:@"Crowd: %@", session.crowd.title];
+//    self.numberOfMembersLabel.text = [NSString stringWithFormat:@"%d members", (int)[session.crowd.members count]];
+//    self.crowdTitleLabel.text = [NSString stringWithFormat:@"Crowd: %@", session.crowd.title];
     NSString *likeFormat = ([session.numberOfLikes intValue]==1)? @"  %@ like" : @"  %@ likes";
     self.likesLabel.text = [NSString stringWithFormat:likeFormat, session.numberOfLikes];
     NSString *format = ([session.comments count]==1)? @"  %lu comment" : @"  %lu comments";

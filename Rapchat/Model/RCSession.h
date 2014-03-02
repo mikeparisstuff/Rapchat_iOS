@@ -18,7 +18,7 @@
 @property (nonatomic, copy) NSNumber *isComplete;
 @property (nonatomic, copy) NSDate *created;
 @property (nonatomic, copy) NSDate *modified;
-@property (nonatomic, strong) RCCrowd *crowd;
+//@property (nonatomic, strong) RCCrowd *crowd;
 @property (nonatomic, copy) NSNumber *numberOfLikes;
 @property (nonatomic, copy) NSArray *comments;
 @property (nonatomic, copy) NSURL *mostRecentClipUrl;

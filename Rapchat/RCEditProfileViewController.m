@@ -260,7 +260,7 @@
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
 {
-    [self dismissViewControllerAnimated:YES completion:nil];
+//    [self dismissViewControllerAnimated:YES completion:nil];
     [UIView animateWithDuration:.3 animations:^{
         self.viewForPicker.frame = CGRectMake(0, self.view.frame.size.height, 320, 206);
     } completion:^(BOOL finished) {

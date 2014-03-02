@@ -13,7 +13,7 @@
 #import "RCSessionTableViewCell.h"
 #import "RCCommentsViewController.h"
 #import "RCPreviewFileViewController.h"
-#import "RCPreviewVideoNoNavbarViewController.h"
+#import "RCPreviewVideoForRapbackViewController.h"
 #import "RCSessionPaginator.h"
 
 
@@ -218,6 +218,8 @@
     [self.refreshControl setBackgroundColor:[UIColor colorWithRed:189.0/255.0 green:195.0/255.0 blue:199.0/255.0 alpha:1.0]];
     [self.refreshControl setTintColor:[UIColor redColor]];
     
+    [self reloadData];
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -225,8 +227,7 @@
 
     [super viewWillAppear:animated];
 //    [SVProgressHUD showWithStatus:@"Loading Sessions" maskType:SVProgressHUDMaskTypeGradient];
-    [self.refreshControl beginRefreshing];
-    [self reloadData];
+//    [self.refreshControl beginRefreshing];
 }
 
 - (void)didReceiveMemoryWarning
@@ -347,8 +348,8 @@
     if([segue.identifier isEqualToString:@"PlayVideoSegue"]) {
         if ([segue.destinationViewController isKindOfClass:[UINavigationController class]]) {
             UINavigationController *navController = segue.destinationViewController;
-            if ([[navController topViewController] isKindOfClass:[RCPreviewVideoNoNavbarViewController class]]) {
-                RCPreviewVideoNoNavbarViewController *RCpfvc = (RCPreviewVideoNoNavbarViewController *)[navController topViewController];
+            if ([[navController topViewController] isKindOfClass:[RCPreviewVideoForRapbackViewController class]]) {
+                RCPreviewVideoForRapbackViewController *RCpfvc = (RCPreviewVideoForRapbackViewController *)[navController topViewController];
                 RCpfvc.videoURL = self.clipUrl;
                 RCpfvc.sessionId = self.selectedSessionId;
                 NSLog(@"Prepared PlayVideoSegue");

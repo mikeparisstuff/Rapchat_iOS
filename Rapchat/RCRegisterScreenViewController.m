@@ -61,9 +61,9 @@
     
     // Make Done button appear when on password2 box
     [self.passwordTextfield2 setReturnKeyType:UIReturnKeyDone];
-    [self.passwordTextfield2 addTarget:self
-                               action:@selector(registerButtonClicked)
-                     forControlEvents:UIControlEventEditingDidEndOnExit];
+//    [self.passwordTextfield2 addTarget:self
+//                               action:@selector(registerButtonClicked)
+//                     forControlEvents:UIControlEventEditingDidEndOnExit];
     
     needsImageUpdate = NO;
     self.pickerViewArray = @[@"Choose Photo From Library", @"Take New Photo"];
@@ -99,12 +99,12 @@
                               NSLog(@"Error Registering Profile");
                           }
                       }failure:^(RKObjectRequestOperation *operation, NSError *error) {
-                          UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"error"
-                                                                          message:[error localizedDescription]
-                                                                         delegate:nil
-                                                                cancelButtonTitle:@"OK"
-                                                                otherButtonTitles:nil, nil];
-                          [alert show];
+//                          UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"error"
+//                                                                          message:[error localizedDescription]
+//                                                                         delegate:nil
+//                                                                cancelButtonTitle:@"OK"
+//                                                                otherButtonTitles:nil, nil];
+//                          [alert show];
                           NSLog(@"Hit error: %@", error);
                       }];
 }
@@ -360,7 +360,7 @@
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
 {
-    [self dismissViewControllerAnimated:YES completion:nil];
+//    [self dismissViewControllerAnimated:YES completion:nil];
     [UIView animateWithDuration:.3 animations:^{
         self.viewForPicker.frame = CGRectMake(0, self.view.frame.size.height, 320, 206);
     } completion:^(BOOL finished) {

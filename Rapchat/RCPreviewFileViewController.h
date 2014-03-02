@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "RCInvisibleNavbarViewController.h"
+#import "RCViewController.h"
 
 @interface RCPreviewFileViewController : RCViewController
 

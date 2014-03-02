@@ -155,7 +155,7 @@ static const NSString *ItemPlaybackLikelyToKeepUpContext;
                                                                            forKeyPath:@"playbackLikelyToKeepUp"
                                                                               options:0
                                                                               context:&ItemPlaybackLikelyToKeepUpContext];
-                                                         [self.playerItem addObserver:self forKeyPath:@"currentTime.value" options:0 context:nil];
+//                                                         [self.playerItem addObserver:self forKeyPath:@"currentTime.value" options:0 context:nil];
                                                          self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
                                                          self.player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
                                                          
@@ -215,11 +215,11 @@ static const NSString *ItemPlaybackLikelyToKeepUpContext;
         NSLog(@"Item Playback likely to keep up context change");
         return;
     }
-    if ([keyPath isEqualToString:@"currentTime.value"]) {
-        NSLog(@"Detecting change of value: %@", change);
-        [self.progressView setProgress:10.0];
-        return;
-    }
+//    if ([keyPath isEqualToString:@"currentTime.value"]) {
+//        NSLog(@"Detecting change of value: %@", change);
+//        [self.progressView setProgress:10.0];
+//        return;
+//    }
     
     [super observeValueForKeyPath:keyPath ofObject:object
                            change:change context:context];

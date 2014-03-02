@@ -50,6 +50,7 @@
         titleSize = self.commentButton.titleLabel.frame.size;
         self.commentButton.imageEdgeInsets = UIEdgeInsetsMake(
                                                               - (titleSize.height + spacing), 0.0, 0.0, - titleSize.width);
+
     }
     return self;
 }
@@ -74,10 +75,8 @@
     
 //    [self.thumbnailImageView setImageWithURL:session.thumbnailUrl placeholderImage:[UIImage imageNamed:@"session_placeholder"]];
     [self.thumbnailImageView setImageWithURL:session.thumbnailUrl usingActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    self.titleLabel.text = session.title;
+    self.titleLabel.text = [session.title uppercaseString];
     self.dateLabel.text = [NSString stringWithFormat:@"%@ %@", [months objectAtIndex:[dateArray[0] intValue]], dateArray[1]];
-    self.numberOfMembersLabel.text = [NSString stringWithFormat:@"%d members", (int)[session.crowd.members count]];
-    self.crowdTitleLabel.text = [NSString stringWithFormat:@"Crowd: %@", session.crowd.title];
     NSString *likeFormat = ([session.numberOfLikes intValue]==1)? @"  %@ like" : @"  %@ likes";
     self.likesLabel.text = [NSString stringWithFormat:likeFormat, session.numberOfLikes];
     NSString *format = ([session.comments count]==1)? @"  %lu comment" : @"  %lu comments";

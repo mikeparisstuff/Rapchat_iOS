@@ -18,9 +18,10 @@
 #import "RCClipTableviewCell.h"
 #import "RCEditProfileViewController.h"
 #import "RCCommentsViewController.h"
-#import "RCPreviewVideoNoNavbarViewController.h"
+#import "RCPreviewVideoForRapbackViewController.h"
 #import "RCPublicProfileViewController.h"
 #import "RCCrowdMembersTableViewController.h"
+#import "RCFriendRequestWrapper.h"
 
 #import "UIImageView+UIActivityIndicatorForSDWebImage.h"
 #import <SVProgressHUD.h>
@@ -74,7 +75,7 @@
 - (NSDictionary *)validSelectorsForSegmentedControl
 {
     return @{@"Friends": NSStringFromSelector(@selector(loadFriends:)),
-             @"Crowds": NSStringFromSelector(@selector(loadCrowds:)),
+//             @"Crowds": NSStringFromSelector(@selector(loadCrowds:)),
              @"Likes": NSStringFromSelector(@selector(loadLikes:)),
              @"Requests": NSStringFromSelector(@selector(loadFriendRequests:))
              };
@@ -83,7 +84,7 @@
 - (NSDictionary *)validDataSourceForSection:(NSString *)section
 {
     NSDictionary *dataSources = @{@"Friends": self.myFriends,
-                                 @"Crowds": self.myCrowds,
+//                                 @"Crowds": self.myCrowds,
                                  @"Likes": self.myLikes,
                                  @"Requests": self.myFriendRequests
                                  };
@@ -120,7 +121,10 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
-    self.tabs = @[@"Friends", @"Crowds", @"Likes", @"Requests"];
+    self.tabs = @[@"Friends", @"Likes", @"Requests"];
+    
+    self.profilePictureImageView.layer.cornerRadius  = 5.0;
+    self.profilePictureImageView.layer.masksToBounds = YES;
     
 
     // Because refreshControl is made to be used with UItvc we need to create on and
@@ -258,14 +262,14 @@
         case 0:
             numElements = [self.myFriends count];
             break;
+//        case 1:
+//            numElements = [self.myCrowds count];
+//            break;
         case 1:
-            numElements = [self.myCrowds count];
-            break;
-        case 2:
             numElements = [self.myLikes count];
             NSLog(@"loading %lu likes", numElements);
             break;
-        case 3:
+        case 2:
             numElements = [self.myFriendRequests count];
             break;
     }
@@ -282,13 +286,13 @@
         case 0:
             height = 75;
             break;
+//        case 1:
+//            height = 100;
+//            break;
         case 1:
-            height = 100;
-            break;
-        case 2:
             height = 428;
             break;
-        case 3:
+        case 2:
             height = 75;
             break;
     }
@@ -303,13 +307,13 @@
         case 0:
             cell = [self createFriendCellForTable:tableView forIndexPath:indexPath];
             break;
+//        case 1:
+//            cell = [self createCrowdCellForTable:tableView forIndexPath:indexPath];
+//            break;
         case 1:
-            cell = [self createCrowdCellForTable:tableView forIndexPath:indexPath];
-            break;
-        case 2:
             cell = [self createSessionCellForTable:tableView forIndexPath:indexPath];
             break;
-        case 3:
+        case 2:
             cell = [self createFriendRequestCellForTable:tableView atIndexPath:indexPath];
             break;
     }
@@ -348,8 +352,8 @@
     if([segue.identifier isEqualToString:@"PlayVideoSegue"]) {
         if ([segue.destinationViewController isKindOfClass:[UINavigationController class]]) {
             UINavigationController *navController = segue.destinationViewController;
-            if ([[navController topViewController] isKindOfClass:[RCPreviewVideoNoNavbarViewController class]]) {
-                RCPreviewVideoNoNavbarViewController *RCpfvc = (RCPreviewVideoNoNavbarViewController *)[navController topViewController];
+            if ([[navController topViewController] isKindOfClass:[RCPreviewVideoForRapbackViewController class]]) {
+                RCPreviewVideoForRapbackViewController *RCpfvc = (RCPreviewVideoForRapbackViewController *)[navController topViewController];
                 RCpfvc.videoURL = self.clipUrl;
                 RCpfvc.sessionId = self.selectedSessionId;
                 NSLog(@"Prepared PlayVideoSegue");
@@ -369,14 +373,14 @@
             NSLog(@"Prepared GotoProfileSegue");
         }
     }
-    if ([segue.identifier isEqualToString:@"GoToCrowdMembersSegue"]) {
-        if([segue.destinationViewController isKindOfClass:[RCCrowdMembersTableViewController class]]) {
-            NSLog(@"Segueing to crowd members table view");
-            RCCrowdMembersTableViewController *controller = (RCCrowdMembersTableViewController *)segue.destinationViewController;
-            RCCrowd *crowd = (RCCrowd *)[self.myCrowds objectAtIndex:self.selectedIndex.row];
-            controller.crowd = crowd;
-        }
-    }
+//    if ([segue.identifier isEqualToString:@"GoToCrowdMembersSegue"]) {
+//        if([segue.destinationViewController isKindOfClass:[RCCrowdMembersTableViewController class]]) {
+//            NSLog(@"Segueing to crowd members table view");
+//            RCCrowdMembersTableViewController *controller = (RCCrowdMembersTableViewController *)segue.destinationViewController;
+//            RCCrowd *crowd = (RCCrowd *)[self.myCrowds objectAtIndex:self.selectedIndex.row];
+//            controller.crowd = crowd;
+//        }
+//    }
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
 }
@@ -434,8 +438,8 @@
 
 #pragma mark Crowd Cell Protocol
 - (void)viewCrowdMembers:(id)sender {
-    self.selectedIndex = [self.tableView indexPathForCell:sender];
-    [self performSegueWithIdentifier:@"GoToCrowdMembersSegue" sender:self];
+//    self.selectedIndex = [self.tableView indexPathForCell:sender];
+//    [self performSegueWithIdentifier:@"GoToCrowdMembersSegue" sender:self];
 }
 
 #pragma mark Friend Cell Protocol
@@ -524,7 +528,8 @@
         [objectManager getObjectsAtPath:myFriendRequestsEndpoint
                              parameters:nil
                                 success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-                                    self.myFriendRequests = [mappingResult array];
+                                    RCFriendRequestWrapper *fw = [mappingResult firstObject];
+                                    self.myFriendRequests = fw.pendingMe;
                                     NSLog(@"Loading Requests: %@", self.myFriendRequests);
                                     [self updateGui];
                                 }failure:^(RKObjectRequestOperation *operation, NSError *error) {

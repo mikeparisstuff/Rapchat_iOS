@@ -8,9 +8,14 @@
 
 #import "RCAppDelegate.h"
 #import <RestKit/RestKit.h>
-//#import <RestKit/CoreData.h>
 #import "RCRestkitClient.h"
 #import "RCFeedViewController.h"
+
+@interface RCAppDelegate () <PKRevealing>
+
+@property (nonatomic, strong, readwrite) PKRevealController *revealController;
+
+@end
 
 
 @implementation RCAppDelegate
@@ -27,10 +32,6 @@
     //[UIColor colorWithRed:0.0/255.0 green:54.0/255.0 blue:71.0/255.0 alpha:1.9] - Dark Teal
     //[UIColor colorWithRed:206.0/255.0 green:90.0/255.0 blue:17.0/255.0 alpha:1.0] - orange
     //[UIColor colorWithRed:199.0/255.0 green:65.0/255.0 blue:0.0/255.0 alpha:1.0] - Dark orange
-//    [[UITabBar appearance] setBarTintColor:[UIColor colorWithHue:0.0 saturation:0.06 brightness:0.14 alpha:1.0]];
-//    [[UIToolbar appearance] setBarTintColor:[UIColor colorWithHue:0.0 saturation:0.06 brightness:0.14 alpha:1.0]];
-//    [[UITabBar appearance] setTintColor:[UIColor whiteColor]];
-//    [[UIToolbar appearance] setTintColor:[UIColor whiteColor]];
 
     
     NSShadow *shadow = [[NSShadow alloc] init];
@@ -51,56 +52,19 @@
     if ([NSUserDefaults.standardUserDefaults objectForKey:@"accessToken"])
     {
         controllerId = @"MainStart";
+
     }
     else
     {
         controllerId = @"LoginStart";
     }
+    self.window.rootViewController = [storyboard instantiateViewControllerWithIdentifier:controllerId];
     
-    
-    // Set Status bar color
-//    self.window.clipsToBounds = YES;
-//    UIView *statusBarBackground = [[UIView alloc] initWithFrame:CGRectMake(0, 20, 320, 20)];
-//    [statusBarBackground setBackgroundColor:[UIColor colorWithRed:231.0/255.0 green:76.0/255.0 blue:60.0/255.0 alpha:1.0]];
-//    [self.window addSubview:statusBarBackground];
-//    
-//    self.window.frame =  CGRectMake(0,20,self.window.frame.size.width,self.window.frame.size.height-20);
-//    self.window.bounds = CGRectMake(0, 20, self.window.frame.size.width, self.window.frame.size.height);
-    
-    UIViewController* controller = [storyboard instantiateViewControllerWithIdentifier:controllerId];
-    self.window.rootViewController = controller;
-    
-//    UIView *statusBar = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 20)];
-//    [statusBar setBackgroundColor:[UIColor colorWithRed:231.0/255.0 green:76.0/255.0 blue:60.0/255.0 alpha:1.0]];
-//    [self.window.rootViewController.view addSubview:statusBar];
     [NSThread sleepForTimeInterval:1.0];
     [self.window makeKeyAndVisible];
     return YES;
     
-    
-//    /*
-//     *  Setup Core Data
-//     */
-//    NSError *error = nil;
-//    NSURL *modelURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Rapchat" ofType:@"momd"]];
-//    // Note: Due to an iOS 5 bug, the managed object model returned is immutable.
-//    NSManagedObjectModel *managedObjectModel = [[[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL] mutableCopy];
-//    RKManagedObjectStore *managedObjectStore = [[RKManagedObjectStore alloc] initWithManagedObjectModel:managedObjectModel];
-//    objectManager.managedObjectStore = managedObjectStore;
-//    
-//    NSPersistentStore __unused *persistentStore = [managedObjectStore addInMemoryPersistentStore:&error];
-//    NSAssert(persistentStore, @"Failed to add persistent store: %@", error);
-//    
-//    // Initialize the core data stack
-//    [managedObjectStore createManagedObjectContexts];
-//    
-//    // Set the default store shared instance
-//    [RKManagedObjectStore setDefaultStore:managedObjectStore];
-    
-    
-    
-    return YES;
-}     
+}
 
 
 - (void)applicationWillResignActive:(UIApplication *)application
@@ -128,6 +92,42 @@
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+}
+
+#pragma mark PKRevealing
+
+- (void)revealController:(PKRevealController *)revealController didChangeToState:(PKRevealControllerState)state
+{
+    NSLog(@"%@ (%d)", NSStringFromSelector(_cmd), (int)state);
+}
+
+- (void)revealController:(PKRevealController *)revealController willChangeToState:(PKRevealControllerState)next
+{
+    PKRevealControllerState current = revealController.state;
+    NSLog(@"%@ (%d -> %d)", NSStringFromSelector(_cmd), (int)current, (int)next);
+}
+
+#pragma mark Helpers
+
+- (UIViewController *)frontViewController
+{
+    UIStoryboard* storyboard = [UIStoryboard storyboardWithName:[[NSBundle mainBundle].infoDictionary objectForKey:@"UIMainStoryboardFile"] bundle:nil];
+    UIViewController* controller = [storyboard instantiateViewControllerWithIdentifier:@"MainStart"];
+    return controller;
+}
+
+- (UIViewController *)leftViewController
+{
+    UIStoryboard* storyboard = [UIStoryboard storyboardWithName:[[NSBundle mainBundle].infoDictionary objectForKey:@"UIMainStoryboardFile"] bundle:nil];
+    UIViewController* controller = [storyboard instantiateViewControllerWithIdentifier:@"ProfileController"];
+    return controller;
+}
+
+- (UIViewController *)rightViewController
+{
+    UIStoryboard* storyboard = [UIStoryboard storyboardWithName:[[NSBundle mainBundle].infoDictionary objectForKey:@"UIMainStoryboardFile"] bundle:nil];
+    UIViewController* controller = [storyboard instantiateViewControllerWithIdentifier:@"FindFriendsController"];
+    return controller;
 }
 
 @end

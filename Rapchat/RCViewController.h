@@ -10,4 +10,6 @@
 
 @interface RCViewController : UIViewController
 
+- (void)makeNavbarInvisible;
+
 @end

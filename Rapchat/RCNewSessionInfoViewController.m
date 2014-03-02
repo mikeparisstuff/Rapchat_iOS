@@ -25,6 +25,7 @@
 
 // New Session Data
 @property (nonatomic) RCCrowd *selectedCrowd;
+@property (nonatomic) RCProfile *selectedFriend;
 @property (nonatomic) NSMutableArray *selectedFriendsForCrowd;
 
 // Data sources
@@ -71,8 +72,8 @@
     if ([self.segmentedControl selectedSegmentIndex] == 0) {
         [self setCrowdTitleViewEnabled:NO];
     }
-    
-    [self performSelector:NSSelectorFromString([self validSelectorsForSegmentedControl][[self.segmentedControl selectedSegmentIndex]])];
+    [self loadFriends];
+//    [self performSelector:NSSelectorFromString([self validSelectorsForSegmentedControl][[self.segmentedControl selectedSegmentIndex]])];
     
 }
 
@@ -101,18 +102,59 @@
     [self.videoReencoder loadAssetToReencode:self.videoURL];
 }
 
-- (void)submitSession {
-    if ([self confirmValidData]) {
-        switch ([self.segmentedControl selectedSegmentIndex]) {
-            case 0:
-                [self submitSessionWithExistingCrowd];
-                break;
-            case 1:
-                [self submitSessionWithNewCrowd];
-                break;
-        }
-    }
+//- (void)submitSession {
+//    if ([self confirmValidData]) {
+//        switch ([self.segmentedControl selectedSegmentIndex]) {
+//            case 0:
+//                [self submitSessionWithExistingCrowd];
+//                break;
+//            case 1:
+//                [self submitSessionWithNewCrowd];
+//                break;
+//        }
+//    }
+//}
+- (void)submitSession
+{
+    RKObjectManager *objectManager = [RKObjectManager sharedManager];
+    
+    NSLog(@"Submitting Clip with Existing Crowd");
+    NSMutableURLRequest *request = [objectManager multipartFormRequestWithObject:nil
+                                                                          method:RKRequestMethodPOST
+                                                                            path:mySessionsEndpoint
+                                                                      parameters:@{
+                                                                                   @"title": self.titleTextField.text,
+                                                                                   @"battlee": self.selectedFriend.user.username
+                                                                                   }
+                                                       constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+                                                           [formData appendPartWithFileData:[NSData dataWithContentsOfURL:self.videoURL]
+                                                                                       name:@"clip"
+                                                                                   fileName:@"movie.mp4"
+                                                                                   mimeType:@"video/mp4"];
+                                                           //                                                           NSLog(@"Submitting thumbnail: %@", self.thumbnailImageUrl);
+                                                           [formData appendPartWithFileData:[NSData dataWithContentsOfFile:[self.thumbnailImageURL absoluteString]]
+                                                                                       name:@"thumbnail"
+                                                                                   fileName:@"thumbnail.jpg"
+                                                                                   mimeType:@"image/jpg"];
+                                                           //                                                            NSLog(@"Form Data: %@", formData);
+                                                       }];
+    RKObjectRequestOperation *operation = [objectManager objectRequestOperationWithRequest:request
+                                                                                   success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+                                                                                       [self dismissViewControllerAnimated:YES completion:nil];
+                                                                                   }
+                                                                                   failure:^(RKObjectRequestOperation *operation, NSError *error) {
+                                                                                       UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"error"
+                                                                                                                                       message:[error localizedDescription]
+                                                                                                                                      delegate:nil
+                                                                                                                             cancelButtonTitle:@"OK"
+                                                                                                                             otherButtonTitles:nil, nil];
+                                                                                       [alert show];
+                                                                                   }];
+    [operation start];
 }
+
+
+#pragma mark OLD API CALLS
 
 - (void)submitSessionWithExistingCrowd
 {
@@ -268,16 +310,16 @@
     // Return the number of rows in the section.
     //    NSLog(@"Number of rows: %d", [[self validDataSourceForSection:self.currentSection] count]);
     //    return [[self validDataSourceForSection:self.currentSection] count];
-    unsigned long numElements = 0;
-    switch ([self.segmentedControl selectedSegmentIndex]) {
-        case 0:
-            numElements = [self.myCrowds count];
-            break;
-        case 1:
-            numElements = [self.myFriends count];
-            break;
-    }
-    return numElements;
+//    unsigned long numElements = 0;
+//    switch ([self.segmentedControl selectedSegmentIndex]) {
+//        case 0:
+//            numElements = [self.myCrowds count];
+//            break;
+//        case 1:
+//            numElements = [self.myFriends count];
+//            break;
+//    }
+    return [self.myFriends count];
 }
 
 // For some reason the height that is specified in the story board
@@ -285,64 +327,70 @@
 // heights explicitly so that the rows do not overlap.
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    CGFloat height = 50;
-    switch ([self.segmentedControl selectedSegmentIndex]) {
-        case 0:
-            height = 70;
-            break;
-        case 1:
-            height = 60;
-            break;
-    }
-    return height;
+//    CGFloat height = 50;
+//    switch ([self.segmentedControl selectedSegmentIndex]) {
+//        case 0:
+//            height = 70;
+//            break;
+//        case 1:
+//            height = 60;
+//            break;
+//    }
+    return 75;
 }
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [[UITableViewCell alloc] init];
-    switch ([self.segmentedControl selectedSegmentIndex]) {
-        case 0:
-            cell = [self createCrowdCellForTable:tableView atIndexPath:indexPath];
-            break;
-        case 1:
-            cell = [self createFriendCellForTable:tableView atIndexPath:indexPath];
-            break;
-    }
+//    UITableViewCell *cell = [[UITableViewCell alloc] init];
+//    switch ([self.segmentedControl selectedSegmentIndex]) {
+//        case 0:
+//            cell = [self createCrowdCellForTable:tableView atIndexPath:indexPath];
+//            break;
+//        case 1:
+//            cell = [self createFriendCellForTable:tableView atIndexPath:indexPath];
+//            break;
+//    }
     
-    return cell;
+    return [self createFriendCellForTable:tableView atIndexPath:indexPath];;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    switch ([self.segmentedControl selectedSegmentIndex]) {
-        case 0:
-            // Only 1 crowd should be able to be selected
-            [self clearCheckmarksForTableView:tableView];
-            cell.accessoryType = UITableViewCellAccessoryCheckmark;
-            cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ic_checkbox_green"]];
-            self.selectedCrowd = [self.myCrowds objectAtIndex:indexPath.row];
-            break;
-        case 1:
-            if (cell.accessoryType == UITableViewCellAccessoryCheckmark)
-            {
-                cell.accessoryType = UITableViewCellAccessoryNone;
-                cell.accessoryView = nil;
-                NSLog(@"Removing friend from cell %ld", (long)indexPath.row);
-                // Remove friend from array when deselecting row
-                [self.selectedFriendsForCrowd removeObject:[self.myFriends objectAtIndex:indexPath.row]];
-            }
-            else
-            {
-                cell.accessoryType = UITableViewCellAccessoryCheckmark;
-                cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ic_checkbox_green"]];
-                // Add friend when selecting row
-                NSLog(@"Adding friend from cell %ld", (long)indexPath.row);
-                [self.selectedFriendsForCrowd addObject:[self.myFriends objectAtIndex:indexPath.row]];
-            }
-            break;
-    }
+    [self clearCheckmarksForTableView:tableView];
+    cell.accessoryType = UITableViewCellAccessoryCheckmark;
+    cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ic_checkbox_green"]];
+    self.selectedFriend = [self.myFriends objectAtIndex:indexPath.row];
+
+    // OLD
+//    switch ([self.segmentedControl selectedSegmentIndex]) {
+//        case 0:
+//            // Only 1 crowd should be able to be selected
+//            [self clearCheckmarksForTableView:tableView];
+//            cell.accessoryType = UITableViewCellAccessoryCheckmark;
+//            cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ic_checkbox_green"]];
+//            self.selectedCrowd = [self.myCrowds objectAtIndex:indexPath.row];
+//            break;
+//        case 1:
+//            if (cell.accessoryType == UITableViewCellAccessoryCheckmark)
+//            {
+//                cell.accessoryType = UITableViewCellAccessoryNone;
+//                cell.accessoryView = nil;
+//                NSLog(@"Removing friend from cell %ld", (long)indexPath.row);
+//                // Remove friend from array when deselecting row
+//                [self.selectedFriendsForCrowd removeObject:[self.myFriends objectAtIndex:indexPath.row]];
+//            }
+//            else
+//            {
+//                cell.accessoryType = UITableViewCellAccessoryCheckmark;
+//                cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ic_checkbox_green"]];
+//                // Add friend when selecting row
+//                NSLog(@"Adding friend from cell %ld", (long)indexPath.row);
+//                [self.selectedFriendsForCrowd addObject:[self.myFriends objectAtIndex:indexPath.row]];
+//            }
+//            break;
+//    }
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -410,8 +458,9 @@
     
     // Configure the cell...
     RCProfile *friend = [self.myFriends objectAtIndex:indexPath.row];
+    [cell setFriend:friend];
     cell.accessoryType = UITableViewCellAccessoryNone;
-    cell.usernameLabel.text = friend.user.username;
+//    cell.usernameLabel.text = friend.user.username;
 //    NSLog(@"Inserting Cell with Profile: %@", cell);
     return cell;
 }

@@ -19,10 +19,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    // Set translucent no so that the statusbar color matches
-    // THIS HAS CAUSED ISSUES SO WATCH IT
-//    [self.navigationController.navigationBar setTranslucent:YES];
+
     self.extendedLayoutIncludesOpaqueBars = NO;
     
 	// Do any additional setup after loading the view, typically from a nib.
@@ -30,27 +27,11 @@
     if ([self.navigationController isKindOfClass:[RCNavigationController class]]) {
         self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:nil style:UIBarButtonItemStyleBordered target:self.navigationController action:@selector(toggleMenu)];
     }
-    
-    // Disable middle button with red button overlay
-    
-//    [self.tabBarController.tabBar setBackgroundColor:[UIColor colorWithHue:0.0 saturation:0.06 brightness:0.14 alpha:1.0]];
-//    [self.navigationController.navigationBar setBackgroundColor:[UIColor colorWithHue:0.0 saturation:0.06 brightness:0.14 alpha:1.0]];
 }
 
 - (void)searchButtonClicked:(id)sender
 {
     NSLog(@"Search Clicked");
-}
-
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    if([segue.identifier isEqualToString:@"CreateSegue"]) {
-//        if ([segue.destinationViewController isKindOfClass:[DoSoemthingVC class]]) {
-//            DoSomethingVC *doVC = (DoSomethingVS *)segue.destinationViewController;
-//            doVC.neededInfo = ....;
-//        }
-        NSLog(@"CreateSeque being prepared");
-    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -79,6 +60,19 @@
 - (BOOL)prefersStatusBarHidden
 {
     return NO;
+}
+
+- (void)makeNavbarInvisible
+{
+    // Make the Navbar invisible
+    if (self.navigationController) {
+        self.navigationController.navigationBarHidden = NO;
+        [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
+                                                      forBarMetrics:UIBarMetricsDefault];
+        self.navigationController.navigationBar.shadowImage = [UIImage new];
+        //    self.navigationController.navigationBar.translucent = YES;
+        self.navigationController.view.backgroundColor = [UIColor clearColor];
+    }
 }
 
 

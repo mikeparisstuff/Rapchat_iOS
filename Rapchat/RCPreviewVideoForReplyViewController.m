@@ -17,6 +17,7 @@
 @property (nonatomic, strong)AVAssetExportSession *exportSession;
 @property (nonatomic, strong) NSTimer *exportSessionTimer;
 @property (nonatomic) RCVideoReencoder *videoReencoder;
+@property (weak, nonatomic) IBOutlet UIButton *submitButton;
 
 
 @end
@@ -70,6 +71,7 @@ static void * TranscodingContext = &TranscodingContext;
 //    [self submitClip];
 //    [self convertVideoToMp4];
 //    [self loadAssetToReencode];
+    [self.submitButton setEnabled:NO];
     [self.videoReencoder loadAssetToReencode:self.videoURL];
 }
 
@@ -83,6 +85,7 @@ static void * TranscodingContext = &TranscodingContext;
         NSLog(@"File exists at path: %@", self.thumbnailImageUrl);
         NSLog(@"File exists at video path: %@", self.videoURL);
     }
+    [SVProgressHUD showWithStatus:@"Submitting Rap" maskType:SVProgressHUDMaskTypeBlack];
     
     NSMutableURLRequest *request = [objectManager multipartFormRequestWithObject:nil
                                                                           method:RKRequestMethodPOST
@@ -113,6 +116,7 @@ static void * TranscodingContext = &TranscodingContext;
                                                                                    } failure:^(RKObjectRequestOperation *operation, NSError *error) {
                                                                                        NSLog(@"Error sending clip");
                                                                                        [SVProgressHUD showErrorWithStatus:@"Error"];
+                                                                                       [self.submitButton setEnabled:YES];
 //                                                                                       UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"error"
 //                                                                                                                                       message:[error localizedDescription]
 //                                                                                                                                      delegate:nil
@@ -121,7 +125,6 @@ static void * TranscodingContext = &TranscodingContext;
 //                                                                                       [alert show];
                                                                                        NSLog(@"Hit error: %@", error);
                                                                                    }];
-    [SVProgressHUD showWithStatus:@"Submitting" maskType:SVProgressHUDMaskTypeBlack];
     [operation start];
 }
 

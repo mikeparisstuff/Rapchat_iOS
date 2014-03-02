@@ -9,6 +9,9 @@
 #import "RCSearchPeopleViewController.h"
 #import "RCSendFriendRequestCell.h"
 #import "RCUrlPaths.h"
+#import "RCFriendRequestWrapper.h"
+#import "RCUser.h"
+#import "RCFriendRequest.h"
 
 #import "RCUser.h"
 #import "RCProfile.h"
@@ -22,6 +25,8 @@
 @property (strong, nonatomic) NSMutableArray *filteredContentList;
 
 @property (strong, nonatomic) NSSet *friendIds;
+@property (strong, nonatomic) NSMutableSet *requestsPendingMe;
+@property (strong, nonatomic) NSMutableSet *requestsPendingThem;
 
 @end
 
@@ -41,6 +46,7 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     [self loadFriends];
+    [self loadFriendRequests];
     self.searchBar.delegate = self;
     [self setTitle:@"Find Friends"];
 }
@@ -66,6 +72,29 @@
                                 NSLog(@"Done getting friends");
                             } failure:^(RKObjectRequestOperation *operation, NSError *error) {
                                 NSLog(@"Error getting friends: %@", error);
+                            }];
+}
+
+// TODO: Make this show pending_me and pending_you in the list view
+- (void) loadFriendRequests {
+    RKObjectManager *objectManager = [RKObjectManager sharedManager];
+    [objectManager getObjectsAtPath:myFriendRequestsEndpoint
+                         parameters:nil
+                            success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+                                RCFriendRequestWrapper *fw = [mappingResult firstObject];
+                                NSArray *pendingMe = fw.pendingMe;
+                                NSArray *pendingThem = fw.pendingThem;
+                                for (RCFriendRequest *f in pendingMe) {
+                                    [self.requestsPendingMe addObject:f.sender.userId];
+                                }
+                                for (RCFriendRequest *f in pendingThem) {
+                                    [self.requestsPendingThem addObject:f.requested.userId];
+                                }
+                                NSLog(@"PENDING ME: %@", self.requestsPendingMe);
+                                NSLog(@"PENDING THEM: %@", self.requestsPendingThem);
+                                NSLog(@"Done loading friend requests");
+                            } failure:^(RKObjectRequestOperation *operation, NSError *error) {
+                                NSLog(@"Could not get friend requests");
                             }];
 }
 
@@ -125,7 +154,11 @@
     NSString *cellIdentifer = @"SendFriendRequestCell";
     
     RCSendFriendRequestCell *cell = [self.tableView dequeueReusableCellWithIdentifier:cellIdentifer];
-    
+    if (cell != nil) {
+        // If the cell is being recycled, make sure it has the default button image
+        [cell.completeButton setHidden:YES];
+        [cell.sendFriendRequestButton setHidden:NO];
+    }
     // Configure the cell...
     RCUser *user;
     if (tableView == self.searchDisplayController.searchResultsTableView) {
@@ -136,8 +169,17 @@
     if ([self.friendIds containsObject:user.userId]) {
         [cell.completeButton setHidden:NO];
         [cell.sendFriendRequestButton setHidden:YES];
+        [cell.pendingRequestLabel setText:@""];
+    } else if ( [self.requestsPendingThem containsObject:user.userId] ) {
+        [cell.completeButton setHidden:YES];
+        [cell.sendFriendRequestButton setHidden:YES];
+        [cell.pendingRequestLabel setText:@"Request Sent"];
+    } else if ( [self.requestsPendingMe containsObject:user.userId] ) {
+        [cell.completeButton setHidden:YES];
+        [cell.sendFriendRequestButton setHidden:YES];
+        [cell.pendingRequestLabel setText:@"Request Waiting"];
     }
-
+    cell.fullnameLabel.text = [NSString stringWithFormat:@"%@ %@", user.firstName, user.lastName];
     cell.usernameLabel.text = user.username;
     return cell;
 }
@@ -184,6 +226,22 @@
         _contentList = [[NSArray alloc] init];
     }
     return _contentList;
+}
+
+- (NSMutableSet *)requestsPendingThem
+{
+    if (!_requestsPendingThem) {
+        _requestsPendingThem = [[NSMutableSet alloc] init];
+    }
+    return _requestsPendingThem;
+}
+
+- (NSMutableSet *)requestsPendingMe
+{
+    if (!_requestsPendingMe) {
+        _requestsPendingMe = [[NSMutableSet alloc] init];
+    }
+    return _requestsPendingMe;
 }
 
 @end

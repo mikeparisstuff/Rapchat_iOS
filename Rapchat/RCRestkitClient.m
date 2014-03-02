@@ -20,6 +20,7 @@
 #import "RCFriendRequest.h"
 #import "RCSessionPaginator.h"
 #import "RCPublicProfile.h"
+#import "RCFriendRequestWrapper.h"
 
 #import "RCUrlPaths.h"
 
@@ -28,7 +29,7 @@
 
 @implementation RCRestkitClient
 
-static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
+static const NSString *BASE_URL = @"http://rapback.herokuapp.com";
 //static const NSString *BASE_URL = @"http://192.168.0.111:8000";
 
 +(void)setupRestkit
@@ -183,12 +184,19 @@ static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
     [friendRequestMapping addPropertyMapping:requestSenderRelationship];
     [friendRequestMapping addPropertyMapping:requestRequestedRelationship];
     
+    // Wrapper around pending me and pending them
+    RKObjectMapping *requestWrapperMapping = [RKObjectMapping mappingForClass:[RCFriendRequestWrapper class]];
+    RKRelationshipMapping *pendingMeRelationship = [RKRelationshipMapping relationshipMappingFromKeyPath:@"pending_me" toKeyPath:@"pendingMe" withMapping:friendRequestMapping];
+    RKRelationshipMapping *pendingThemRelationship = [RKRelationshipMapping relationshipMappingFromKeyPath:@"pending_them" toKeyPath:@"pendingThem" withMapping:friendRequestMapping];
+    [requestWrapperMapping addPropertyMappingsFromArray:@[pendingMeRelationship, pendingThemRelationship]];
+    
+    
     /*
      Setup Sessions and Crowds relationships
      */
     // session.crowd mapping
-    RKRelationshipMapping *sessionCrowdRelationshipMapping = [RKRelationshipMapping relationshipMappingFromKeyPath:@"crowd" toKeyPath:@"crowd" withMapping:crowdMapping];
-    [sessionMapping addPropertyMapping:sessionCrowdRelationshipMapping];
+//    RKRelationshipMapping *sessionCrowdRelationshipMapping = [RKRelationshipMapping relationshipMappingFromKeyPath:@"crowd" toKeyPath:@"crowd" withMapping:crowdMapping];
+//    [sessionMapping addPropertyMapping:sessionCrowdRelationshipMapping];
     
     // crowd.members mapping
     RKRelationshipMapping *crowdMembersRelationshipMapping = [RKRelationshipMapping relationshipMappingFromKeyPath:@"members" toKeyPath:@"members" withMapping:profileMapping];
@@ -351,12 +359,12 @@ static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
                                                     keyPath:@"friend"
                                                     statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
 
-    RKResponseDescriptor *getCrowdsDescriptor = [RKResponseDescriptor
-                                                 responseDescriptorWithMapping:crowdMapping
-                                                 method:RKRequestMethodGET
-                                                 pathPattern:myCrowdsEndpoint
-                                                 keyPath:@"crowds"
-                                                 statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+//    RKResponseDescriptor *getCrowdsDescriptor = [RKResponseDescriptor
+//                                                 responseDescriptorWithMapping:crowdMapping
+//                                                 method:RKRequestMethodGET
+//                                                 pathPattern:myCrowdsEndpoint
+//                                                 keyPath:@"crowds"
+//                                                 statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     
     RKResponseDescriptor *getLikesDescriptor = [RKResponseDescriptor
                                                 responseDescriptorWithMapping:likeMapping
@@ -399,10 +407,10 @@ static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
                                                                                       statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     
     RKResponseDescriptor *pendingFriendRequestsDescriptor = [RKResponseDescriptor
-                                                             responseDescriptorWithMapping:friendRequestMapping
+                                                             responseDescriptorWithMapping:requestWrapperMapping
                                                              method:RKRequestMethodGET
                                                              pathPattern:myFriendRequestsEndpoint
-                                                             keyPath:@"pending_me"
+                                                             keyPath:nil
                                                              statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     
     RKResponseDescriptor *searchUsersDescriptor = [RKResponseDescriptor
@@ -457,7 +465,7 @@ static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
 #pragma mark Register Descriptors
     
     // Putting public profile first is important becuase it needs to be checked after /users/me/
-    NSArray *responseDescriptorArray = @[publicProfileDescriptor, usersResponseDescriptor, newSessionResponseDescriptor, obtainTokenDescriptor, registerUserDescriptor, getMyProfileDescriptor, putMyProfileDescriptor, getFriendsDescriptor, getCrowdsDescriptor, getLikesDescriptor, postLikesDescriptor, getCommentsDescriptor, postNewCommentDescriptor, errorDescriptor, addClipDescriptor, pendingFriendRequestsDescriptor, errorDescriptor, searchUsersDescriptor, sessionsResponseDescriptor, myClipsDescriptor, sendFriendRequestDescriptor, sessionClipsDescriptor, completedSessionsResponseDescriptor, replyToFriendRequestDescriptor, deleteFriendDescriptor, postFeedbackResponseDescriptor];
+    NSArray *responseDescriptorArray = @[publicProfileDescriptor, usersResponseDescriptor, newSessionResponseDescriptor, obtainTokenDescriptor, registerUserDescriptor, getMyProfileDescriptor, putMyProfileDescriptor, getFriendsDescriptor, getLikesDescriptor, postLikesDescriptor, getCommentsDescriptor, postNewCommentDescriptor, errorDescriptor, addClipDescriptor, pendingFriendRequestsDescriptor, errorDescriptor, searchUsersDescriptor, sessionsResponseDescriptor, myClipsDescriptor, sendFriendRequestDescriptor, sessionClipsDescriptor, completedSessionsResponseDescriptor, replyToFriendRequestDescriptor, deleteFriendDescriptor, postFeedbackResponseDescriptor];
     [objectManager addResponseDescriptorsFromArray:responseDescriptorArray];
     
     NSArray *requestDescriptorArray = @[addClipRequestDescriptor];
