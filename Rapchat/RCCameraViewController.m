@@ -731,7 +731,7 @@ static const NSString *ItemStatusContext;
         
 //        [self.thumbnailImageView setImage:[UIImage imageWithCGImage:im]];
         
-        NSData *thumbnailImageData=UIImageJPEGRepresentation([UIImage imageWithCGImage:im], 0.6);
+        NSData *thumbnailImageData=UIImageJPEGRepresentation([UIImage imageWithCGImage:im], 0.55);
         if ([[NSFileManager defaultManager] fileExistsAtPath:[self.thumbnailImageUrl absoluteString]]) {
             [[NSFileManager defaultManager] removeItemAtPath:[self.thumbnailImageUrl absoluteString] error:nil];
         }
@@ -743,6 +743,15 @@ static const NSString *ItemStatusContext;
     generator.maximumSize = maxSize;
     [generator generateCGImagesAsynchronouslyForTimes:[NSArray arrayWithObject:[NSValue valueWithCMTime:thumbTime]] completionHandler:handler];
     
+}
+
+#pragma mark - Lazy Loading
+-(NSString *)battleUsername
+{
+    if (! _battleUsername) {
+        _battleUsername = [[NSString alloc] init];
+    }
+    return _battleUsername;
 }
 
 @end

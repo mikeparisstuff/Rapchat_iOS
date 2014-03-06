@@ -51,14 +51,34 @@
     // If we already have a accessToken for you, then skip the login page
     if ([NSUserDefaults.standardUserDefaults objectForKey:@"accessToken"])
     {
-        controllerId = @"MainStart";
+//        controllerId = @"MainStart";
+        // Reveal controller
+        UIViewController *frontViewController = [self frontViewController];
+        
+        //        UINavigationController *frontNavigationController = [[UINavigationController alloc] initWithRootViewController:frontViewController];
+        
+        //        UIViewController *rightViewController = [[UIViewController alloc] init];
+        //        rightViewController.view.backgroundColor = [UIColor redColor];
+        
+        // Step 2: Instantiate.
+        self.revealController = [PKRevealController revealControllerWithFrontViewController:frontViewController
+                                                                         leftViewController:[self leftViewController]
+                                                                        rightViewController:[self rightViewController]];
+        // Step 3: Configure.
+        self.revealController.delegate = self;
+        self.revealController.animationDuration = 0.25;
+        [self.revealController setMinimumWidth:300.0 maximumWidth:320.0 forViewController:self.revealController.leftViewController];
+        [self.revealController setMinimumWidth:300.0 maximumWidth:320.0 forViewController:self.revealController.rightViewController];
+        
+        // Step 4: Apply.
+        self.window.rootViewController = self.revealController;
 
     }
     else
     {
         controllerId = @"LoginStart";
+        self.window.rootViewController = [storyboard instantiateViewControllerWithIdentifier:controllerId];
     }
-    self.window.rootViewController = [storyboard instantiateViewControllerWithIdentifier:controllerId];
     
     [NSThread sleepForTimeInterval:1.0];
     [self.window makeKeyAndVisible];
@@ -107,26 +127,110 @@
     NSLog(@"%@ (%d -> %d)", NSStringFromSelector(_cmd), (int)current, (int)next);
 }
 
+#pragma mark RCNavBarDelegate
+
+- (void) toggleRevealControllerLeft
+{
+    [self.revealController showViewController:self.revealController.leftViewController];
+}
+
+- (void) toggleRevealControllerRight
+{
+    [self.revealController showViewController:self.revealController.rightViewController];
+}
+
+#pragma mark RCRightRevealVCProtocol
+
+- (void) pushToPresentationMode
+{
+    [self.revealController enterPresentationModeAnimated:YES
+                                              completion:^(BOOL finished) {
+                                                  NSLog(@"In Presentation Mode");
+                                              }];
+}
+
+- (void) pushBackFromPresentationMode
+{
+    if ([self.revealController isPresentationModeActive]) {
+        [self.revealController resignPresentationModeEntirely:NO
+                                                     animated:YES
+                                                   completion:^(BOOL finished) {
+                                                       NSLog(@"Resigned Presentation mode");
+                                                   }];
+    }
+    
+}
+
+#pragma mark RCLeftRevealVCProtocol
+
+- (void)gotoLive
+{
+    NSLog(@"Live");
+    UIStoryboard* storyboard = [UIStoryboard storyboardWithName:[[NSBundle mainBundle].infoDictionary objectForKey:@"UIMainStoryboardFile"] bundle:nil];
+    UIViewController* controller = [storyboard instantiateViewControllerWithIdentifier:@"LiveFeedController"];
+    [self presentViewController:controller];
+}
+
+- (void)gotoStage
+{
+    NSLog(@"Stage");
+    UIStoryboard* storyboard = [UIStoryboard storyboardWithName:[[NSBundle mainBundle].infoDictionary objectForKey:@"UIMainStoryboardFile"] bundle:nil];
+    UIViewController* controller = [storyboard instantiateViewControllerWithIdentifier:@"CompletedFeedController"];
+    [self presentViewController:controller];
+}
+
+- (void)gotoProfile
+{
+    NSLog(@"Profile");
+    UIStoryboard* storyboard = [UIStoryboard storyboardWithName:[[NSBundle mainBundle].infoDictionary objectForKey:@"UIMainStoryboardFile"] bundle:nil];
+    UIViewController* controller = [storyboard instantiateViewControllerWithIdentifier:@"ProfileController"];
+    [self presentViewController:controller];
+}
+
+- (void)gotoFeedback
+{
+    NSLog(@"Feedback");
+    UIStoryboard* storyboard = [UIStoryboard storyboardWithName:[[NSBundle mainBundle].infoDictionary objectForKey:@"UIMainStoryboardFile"] bundle:nil];
+    UIViewController *controller = [storyboard instantiateViewControllerWithIdentifier:@"FeedbackController"];
+    [self presentViewController:controller];
+}
+
+- (void) presentViewController:(UIViewController *)vc
+{
+    [self.revealController enterPresentationModeAnimated:YES completion:^(BOOL finished) {
+        RCNavigationController *mainController = (RCNavigationController *)self.revealController.frontViewController;
+        [mainController setViewController:vc];
+        [NSThread sleepForTimeInterval:.3];
+        [self.revealController resignPresentationModeEntirely:YES animated:YES completion:^(BOOL finished) {
+            NSLog(@"Should be focused on center");
+        }];
+    }];
+}
+
 #pragma mark Helpers
 
 - (UIViewController *)frontViewController
 {
     UIStoryboard* storyboard = [UIStoryboard storyboardWithName:[[NSBundle mainBundle].infoDictionary objectForKey:@"UIMainStoryboardFile"] bundle:nil];
-    UIViewController* controller = [storyboard instantiateViewControllerWithIdentifier:@"MainStart"];
+    RCNavigationController* controller = [storyboard instantiateViewControllerWithIdentifier:@"MainStart"];
+    controller.revealDelegate = self;
     return controller;
 }
 
 - (UIViewController *)leftViewController
 {
     UIStoryboard* storyboard = [UIStoryboard storyboardWithName:[[NSBundle mainBundle].infoDictionary objectForKey:@"UIMainStoryboardFile"] bundle:nil];
-    UIViewController* controller = [storyboard instantiateViewControllerWithIdentifier:@"ProfileController"];
+    RCLeftRevealViewController* controller = [storyboard instantiateViewControllerWithIdentifier:@"LeftRevealVC"];
+    controller.delegate = self;
     return controller;
 }
 
 - (UIViewController *)rightViewController
 {
     UIStoryboard* storyboard = [UIStoryboard storyboardWithName:[[NSBundle mainBundle].infoDictionary objectForKey:@"UIMainStoryboardFile"] bundle:nil];
-    UIViewController* controller = [storyboard instantiateViewControllerWithIdentifier:@"FindFriendsController"];
+    RCNavigationController* controller = [storyboard instantiateViewControllerWithIdentifier:@"RightRevealVC"];
+    RCRightRevealViewController *rightView = (RCRightRevealViewController *)controller.viewControllers[0];
+    rightView.delegate = self;
     return controller;
 }
 

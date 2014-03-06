@@ -53,6 +53,8 @@
             controller.videoURL = [self getVideoUrl];
             controller.thumbnailImageUrl = self.thumbnailImageUrl;
             controller.progressValue = self.timerProgress;
+            controller.isBattle = self.isBattle;
+            controller.battleUsername = self.battleUsername;
             NSLog(@"Prepared PreviewVideoSegue");
         }
     }

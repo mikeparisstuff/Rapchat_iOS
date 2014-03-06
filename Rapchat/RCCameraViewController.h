@@ -18,6 +18,8 @@
 @property (nonatomic, strong) NSString *currentBeat;
 @property (nonatomic) NSUInteger beatNumber;
 @property (nonatomic, strong)NSArray *beats;
+@property (nonatomic) BOOL isBattle;
+@property (nonatomic) NSString *battleUsername;
 
 @property (nonatomic) float timerProgress;
 

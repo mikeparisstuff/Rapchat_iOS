@@ -112,6 +112,7 @@
     //self.menu.imageAlignment = REMenuImageAlignmentRight;
     //self.menu.closeOnSelection = NO;
     //self.menu.appearsBehindNavigationBar = NO; // Affects only iOS 7
+    
     if (!REUIKitIsFlatMode()) {
         self.menu.cornerRadius = 4;
         self.menu.shadowRadius = 4;
@@ -134,12 +135,28 @@
     };
 }
 
+- (void)setViewController:(UIViewController *)vc
+{
+    __typeof (self) __weak weakSelf = self;
+    [weakSelf setViewControllers:@[vc] animated:NO];
+}
+
 - (void)toggleMenu
 {
-    if (self.menu.isOpen) {
-        return [self.menu close];
+    if ([self.revealDelegate respondsToSelector:@selector(toggleRevealControllerLeft)]) {
+        [self.revealDelegate toggleRevealControllerLeft];
     }
-    [self.menu showFromNavigationController:self];
+//    if (self.menu.isOpen) {
+//        return [self.menu close];
+//    }
+//    [self.menu showFromNavigationController:self];
+}
+
+- (void)toggleRevealRight
+{
+    if ([self.revealDelegate respondsToSelector:@selector(toggleRevealControllerRight)]) {
+        [self.revealDelegate toggleRevealControllerRight];
+    }
 }
 
 -(UIStatusBarStyle)preferredStatusBarStyle

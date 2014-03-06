@@ -15,5 +15,7 @@
 @property (nonatomic) NSURL *thumbnailImageUrl;
 @property (nonatomic, strong)NSNumber *sessionId;
 @property (nonatomic) float progressValue;
+@property (nonatomic) BOOL isBattle;
+@property (nonatomic) NSString *battleUsername;
 
 @end

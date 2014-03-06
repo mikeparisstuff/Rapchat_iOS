@@ -15,12 +15,16 @@
 #import "RCPreviewFileViewController.h"
 #import "RCPreviewVideoForRapbackViewController.h"
 #import "RCSessionPaginator.h"
+#import "RCCreateNewSessionCameraViewController.h"
 
 
 #include "REMenu.h"
 
 #import "RCUrlPaths.h"
 #import "RCConstants.h"
+#import "RCNavigationController.h"
+
+#import "AwesomeMenu.h"
 
 #define RELOAD_OFFSET 5
 
@@ -29,7 +33,7 @@
 @property (nonatomic, strong) NSArray *sessions;
 @property (nonatomic, strong) RCSession *commentsSession;
 @property (nonatomic, strong) NSURL *clipUrl;
-@property (nonatomic, strong) NSNumber *selectedSessionId;
+@property (nonatomic, strong) RCSession *selectedSession;
 @property (nonatomic, strong) NSMutableSet *likesSet;
 @property (nonatomic, strong) NSMutableArray *allSessions;
 @property (nonatomic, strong) RCSessionPaginator *sessionsPaginator;
@@ -83,6 +87,93 @@
     }
 }
 
+- (id)initWithStyle:(UITableViewStyle)style
+{
+    self = [super initWithStyle:style];
+    if (self) {
+        // Custom initialization
+    }
+    return self;
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    NSLog(@"Creating Live Feed");
+    // Uncomment the following line to preserve selection between presentations.
+    // self.clearsSelectionOnViewWillAppear = NO;
+    
+    // Add profile and new session bar button items
+    UIBarButtonItem *newSessionButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ic_microphone"] style:UIBarButtonItemStyleBordered target:self action:@selector(segueToNewSessionWorkflow)];
+    UIBarButtonItem *friendsBarItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ic_users"] style:UIBarButtonItemStyleBordered target:self action:@selector(revealRightVC)];
+//    self.navigationItem.rightBarButtonItem = newSessionButton;
+    [self.navigationItem setRightBarButtonItems:@[friendsBarItem, newSessionButton]];
+    
+    [self.navigationItem.leftBarButtonItem setImage:[UIImage imageNamed:@"ic_heart_rate_nav"]];
+    [self.navigationItem.leftBarButtonItem setImageInsets:UIEdgeInsetsZero];
+    
+    [self setTitle:@"Live Feed"];
+    
+    [self.refreshControl setBackgroundColor:[UIColor colorWithRed:189.0/255.0 green:195.0/255.0 blue:199.0/255.0 alpha:1.0]];
+    [self.refreshControl setTintColor:[UIColor redColor]];
+    
+    [self reloadData];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+
+    [super viewWillAppear:animated];
+//    [SVProgressHUD showWithStatus:@"Loading Sessions" maskType:SVProgressHUDMaskTypeGradient];
+//    [self.refreshControl beginRefreshing];
+}
+
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+- (void) revealRightVC
+{
+    RCNavigationController *navCont = (RCNavigationController *)self.navigationController;
+    if ([navCont respondsToSelector:@selector(toggleRevealRight)]) {
+        [navCont toggleRevealRight];
+    }
+}
+
+#pragma mark - Awesome Menu
+- (void)createAwesomeMenu
+{
+    UIImage *storyMenuItemImage = [UIImage imageNamed:@"bg-new-battle.png"];
+    UIImage *storyMenuItemImagePressed = [UIImage imageNamed:@"bg-new-battle.png"];
+    UIImage *starImage = [UIImage imageNamed:@"ic_versus.png"];
+    AwesomeMenuItem *starMenuItem1 = [[AwesomeMenuItem alloc] initWithImage:storyMenuItemImage
+                                                           highlightedImage:storyMenuItemImagePressed
+                                                               ContentImage:starImage
+                                                    highlightedContentImage:nil];
+    AwesomeMenuItem *starMenuItem2 = [[AwesomeMenuItem alloc] initWithImage:storyMenuItemImage
+                                                           highlightedImage:storyMenuItemImagePressed
+                                                               ContentImage:starImage
+                                                    highlightedContentImage:nil];
+    // the start item, similar to "add" button of Path
+    AwesomeMenuItem *startItem = [[AwesomeMenuItem alloc] initWithImage:[UIImage imageNamed:@"bg-awesome_menu.png"]
+                                                       highlightedImage:[UIImage imageNamed:@"bg-awesome_menu.png"]
+                                                           ContentImage:[UIImage imageNamed:@"ic_microphone.png"]
+                                                highlightedContentImage:[UIImage imageNamed:@"ic_microphone.png"]];
+    AwesomeMenu *menu = [[AwesomeMenu alloc] initWithFrame:self.view.frame startItem:startItem optionMenus:@[starMenuItem1, starMenuItem2]];
+    menu.delegate = self;
+    menu.startPoint = CGPointMake(self.view.frame.size.width/2, self.view.frame.size.height/2);
+    menu.menuWholeAngle = M_PI_2;
+    menu.rotateAngle = -M_PI_2;
+    
+    [self.view addSubview:menu];
+}
+
+
+
+#pragma mark - API
+
 - (void)loadSessions
 {
     NSLog(@"Loading Sessions");
@@ -93,9 +184,9 @@
     [objectManager getObjectsAtPath:mySessionsEndpoint
                          parameters:nil
                             success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-//                                NSArray *sessions = [mappingResult array];
+                                //                                NSArray *sessions = [mappingResult array];
                                 self.sessionsPaginator = [mappingResult firstObject];
-//                                self.sessions = sessions;
+                                //                                self.sessions = sessions;
                                 self.allSessions = [self.sessionsPaginator.currentPageSessions mutableCopy];
                                 if (!self.stillLoadingLikes) {
                                     [self updateUI];
@@ -131,7 +222,7 @@
                                 }failure:^(RKObjectRequestOperation *operation, NSError *error) {
                                     [SVProgressHUD showErrorWithStatus:@"Network Error"];
                                 }];
-
+        
     }
 }
 
@@ -173,67 +264,6 @@
                             } failure:^(RKObjectRequestOperation *operation, NSError *error) {
                                 [SVProgressHUD showErrorWithStatus:@"Network Error"];
                             }];
-}
-
-- (id)initWithStyle:(UITableViewStyle)style
-{
-    self = [super initWithStyle:style];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
-
-//- (void)viewDidLayoutSubviews
-//{
-//    // Only works for iOS 7
-//    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) {
-//        CGRect viewBounds = self.view.bounds;
-//        CGFloat topBarOffset = self.topLayoutGuide.length;
-//        
-//        // snaps the view under the status bar like iOS 6
-//        viewBounds.origin.y = topBarOffset * -1;
-//        
-//        // shrink bounds to compensate for offset
-//        self.view.bounds = viewBounds;
-//    }
-//}
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    NSLog(@"Creating Live Feed");
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
-    
-    // Add profile and new session bar button items
-    UIBarButtonItem *newSessionButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ic_microphone"] style:UIBarButtonItemStyleBordered target:self action:@selector(segueToNewSessionWorkflow)];
-    self.navigationItem.rightBarButtonItem = newSessionButton;
-    
-    [self.navigationItem.leftBarButtonItem setImage:[UIImage imageNamed:@"ic_heart_rate_nav"]];
-    [self.navigationItem.leftBarButtonItem setImageInsets:UIEdgeInsetsZero];
-    
-    [self setTitle:@"Live Feed"];
-    
-    [self.refreshControl setBackgroundColor:[UIColor colorWithRed:189.0/255.0 green:195.0/255.0 blue:199.0/255.0 alpha:1.0]];
-    [self.refreshControl setTintColor:[UIColor redColor]];
-    
-    [self reloadData];
-    
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-
-    [super viewWillAppear:animated];
-//    [SVProgressHUD showWithStatus:@"Loading Sessions" maskType:SVProgressHUDMaskTypeGradient];
-//    [self.refreshControl beginRefreshing];
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 
@@ -308,7 +338,7 @@
 }
 */
 
-#pragma mark ScrollViewDelegate
+#pragma mark - ScrollViewDelegate
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     // UITableView only moves in one direction, y axis
 //    NSInteger currentOffset = scrollView.contentOffset.y;
@@ -332,7 +362,7 @@
 }
 
 
-#pragma mark - Navigation
+#pragma mark - Segues
 
 // In a story board-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
@@ -351,8 +381,21 @@
             if ([[navController topViewController] isKindOfClass:[RCPreviewVideoForRapbackViewController class]]) {
                 RCPreviewVideoForRapbackViewController *RCpfvc = (RCPreviewVideoForRapbackViewController *)[navController topViewController];
                 RCpfvc.videoURL = self.clipUrl;
-                RCpfvc.sessionId = self.selectedSessionId;
+                RCpfvc.sessionId = self.selectedSession.sessionId;
+                RCpfvc.isBattle = self.selectedSession.isBattle;
                 NSLog(@"Prepared PlayVideoSegue");
+            }
+        }
+    }
+    if ([segue.identifier isEqualToString:@"segueToNewSessionWorkflow"]) {
+        if ([segue.destinationViewController isKindOfClass:[UINavigationController class]]) {
+            UINavigationController *navController = segue.destinationViewController;
+            if ([[navController topViewController] isKindOfClass:[RCCreateNewSessionCameraViewController class]]) {
+                RCCreateNewSessionCameraViewController *RCnsc = (RCCreateNewSessionCameraViewController *)[navController topViewController];
+                
+                // Depending on which button was clicked set isBattle Yes or No
+                RCnsc.isBattle = NO;
+                NSLog(@"Prepared CreateNewSessionSegue");
             }
         }
     }
@@ -361,13 +404,13 @@
 }
 
 
-# pragma mark Utility methods
+# pragma mark - Utility methods
 - (NSIndexPath *)indexPathForCellHoldingButton:(UIButton *)button
 {
     return [self.tableView indexPathForCell:(UITableViewCell *)button.superview];
 }
 
-#pragma mark Session cell Protocol
+#pragma mark - Session cell Protocol
 
 - (void)likeButtonPressedInCell:(RCSessionTableViewCell *)sender
 {
@@ -407,7 +450,7 @@
 {
     RCSession *session = [sender getCellSession];
     self.clipUrl = session.mostRecentClipUrl;
-    self.selectedSessionId = session.sessionId;
+    self.selectedSession = session;
     NSLog(@"Clicking on video with url: %@", self.clipUrl);
     [self performSegueWithIdentifier:@"PlayVideoSegue" sender:self];
 }

@@ -22,6 +22,7 @@ PODS:
   - SDWebImage/Core (3.5.2)
   - SOCKit (1.1)
   - SVProgressHUD (1.0)
+  - SVSegmentedControl (0.2)
   - TransitionKit (1.1.1)
   - UIActivityIndicator-for-SDWebImage (1.0.3):
     - SDWebImage (~> 3.2)
@@ -31,6 +32,7 @@ DEPENDENCIES:
   - REMenu (~> 1.7.1)
   - RestKit (~> 0.20.0)
   - SVProgressHUD
+  - SVSegmentedControl
   - UIActivityIndicator-for-SDWebImage
 
 SPEC CHECKSUMS:
@@ -41,6 +43,7 @@ SPEC CHECKSUMS:
   SDWebImage: fe7ce01ae4e0a884d168f59c9dd82d35baf8429e
   SOCKit: 2f3bc4d07910de12dcc202815e07db68a3802581
   SVProgressHUD: 5e10939a296debf5fe5a5895eda9539b8b2114f1
+  SVSegmentedControl: e874fc56c2a1efb9f597ddf0908101393f53fe96
   TransitionKit: d0e3344aac92991395d4c2e72d9c5a8ceeb12910
   UIActivityIndicator-for-SDWebImage: e712b97826395022ce7b4a4b56eb7194090c19d5
 

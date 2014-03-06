@@ -77,6 +77,7 @@
             controller.sessionId = self.sessionId;
             controller.videoURL = [self getVideoUrl];
             controller.thumbnailImageUrl = self.thumbnailImageUrl;
+            controller.isBattle = self.isBattle;
             NSLog(@"Prepared PreviewVideoSegue with url: %@", controller.videoURL);
         }
     }

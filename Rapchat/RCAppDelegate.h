@@ -8,8 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import "PKRevealController.h"
+#import "RCLeftRevealViewController.h"
+#import "RCRightRevealViewController.h"
+#import "RCNavigationController.h"
 
-@interface RCAppDelegate : UIResponder <UIApplicationDelegate>
+@interface RCAppDelegate : UIResponder <UIApplicationDelegate, RCLeftRevealVCProtocol, RCNavigationControllerProtocol, RCRightRevealVCProtocol >
 
 @property (strong, nonatomic) UIWindow *window;
 

@@ -15,7 +15,7 @@
 #import "RCPreviewFileViewController.h"
 #import "RCSessionPaginator.h"
 #import "RCViewSessionViewController.h"
-
+#import "RCNavigationController.h"
 
 #include "REMenu.h"
 
@@ -84,6 +84,78 @@
     }
 }
 
+
+- (id)initWithStyle:(UITableViewStyle)style
+{
+    self = [super initWithStyle:style];
+    if (self) {
+        // Custom initialization
+    }
+    return self;
+}
+
+//- (void)viewDidLayoutSubviews
+//{
+//    // Only works for iOS 7
+//    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) {
+//        CGRect viewBounds = self.view.bounds;
+//        CGFloat topBarOffset = self.topLayoutGuide.length;
+//
+//        // snaps the view under the status bar like iOS 6
+//        viewBounds.origin.y = topBarOffset * -1;
+//
+//        // shrink bounds to compensate for offset
+//        self.view.bounds = viewBounds;
+//    }
+//}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    NSLog(@"Creating Stage");
+    // Uncomment the following line to preserve selection between presentations.
+    // self.clearsSelectionOnViewWillAppear = NO;
+    
+    // Add profile and new session bar button items
+    UIBarButtonItem *newSessionButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ic_microphone"] style:UIBarButtonItemStyleBordered target:self action:@selector(segueToNewSessionWorkflow)];
+    UIBarButtonItem *friendsBarItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ic_users"] style:UIBarButtonItemStyleBordered target:self action:@selector(revealRightVC)];
+    //    self.navigationItem.rightBarButtonItem = newSessionButton;
+    [self.navigationItem setRightBarButtonItems:@[friendsBarItem, newSessionButton]];
+    
+    [self.navigationItem.leftBarButtonItem setImage:[UIImage imageNamed:@"ic_spotlight_nav"]];
+    [self.navigationItem.leftBarButtonItem setImageInsets:UIEdgeInsetsZero];
+    
+    [self setTitle:@"The Stage"];
+    
+    [self.refreshControl setBackgroundColor:[UIColor colorWithRed:189.0/255.0 green:195.0/255.0 blue:199.0/255.0 alpha:1.0]];
+    [self.refreshControl setTintColor:[UIColor redColor]];
+    
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    
+    [super viewWillAppear:animated];
+    //    [SVProgressHUD showWithStatus:@"Loading Sessions" maskType:SVProgressHUDMaskTypeGradient];
+    [self.refreshControl beginRefreshing];
+    [self reloadData];
+}
+
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+- (void) revealRightVC
+{
+    RCNavigationController *navCont = (RCNavigationController *)self.navigationController;
+    if ([navCont respondsToSelector:@selector(toggleRevealRight)]) {
+        [navCont toggleRevealRight];
+    }
+}
+
+#pragma mark API
 - (void)loadSessions
 {
     NSLog(@"Loading Sessions");
@@ -98,11 +170,11 @@
                                 self.sessionsPaginator = [mappingResult firstObject];
                                 //                                self.sessions = sessions;
                                 self.allSessions = [self.sessionsPaginator.currentPageSessions mutableCopy];
-
+                                
                                 if (!self.stillLoadingLikes) {
                                     // If we are done loading likes, reload page
                                     [self updateUI];
-                                } 
+                                }
                                 self.stillLoadingSessions = NO;
                             }failure:^(RKObjectRequestOperation *operation, NSError *error) {
                                 [SVProgressHUD showErrorWithStatus:@"Network Error"];
@@ -178,66 +250,6 @@
                             } failure:^(RKObjectRequestOperation *operation, NSError *error) {
                                 [SVProgressHUD showErrorWithStatus:@"Network Error"];
                             }];
-}
-
-- (id)initWithStyle:(UITableViewStyle)style
-{
-    self = [super initWithStyle:style];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
-
-//- (void)viewDidLayoutSubviews
-//{
-//    // Only works for iOS 7
-//    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) {
-//        CGRect viewBounds = self.view.bounds;
-//        CGFloat topBarOffset = self.topLayoutGuide.length;
-//
-//        // snaps the view under the status bar like iOS 6
-//        viewBounds.origin.y = topBarOffset * -1;
-//
-//        // shrink bounds to compensate for offset
-//        self.view.bounds = viewBounds;
-//    }
-//}
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    NSLog(@"Creating Stage");
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
-    
-    // Add profile and new session bar button items
-    UIBarButtonItem *newSessionButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ic_microphone"] style:UIBarButtonItemStyleBordered target:self action:@selector(segueToNewSessionWorkflow)];
-    self.navigationItem.rightBarButtonItem = newSessionButton;
-    
-    [self.navigationItem.leftBarButtonItem setImage:[UIImage imageNamed:@"ic_spotlight_nav"]];
-    [self.navigationItem.leftBarButtonItem setImageInsets:UIEdgeInsetsZero];
-    
-    [self setTitle:@"The Stage"];
-    
-    [self.refreshControl setBackgroundColor:[UIColor colorWithRed:189.0/255.0 green:195.0/255.0 blue:199.0/255.0 alpha:1.0]];
-    [self.refreshControl setTintColor:[UIColor redColor]];
-    
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    
-    [super viewWillAppear:animated];
-    //    [SVProgressHUD showWithStatus:@"Loading Sessions" maskType:SVProgressHUDMaskTypeGradient];
-    [self.refreshControl beginRefreshing];
-    [self reloadData];
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 

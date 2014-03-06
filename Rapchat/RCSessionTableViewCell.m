@@ -14,7 +14,21 @@
 @interface RCSessionTableViewCell ()
 
 @property (strong, nonatomic) RCSession* session;
+
+// Freestyles
 @property (weak, nonatomic) IBOutlet UIImageView *thumbnailImageView;
+@property (weak, nonatomic) IBOutlet UIView *freestyleHeaderView;
+@property (weak, nonatomic) IBOutlet UILabel *freestyleDateLabel;
+@property (weak, nonatomic) IBOutlet UILabel *freestyleTitleLabel;
+
+// Battles
+@property (weak, nonatomic) IBOutlet UIView *battleHeaderView;
+@property (weak, nonatomic) IBOutlet UIImageView *receiverProfilePicture;
+@property (weak, nonatomic) IBOutlet UIImageView *creatorProfilePicture;
+@property (weak, nonatomic) IBOutlet UILabel *battleDateLabel;
+@property (weak, nonatomic) IBOutlet UILabel *battleCreatorUsernameLabel;
+@property (weak, nonatomic) IBOutlet UILabel *battleReceiverUsernameLabel;
+@property (weak, nonatomic) IBOutlet UILabel *battleTitleLabel;
 
 @end
 
@@ -60,43 +74,72 @@
     return self.session;
 }
 
+- (void)setFreestyleHeaderInfo
+{
+    // Set Date
+    NSDateFormatter *dateFormatter = [NSDateFormatter new];
+    NSArray *months = @[@"", @"Jan", @"Feb", @"March", @"Apr", @"May", @"June", @"July", @"Aug", @"Sep",  @"Oct", @"Nov", @"Dec"];
+    [dateFormatter setDateFormat:@"MM/dd"];
+    NSArray *dateArray = [[dateFormatter stringFromDate:self.session.created] componentsSeparatedByString:@"/"];
+    self.freestyleDateLabel.text = [NSString stringWithFormat:@"%@ %@", [months objectAtIndex:[dateArray[0] intValue]], dateArray[1]];
+    
+    [self.freestyleHeaderView setHidden:NO];
+    [self.battleHeaderView setHidden:YES];
+    self.freestyleTitleLabel.text = [self.session.title uppercaseString];
+}
+
+- (void)setBattleHeaderInfo
+{
+    // Set Date
+    NSDateFormatter *dateFormatter = [NSDateFormatter new];
+    NSArray *months = @[@"", @"Jan", @"Feb", @"March", @"Apr", @"May", @"June", @"July", @"Aug", @"Sep",  @"Oct", @"Nov", @"Dec"];
+    [dateFormatter setDateFormat:@"MM/dd"];
+    NSArray *dateArray = [[dateFormatter stringFromDate:self.session.created] componentsSeparatedByString:@"/"];
+    self.battleDateLabel.text = [NSString stringWithFormat:@"%@ %@", [months objectAtIndex:[dateArray[0] intValue]], dateArray[1]];
+    
+    // Set Appropriate View visable
+    [self.freestyleHeaderView setHidden:YES];
+    [self.battleHeaderView setHidden:NO];
+    
+    // Set Usernames
+    [self.battleCreatorUsernameLabel setText:self.session.creator.user.username];
+    [self.battleReceiverUsernameLabel setText:self.session.receiver.user.username];
+    
+    // Set Title
+    [self.battleTitleLabel setText:[self.session.title uppercaseString]];
+    
+    // Set profile pictures
+    [self.creatorProfilePicture setImageWithURL:self.session.creator.profilePictureURL usingActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    [self.receiverProfilePicture setImageWithURL:self.session.receiver.profilePictureURL usingActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    self.creatorProfilePicture.layer.cornerRadius  = 5.0;
+    self.creatorProfilePicture.layer.masksToBounds = YES;
+    self.receiverProfilePicture.layer.cornerRadius  = 5.0;
+    self.receiverProfilePicture.layer.masksToBounds = YES;
+    
+}
+
 - (void)setCellSession:(RCSession *)session
 {
     self.session = session;
     self.likeButton.titleLabel.text = session.title;
     
-    // Set Date
-    NSDateFormatter *dateFormatter = [NSDateFormatter new];
-    NSArray *months = @[@"", @"Jan", @"Feb", @"March", @"Apr", @"May", @"June", @"July", @"Aug", @"Sep",  @"Oct", @"Nov", @"Dec"];
-    [dateFormatter setDateFormat:@"MM/dd"];
-    NSArray *dateArray = [[dateFormatter stringFromDate:session.created] componentsSeparatedByString:@"/"];
+    NSLog(@"Setting Cell Session that is battle: %@", session.isBattle);
+    if ([session.isBattle boolValue]) {
+        [self setBattleHeaderInfo];
+    } else {
+        [self setFreestyleHeaderInfo];
+    }
+
     
-//    [self.thumbnailImageView setImage:[UIImage imageWithData:[NSData dataWithContentsOfURL:session.thumbnailUrl]]];
-    
-//    [self.thumbnailImageView setImageWithURL:session.thumbnailUrl placeholderImage:[UIImage imageNamed:@"session_placeholder"]];
+
     [self.thumbnailImageView setImageWithURL:session.thumbnailUrl usingActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    self.titleLabel.text = [session.title uppercaseString];
-    self.dateLabel.text = [NSString stringWithFormat:@"%@ %@", [months objectAtIndex:[dateArray[0] intValue]], dateArray[1]];
+    self.thumbnailImageView.layer.cornerRadius  = 10.0;
+    self.thumbnailImageView.layer.masksToBounds = YES;
     NSString *likeFormat = ([session.numberOfLikes intValue]==1)? @"  %@ like" : @"  %@ likes";
     self.likesLabel.text = [NSString stringWithFormat:likeFormat, session.numberOfLikes];
     NSString *format = ([session.comments count]==1)? @"  %lu comment" : @"  %lu comments";
     self.commentsLabel.text = [NSString stringWithFormat:format, (unsigned long)[session.comments count]];
-    
-    
-//    // Set title label size
-//    UIFont* titleFont = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
-//    NSAttributedString *sessionTitle = [[NSAttributedString alloc] initWithString:session.title attributes:@{NSFontAttributeName: titleFont}];
-//    CGRect titleFrame = [sessionTitle boundingRectWithSize:CGSizeMake(320, 50) options:NSStringDrawingUsesLineFragmentOrigin context:nil];
-//    self.titleLabel.frame = CGRectMake(self.titleLabel.frame.origin.x, self.titleLabel.frame.origin.y, titleFrame.size.width + 50, self.titleLabel.frame.size.height);
-//    
-//    // Set crowd label size
-//    UIFont *crowdFont = [UIFont fontWithName:@"Helvetica Neue" size:14.0f];
-//    NSAttributedString *crowdTitle = [[NSAttributedString alloc] initWithString:self.crowdTitleLabel.text attributes:@{NSFontAttributeName: crowdFont}];
-//    CGRect crowdFrame = [crowdTitle boundingRectWithSize:CGSizeMake(320, 50) options:NSStringDrawingUsesLineFragmentOrigin context:nil];
-//    self.crowdTitleLabel.frame = CGRectMake(self.crowdTitleLabel.frame.origin.x, self.crowdTitleLabel.frame.origin.y, crowdFrame.size.width + 14, self.crowdTitleLabel.frame.size.height);
 }
-
-
 
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated

@@ -2,12 +2,13 @@
   "images" : [
     {
       "idiom" : "universal",
-      "scale" : "1x"
+      "scale" : "1x",
+      "filename" : "ic_health_nav.png"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "ic_heart_beat_nav.png"
+      "filename" : "ic_health_nav_2@2x.png"
     }
   ],
   "info" : {

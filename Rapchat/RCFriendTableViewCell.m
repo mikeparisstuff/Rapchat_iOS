@@ -10,7 +10,8 @@
 #import "UIImageView+UIActivityIndicatorForSDWebImage.h"
 
 @interface RCFriendTableViewCell ()
-@property (weak, nonatomic) IBOutlet UIImageView *profilePictureImageView;
+
+@property NSString *friendUsername;
 
 @end
 
@@ -39,10 +40,19 @@
     }
 }
 
-#pragma mark public api
+#pragma mark - Actions
+- (IBAction)battleButtonClicked:(UIButton *)sender {
+    if ([self.delegate respondsToSelector:@selector(startBattleWithUsername:)]) {
+        [self.delegate startBattleWithUsername:self.friendUsername];
+    }
+}
+
+
+#pragma mark - public api
 - (void)setFriend:(RCProfile *)friend
 {
     [self.usernameLabel setText:friend.user.username];
+    self.friendUsername = friend.user.username;
     [self.fullNameLabel setText:[NSString stringWithFormat:@"%@ %@", friend.user.firstName, friend.user.lastName]];
     if (friend.profilePictureURL) {
         [self.profilePictureImageView setImageWithURL:friend.profilePictureURL

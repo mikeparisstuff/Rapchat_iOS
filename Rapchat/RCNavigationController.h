@@ -9,10 +9,21 @@
 #import <UIKit/UIKit.h>
 #import "REMenu.h"
 
+@protocol RCNavigationControllerProtocol <NSObject>
+
+- (void)toggleRevealControllerLeft;
+- (void)toggleRevealControllerRight;
+
+@end
+
 @interface RCNavigationController : UINavigationController
 
 @property (strong, readonly, nonatomic) REMenu *menu;
+@property (strong) id revealDelegate;
 
 - (void)toggleMenu;
+- (void)toggleRevealLeft;
+- (void)toggleRevealRight;
+- (void)setViewController:(UIViewController *)vc;
 
 @end

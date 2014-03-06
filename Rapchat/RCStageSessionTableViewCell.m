@@ -18,6 +18,8 @@
 @property (weak, nonatomic) IBOutlet UIImageView *topRightThumbnailView;
 @property (weak, nonatomic) IBOutlet UIImageView *bottomLeftThumbnailView;
 @property (weak, nonatomic) IBOutlet UIImageView *bottomRightThumbnailView;
+@property (weak, nonatomic) IBOutlet UILabel *dateLabel;
+@property (weak, nonatomic) IBOutlet UILabel *titleLabel;
 
 @end
 

@@ -84,6 +84,12 @@
 #define COCOAPODS_VERSION_MINOR_SVProgressHUD 0
 #define COCOAPODS_VERSION_PATCH_SVProgressHUD 0
 
+// SVSegmentedControl
+#define COCOAPODS_POD_AVAILABLE_SVSegmentedControl
+#define COCOAPODS_VERSION_MAJOR_SVSegmentedControl 0
+#define COCOAPODS_VERSION_MINOR_SVSegmentedControl 2
+#define COCOAPODS_VERSION_PATCH_SVSegmentedControl 0
+
 // TransitionKit
 #define COCOAPODS_POD_AVAILABLE_TransitionKit
 #define COCOAPODS_VERSION_MAJOR_TransitionKit 1

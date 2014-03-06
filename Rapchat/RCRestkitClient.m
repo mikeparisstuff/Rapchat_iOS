@@ -29,8 +29,9 @@
 
 @implementation RCRestkitClient
 
-static const NSString *BASE_URL = @"http://rapback.herokuapp.com";
-//static const NSString *BASE_URL = @"http://192.168.0.111:8000";
+//static const NSString *BASE_URL = @"http://rapback.herokuapp.com";
+static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
+//static const NSString *BASE_URL = @"http://10.0.1.39:8000";
 
 +(void)setupRestkit
 {
@@ -131,11 +132,14 @@ static const NSString *BASE_URL = @"http://rapback.herokuapp.com";
                                                          @"title": @"title",
                                                          @"likes":@"numberOfLikes",
                                                          @"is_complete": @"isComplete",
+                                                         @"is_battle": @"isBattle",
                                                          @"created":@"created",
                                                          @"modified":@"modified",
                                                          @"clip_url":@"mostRecentClipUrl",
                                                          @"thumbnail_url": @"thumbnailUrl"}];
 
+    RKRelationshipMapping *creatorSessionRelationshipMapping = [RKRelationshipMapping relationshipMappingFromKeyPath:@"session_creator" toKeyPath:@"creator" withMapping:profileMapping];
+    RKRelationshipMapping *receiverSessionRelationshipMapping = [RKRelationshipMapping relationshipMappingFromKeyPath:@"session_receiver" toKeyPath:@"receiver" withMapping:profileMapping];
     
     RKObjectMapping *clipsMapping = [RKObjectMapping mappingForClass:[RCClip class]];
     [clipsMapping addAttributeMappingsFromDictionary:@{@"id":@"clipId",
@@ -149,17 +153,17 @@ static const NSString *BASE_URL = @"http://rapback.herokuapp.com";
      ];
     
     RKRelationshipMapping *clipsSessionRelationshipMapping = [RKRelationshipMapping relationshipMappingFromKeyPath:@"clips" toKeyPath:@"clips" withMapping:clipsMapping];
-    [sessionMapping addPropertyMapping:clipsSessionRelationshipMapping];
+    [sessionMapping addPropertyMappingsFromArray:@[creatorSessionRelationshipMapping, receiverSessionRelationshipMapping, clipsSessionRelationshipMapping]];
 
     
     /*
      Setup Crowds Mappings
      */
-    RKObjectMapping *crowdMapping = [RKObjectMapping mappingForClass:[RCCrowd class]];
-    [crowdMapping addAttributeMappingsFromDictionary:@{@"id": @"crowdId",
-                                                       @"title": @"title",
-                                                       @"created": @"created",
-                                                       @"modified": @"modified"}];
+//    RKObjectMapping *crowdMapping = [RKObjectMapping mappingForClass:[RCCrowd class]];
+//    [crowdMapping addAttributeMappingsFromDictionary:@{@"id": @"crowdId",
+//                                                       @"title": @"title",
+//                                                       @"created": @"created",
+//                                                       @"modified": @"modified"}];
     
     /*
      *  Setup Comments Mappings
@@ -199,8 +203,8 @@ static const NSString *BASE_URL = @"http://rapback.herokuapp.com";
 //    [sessionMapping addPropertyMapping:sessionCrowdRelationshipMapping];
     
     // crowd.members mapping
-    RKRelationshipMapping *crowdMembersRelationshipMapping = [RKRelationshipMapping relationshipMappingFromKeyPath:@"members" toKeyPath:@"members" withMapping:profileMapping];
-    [crowdMapping addPropertyMapping:crowdMembersRelationshipMapping];
+//    RKRelationshipMapping *crowdMembersRelationshipMapping = [RKRelationshipMapping relationshipMappingFromKeyPath:@"members" toKeyPath:@"members" withMapping:profileMapping];
+//    [crowdMapping addPropertyMapping:crowdMembersRelationshipMapping];
     
     /*
      *  Session and Comments Mappings

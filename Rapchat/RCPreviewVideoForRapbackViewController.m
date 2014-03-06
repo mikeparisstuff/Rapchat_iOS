@@ -63,6 +63,7 @@
         if ([segue.destinationViewController isKindOfClass:[RCReplyToSessionCameraViewController class]]) {
             RCReplyToSessionCameraViewController *controller = segue.destinationViewController;
             controller.sessionId = self.sessionId;
+            controller.isBattle = self.isBattle;
             NSLog(@"Prepared ReplyToVideoSegue");
         }
     }

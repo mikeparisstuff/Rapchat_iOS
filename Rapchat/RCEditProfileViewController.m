@@ -49,6 +49,9 @@
     needsImageUpdate = NO;
     [self.phoneTextField addTarget:self action:@selector(phoneNumberChanged) forControlEvents:UIControlEventEditingChanged];
     self.title = @"Edit Profile";
+    
+    self.profilePictureImageView.layer.cornerRadius = 5.0;
+    self.profilePictureImageView.layer.masksToBounds = YES;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -87,6 +90,10 @@
 }
 
 #pragma mark Actions
+
+- (IBAction)goBack:(id)sender {
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
 
 - (IBAction)updateProfile:(UIButton *)sender {
     [self.view endEditing:YES];

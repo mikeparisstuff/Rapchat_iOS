@@ -12,6 +12,7 @@
 @protocol RCFriendCellProtocol <NSObject>
 
 - (void)gotoProfile:(NSString *)username;
+- (void)startBattleWithUsername:(NSString *)username;
 
 @end
 
@@ -20,6 +21,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *usernameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *fullNameLabel;
 @property (weak, nonatomic) id delegate;
+@property (weak, nonatomic) IBOutlet UIButton *battleButton;
+@property (weak, nonatomic) IBOutlet UIImageView *profilePictureImageView;
 
 - (void)setFriend:(RCProfile *)friend;
 - (NSString *)getFriendsUsername;

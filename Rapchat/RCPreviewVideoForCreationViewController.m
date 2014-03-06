@@ -118,6 +118,10 @@ static NSString *NEW_SESSION_INFO_SEGUE =  @"NewSessionInfoSegue";
     if ([keyPath isEqualToString:@"status"] && [[change objectForKey:NSKeyValueChangeNewKey] isEqualToString:RCVideoReencoderDidFinishSuccessfully]) {
         //        NSLog(@"keypath: %@", keyPath);
         self.videoURL = [NSURL fileURLWithPath:self.videoReencoder.outputURL];
+        if (self.isBattle && !self.battleUsername) {
+            // PICK USER TO SEND BATTLE TO HERE
+            NSLog(@"Need to pick battle username before submitting clip");
+        }
         [self submitSession];
     }
     else {
@@ -130,13 +134,12 @@ static NSString *NEW_SESSION_INFO_SEGUE =  @"NewSessionInfoSegue";
 {
     RKObjectManager *objectManager = [RKObjectManager sharedManager];
     NSError *error = [[NSError alloc] init];
+    NSDictionary *params = (self.isBattle) ? @{@"title": self.titleTextField.text,@"is_battle": @YES, @"battle_receiver": self.battleUsername} : @{@"title": self.titleTextField.text,@"is_battle": @NO};
     [SVProgressHUD showWithStatus:@"Creating Session" maskType:SVProgressHUDMaskTypeGradient];
     NSMutableURLRequest *request = [objectManager multipartFormRequestWithObject:nil
                                                                           method:RKRequestMethodPOST
                                                                             path:mySessionsEndpoint
-                                                                      parameters:@{
-                                                                                   @"title": self.titleTextField.text
-                                                                                   }
+                                                                      parameters:params
                                                        constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
                                                            [formData appendPartWithFileData:[NSData dataWithContentsOfURL:self.videoURL]
                                                                                        name:@"clip"
@@ -152,7 +155,7 @@ static NSString *NEW_SESSION_INFO_SEGUE =  @"NewSessionInfoSegue";
     RKObjectRequestOperation *operation = [objectManager objectRequestOperationWithRequest:request
                                                                                    success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                                                                                        [SVProgressHUD showSuccessWithStatus:@"Success"];
-                                                                                       [self dismissViewControllerAnimated:YES completion:nil];
+                                                                                        [self dismissViewControllerAnimated:YES completion:nil];
                                                                                    }
                                                                                    failure:^(RKObjectRequestOperation *operation, NSError *error) {
                                                                                        [SVProgressHUD showErrorWithStatus:@"Error"];
