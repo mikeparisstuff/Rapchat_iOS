@@ -14,6 +14,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *sendFriendRequestButton;
 @property (weak, nonatomic) IBOutlet UILabel *fullnameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *pendingRequestLabel;
+@property (weak, nonatomic) IBOutlet UIImageView *profilePictureImageView;
 
 - (IBAction)sendFriendRequest:(UIButton *)sender;
 

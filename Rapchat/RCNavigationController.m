@@ -133,6 +133,7 @@
         badgeLabel.backgroundColor = [UIColor colorWithRed:0 green:179/255.0 blue:134/255.0 alpha:1];
         badgeLabel.layer.borderColor = [UIColor colorWithRed:0.000 green:0.648 blue:0.507 alpha:1.000].CGColor;
     };
+
 }
 
 - (void)setViewController:(UIViewController *)vc
@@ -143,17 +144,23 @@
 
 - (void)toggleMenu
 {
-    if ([self.revealDelegate respondsToSelector:@selector(toggleRevealControllerLeft)]) {
-        [self.revealDelegate toggleRevealControllerLeft];
-    }
+    NSLog(@"Toggle Menu");
 //    if (self.menu.isOpen) {
 //        return [self.menu close];
 //    }
 //    [self.menu showFromNavigationController:self];
 }
 
+- (void)toggleRevealLeft
+{
+    if ([self.revealDelegate respondsToSelector:@selector(toggleRevealControllerLeft)]) {
+        [self.revealDelegate toggleRevealControllerLeft];
+    }
+}
+
 - (void)toggleRevealRight
 {
+    NSLog(@"Toggle Right Reveal");
     if ([self.revealDelegate respondsToSelector:@selector(toggleRevealControllerRight)]) {
         [self.revealDelegate toggleRevealControllerRight];
     }

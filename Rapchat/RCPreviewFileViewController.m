@@ -23,10 +23,7 @@ static const NSString *ItemPlaybackLikelyToKeepUpContext;
 @property (nonatomic) AVPlayerItem *playerItem;
 @property (weak, nonatomic) IBOutlet RCFilePlayerView *playerView;
 @property (nonatomic) RCProgressView *progressView;
-
 @property (nonatomic) NSTimer *myTimer;
-
-
 
 @end
 
@@ -82,6 +79,7 @@ static const NSString *ItemPlaybackLikelyToKeepUpContext;
     [super viewWillAppear:animated];
     [self loadAssetFromFile];
     [self setupProgressView];
+//    [self setWaveformAsset];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -147,6 +145,7 @@ static const NSString *ItemPlaybackLikelyToKeepUpContext;
                                                          
                                                          NSLog(@"Status is of type ABKeyValueStatusLoaded");
                                                          self.playerItem = [AVPlayerItem playerItemWithAsset:videoAsset];
+                                                         
                                                          [self.playerItem addObserver:self
                                                                            forKeyPath:@"status"
                                                                               options:0
@@ -240,6 +239,7 @@ static const NSString *ItemPlaybackLikelyToKeepUpContext;
 
 - (void)playerItemDidReachEnd:(NSNotification *)notification {
     [self.player seekToTime:kCMTimeZero];
+
     NSLog(@"Rewound to time 0. Restarting Clip");
 //    [self.player play];
 }

@@ -14,6 +14,7 @@
 - (void)gotoStage;
 - (void)gotoProfile;
 - (void)gotoFeedback;
+- (void)gotoSettings;
 
 @end
 

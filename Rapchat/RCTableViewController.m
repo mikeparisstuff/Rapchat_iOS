@@ -82,6 +82,22 @@
     return NO;
 }
 
+- (void) revealRightVC
+{
+    RCNavigationController *navCont = (RCNavigationController *)self.navigationController;
+    if ([navCont respondsToSelector:@selector(toggleRevealRight)]) {
+        [navCont toggleRevealRight];
+    }
+}
+
+- (void) revealLeftVC
+{
+    RCNavigationController *navCont = (RCNavigationController *)self.navigationController;
+    if ([navCont respondsToSelector:@selector(toggleRevealRight)]) {
+        [navCont toggleRevealLeft];
+    }
+}
+
 /*
 // Override to support conditional editing of the table view.
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath

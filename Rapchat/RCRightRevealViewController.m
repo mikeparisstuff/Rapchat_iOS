@@ -12,13 +12,17 @@
 #import "RCFriendTableViewCell.h"
 #import "RCPublicProfileViewController.h"
 #import "RCCreateNewSessionCameraViewController.h"
+#import "RCFriendRequestWrapper.h"
+#import "RCFriendRequestTableViewCell.h"
 
 @interface RCRightRevealViewController ()
 
 @property (nonatomic, strong) NSArray *myFriends;
+@property (nonatomic, strong) NSArray *myFriendRequests;
 @property (nonatomic, strong) NSString *discoverUsername;
 @property (nonatomic, strong) NSString *battleUsername;
 @property (nonatomic, strong) NSSet *friendIdSet;
+@property (weak, nonatomic) IBOutlet UISegmentedControl *friendsAndRequestsSegmentedControl;
 
 @end
 
@@ -34,10 +38,15 @@
     return self;
 }
 
+- (IBAction)segmentedControlSelectedIndexDidChange:(id)sender {
+    [self.tableView reloadData];
+}
+
 - (void)refresh
 {
     [self.refreshControl beginRefreshing];
     [self loadFriends];
+    [self loadFriendRequests];
 }
 
 - (void)viewDidLoad
@@ -49,6 +58,7 @@
     [self.refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
     [self.tableView addSubview:self.refreshControl];
     [self loadFriends];
+    [self loadFriendRequests];
 }
 
 - (void) viewWillAppear:(BOOL)animated
@@ -57,6 +67,8 @@
     if ([self.delegate respondsToSelector:@selector(pushBackFromPresentationMode)]) {
         [self.delegate pushBackFromPresentationMode];
     }
+    [self.friendsAndRequestsSegmentedControl setTitle:[NSString stringWithFormat:@"Requests: %lu", (unsigned long)[self.myFriendRequests count]] forSegmentAtIndex:1];
+    [self updateGui];
 }
 
 - (void)didReceiveMemoryWarning
@@ -134,6 +146,24 @@
                                 }];
 }
 
+- (void) loadFriendRequests
+{
+    NSLog(@"Load Friend Requests");
+    RKObjectManager *objectManager = [RKObjectManager sharedManager];
+        
+    [objectManager getObjectsAtPath:myFriendRequestsEndpoint
+                            parameters:nil
+                            success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+                                RCFriendRequestWrapper *fw = [mappingResult firstObject];
+                                self.myFriendRequests = fw.pendingMe;
+                                NSLog(@"Loading Requests: %@", self.myFriendRequests);
+                                [self updateGui];
+                            }failure:^(RKObjectRequestOperation *operation, NSError *error) {
+                                NSLog(@"Error loading friend requests");
+                            }];
+    
+}
+
 #pragma mark RCFriendTableViewCellProtocol
 -(void)gotoProfile:(NSString *)username
 {
@@ -162,28 +192,76 @@
     // Return the number of rows in the section.
     //    NSLog(@"Number of rows: %d", [[self validDataSourceForSection:self.currentSection] count]);
     //    return [[self validDataSourceForSection:self.currentSection] count];
-    return [self.myFriends count];
+    if ([self.friendsAndRequestsSegmentedControl selectedSegmentIndex] == 0) {
+        return [self.myFriends count];
+    } else {
+        return [self.myFriendRequests count];
+    }
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (RCFriendTableViewCell *)createFriendTableViewCellForTableview:(UITableView *)tableView atIndexPath:(NSIndexPath *)indexPath
 {
     NSString *reuseIdentifier = @"FriendCell";
     RCFriendTableViewCell *cell = (RCFriendTableViewCell *)[tableView dequeueReusableCellWithIdentifier:reuseIdentifier];
     RCProfile *friend = [self.myFriends objectAtIndex:indexPath.row];
     [cell setFriend:friend];
     
-    cell.profilePictureImageView.layer.cornerRadius  = 5.0;
-    cell.profilePictureImageView.layer.masksToBounds = YES;
+//    cell.profilePictureImageView.layer.cornerRadius  = 5.0;
+//    cell.profilePictureImageView.layer.masksToBounds = YES;
     cell.battleButton.layer.cornerRadius  = 5.0;
     cell.battleButton.layer.masksToBounds = YES;
-    
     cell.delegate = self;
+    return cell;
+}
+
+- (RCFriendRequestTableViewCell *)createFriendRequestCellForTable:(UITableView *)tableView atIndexPath:(NSIndexPath *)indexPath
+{
+    NSString *reuseIdentifier = @"FriendRequestCell";
+    RCFriendRequestTableViewCell *cell = (RCFriendRequestTableViewCell *)[self.tableView dequeueReusableCellWithIdentifier:reuseIdentifier forIndexPath:indexPath];
+    
+    if (cell == nil) {
+        cell = [[RCFriendRequestTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
+    }
+    
+    // Configure the cell...
+    RCFriendRequest *friendRequest = [self.myFriendRequests objectAtIndex:indexPath.row];
+    NSLog(@"Inserting Cell with Profile: %@", cell);
+    [cell setFriendRequest:friendRequest];
+    return cell;
+}
+
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    UITableViewCell *cell = nil;
+    if ([self.friendsAndRequestsSegmentedControl selectedSegmentIndex] == 0) {
+        cell = [self createFriendTableViewCellForTableview:tableView atIndexPath:indexPath];
+    } else {
+        cell = [self createFriendRequestCellForTable:tableView atIndexPath:indexPath];
+    }
     return cell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return 75;
+}
+
+#pragma mark - Lazy Loading
+-(NSArray *)myFriendRequests
+{
+    if (_myFriendRequests == nil) {
+        _myFriendRequests = [[NSArray alloc] init];
+    }
+    return _myFriendRequests;
+}
+
+- (NSArray *)myFriends
+{
+    if (_myFriends == nil) {
+        _myFriends = [[NSArray alloc] init];
+    }
+    return _myFriends;
 }
 
 @end

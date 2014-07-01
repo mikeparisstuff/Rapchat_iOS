@@ -3,12 +3,12 @@
     {
       "idiom" : "universal",
       "scale" : "1x",
-      "filename" : "bg-create-new.png"
+      "filename" : "bg-new-session-btn.png"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "bg-create-new@2x.png"
+      "filename" : "bg-new-session-btn@2x.png"
     }
   ],
   "info" : {

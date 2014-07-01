@@ -25,6 +25,7 @@
 @property (nonatomic) UIImage *profilePicture;
 @property (nonatomic) UIView *viewForPicker;
 @property (nonatomic) NSArray *pickerViewArray;
+@property (nonatomic) UIActionSheet *actionSheet;
 @property (weak, nonatomic) IBOutlet UIButton *profilePictureButton;
 
 @end
@@ -75,6 +76,21 @@
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark GotoMain
+- (void)gotoMainScreen
+{
+    if ([[[UIApplication sharedApplication] delegate] respondsToSelector:@selector(gotoMainScreenFromLogin)]) {
+        UIStoryboard* storyboard = [UIStoryboard storyboardWithName:[[NSBundle mainBundle].infoDictionary objectForKey:@"UIMainStoryboardFile"] bundle:nil];
+        UIViewController* controller = [storyboard instantiateViewControllerWithIdentifier:@"EnjoyScreen"];
+        [self presentViewController:controller animated:YES completion:^{
+            // Call method in AppDelegate to go to login screen
+            [NSThread sleepForTimeInterval:0.7];
+            [[[UIApplication sharedApplication] delegate] performSelector:@selector(gotoMainScreenFromLogin)];
+            [controller dismissViewControllerAnimated:YES completion:nil];
+        }];
+    }
+}
+
 #pragma mark API Calls
 - (void)registerProfile
 {
@@ -94,7 +110,8 @@
                               [[NSUserDefaults standardUserDefaults] setObject:registerProfile.accessToken forKey:@"accessToken"];
                               [objectManager.HTTPClient setDefaultHeader:@"Authorization" value:[NSString stringWithFormat:@"Token %@", registerProfile.accessToken]];
                               [[NSUserDefaults standardUserDefaults] synchronize];
-                              [self performSegueWithIdentifier:@"SegueToHomeFromRegisterScreen" sender:self];
+//                              [self performSegueWithIdentifier:@"SegueToHomeFromRegisterScreen" sender:self];
+                              [self gotoMainScreen];
                           }else {
                               NSLog(@"Error Registering Profile");
                           }
@@ -135,7 +152,8 @@
                                                                                            [[NSUserDefaults standardUserDefaults] setObject:registerProfile.accessToken forKey:@"accessToken"];
                                                                                            [objectManager.HTTPClient setDefaultHeader:@"Authorization" value:[NSString stringWithFormat:@"Token %@", registerProfile.accessToken]];
                                                                                            [[NSUserDefaults standardUserDefaults] synchronize];
-                                                                                           [self performSegueWithIdentifier:@"SegueToHomeFromRegisterScreen" sender:self];
+//                                                                                           [self performSegueWithIdentifier:@"SegueToHomeFromRegisterScreen" sender:self];
+                                                                                            [self gotoMainScreen];
                                                                                        }else {
                                                                                            NSLog(@"Error Registering Profile");
                                                                                        }
@@ -145,6 +163,8 @@
                                                                                    }];
     [operation start];
 }
+
+
 
 #pragma mark UIKeyboard methods
 
@@ -253,30 +273,56 @@
 }
 
 - (IBAction)beginUpdatingProfilePicture:(UIButton *)sender {
-    self.viewForPicker = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height, 320, 206)];
     
-    UIPickerView *typeOfCameraPickerView = [[UIPickerView alloc] init];
-    typeOfCameraPickerView.frame = CGRectMake(0, 44, 320, 162);
-    typeOfCameraPickerView.dataSource = self;
-    typeOfCameraPickerView.delegate = self;
-    typeOfCameraPickerView.showsSelectionIndicator = YES;
-    [typeOfCameraPickerView setBackgroundColor:[UIColor whiteColor]];
-    [self.view addSubview:typeOfCameraPickerView];
+    self.actionSheet = [[UIActionSheet alloc] initWithTitle:@"Add a Profile Picture" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Choose Existing Image", @"Take New Picture", nil];
+    [self.actionSheet showInView:self.view];
     
-    UIToolbar *pickerToolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0,0,320,44)];
-    [pickerToolbar setBarStyle:UIBarStyleBlackTranslucent];
-    //    self.chooseButton = [[UIBarButtonItem alloc] initWithTitle:@"Choose" style:UIBarButtonItemStyleBordered target:self action:@selector(goToImagePicker)];
-    UIBarButtonItem *chooseButton = [[UIBarButtonItem alloc] initWithTitle:@"Choose" style:UIBarButtonItemStyleBordered target:self action:@selector(goToImagePicker)];
-    UIBarButtonItem *dismissButton = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStyleBordered target:self action:@selector(imagePickerControllerDidCancel:)];
-    pickerToolbar.items = @[chooseButton, dismissButton];
-    [pickerToolbar setTintColor:[UIColor whiteColor]];
-    [self.viewForPicker addSubview:typeOfCameraPickerView];
-    [self.viewForPicker addSubview:pickerToolbar];
-    [self.view addSubview:self.viewForPicker];
-    [UIView animateWithDuration:.3 animations:^{
-        self.viewForPicker.frame = CGRectMake(0, self.view.frame.size.height - 206, 320, 206);
-    }];
-    selectedPickerIndex = (int)[typeOfCameraPickerView selectedRowInComponent:0];
+    
+//    self.viewForPicker = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height, 320, 206)];
+//    
+//    UIPickerView *typeOfCameraPickerView = [[UIPickerView alloc] init];
+//    typeOfCameraPickerView.frame = CGRectMake(0, 44, 320, 162);
+//    typeOfCameraPickerView.dataSource = self;
+//    typeOfCameraPickerView.delegate = self;
+//    typeOfCameraPickerView.showsSelectionIndicator = YES;
+//    [typeOfCameraPickerView setBackgroundColor:[UIColor whiteColor]];
+//    [self.view addSubview:typeOfCameraPickerView];
+//    
+//    UIToolbar *pickerToolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0,0,320,44)];
+//    [pickerToolbar setBarStyle:UIBarStyleBlackTranslucent];
+//    //    self.chooseButton = [[UIBarButtonItem alloc] initWithTitle:@"Choose" style:UIBarButtonItemStyleBordered target:self action:@selector(goToImagePicker)];
+//    UIBarButtonItem *chooseButton = [[UIBarButtonItem alloc] initWithTitle:@"Choose" style:UIBarButtonItemStyleBordered target:self action:@selector(goToImagePicker)];
+//    UIBarButtonItem *dismissButton = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStyleBordered target:self action:@selector(imagePickerControllerDidCancel:)];
+//    pickerToolbar.items = @[chooseButton, dismissButton];
+//    [pickerToolbar setTintColor:[UIColor whiteColor]];
+//    [self.viewForPicker addSubview:typeOfCameraPickerView];
+//    [self.viewForPicker addSubview:pickerToolbar];
+//    [self.view addSubview:self.viewForPicker];
+//    [UIView animateWithDuration:.3 animations:^{
+//        self.viewForPicker.frame = CGRectMake(0, self.view.frame.size.height - 206, 320, 206);
+//    }];
+//    selectedPickerIndex = (int)[typeOfCameraPickerView selectedRowInComponent:0];
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    NSLog(@"Clicked index: %ld", (long)buttonIndex);
+    [self gotoImagePickerForState:buttonIndex];
+}
+
+- (void) gotoImagePickerForState:(NSUInteger)index
+{
+    NSLog(@"Goto Image Picker");
+    switch (index) {
+        case 0:
+            [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
+            break;
+        case 1:
+            [self showImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera];
+            break;
+        default:
+            break;
+    }
 }
 
 - (void) goToImagePicker
@@ -361,13 +407,16 @@
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
 {
 //    [self dismissViewControllerAnimated:YES completion:nil];
-    [UIView animateWithDuration:.3 animations:^{
-        self.viewForPicker.frame = CGRectMake(0, self.view.frame.size.height, 320, 206);
-    } completion:^(BOOL finished) {
-        [self.viewForPicker removeFromSuperview];
-        self.viewForPicker = nil;
-        self.imagePickerController = nil;
-    }];
+    NSLog(@"Image Picker Cancel");
+
+    [self.imagePickerController dismissViewControllerAnimated:YES completion:nil];
+//    [UIView animateWithDuration:.3 animations:^{
+//        self.viewForPicker.frame = CGRectMake(0, self.view.frame.size.height, 320, 206);
+//    } completion:^(BOOL finished) {
+//        [self.viewForPicker removeFromSuperview];
+//        self.viewForPicker = nil;
+//        self.imagePickerController = nil;
+//    }];
 }
 
 

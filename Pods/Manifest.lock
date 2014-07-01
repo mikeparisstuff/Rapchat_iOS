@@ -1,5 +1,5 @@
 PODS:
-  - AFNetworking (1.3.3)
+  - AFNetworking (1.3.4)
   - PKRevealController (2.0.6)
   - REMenu (1.7.1)
   - RestKit (0.20.3):
@@ -17,9 +17,9 @@ PODS:
   - RestKit/ObjectMapping (0.20.3)
   - RestKit/Support (0.20.3):
     - TransitionKit (= 1.1.1)
-  - SDWebImage (3.5.2):
+  - SDWebImage (3.6):
     - SDWebImage/Core
-  - SDWebImage/Core (3.5.2)
+  - SDWebImage/Core (3.6)
   - SOCKit (1.1)
   - SVProgressHUD (1.0)
   - SVSegmentedControl (0.2)
@@ -36,15 +36,15 @@ DEPENDENCIES:
   - UIActivityIndicator-for-SDWebImage
 
 SPEC CHECKSUMS:
-  AFNetworking: 61fdd49e2ffe6380378df37b3b6e70630bb9dd66
-  PKRevealController: 883287432cecf4cda037184eb822548b9713f8c2
-  REMenu: 4c85fa951c74b41b1eb7f9a31ebed2da8ae3f7d7
-  RestKit: 1f181c180105a92f11ec4f6cd7de37625e516d83
-  SDWebImage: fe7ce01ae4e0a884d168f59c9dd82d35baf8429e
-  SOCKit: 2f3bc4d07910de12dcc202815e07db68a3802581
-  SVProgressHUD: 5e10939a296debf5fe5a5895eda9539b8b2114f1
-  SVSegmentedControl: e874fc56c2a1efb9f597ddf0908101393f53fe96
-  TransitionKit: d0e3344aac92991395d4c2e72d9c5a8ceeb12910
-  UIActivityIndicator-for-SDWebImage: e712b97826395022ce7b4a4b56eb7194090c19d5
+  AFNetworking: 80c4e0652b08eb34e25b9c0ff3c82556fe5967b4
+  PKRevealController: 4f175a432ad868c806dce1ebb3fd8a35d228bdb5
+  REMenu: 51ef4a05423b4de2ef589c19f4df9a5f56f6d0c3
+  RestKit: 7f9490e709ee745e166c4d2aa7a8d132831275b0
+  SDWebImage: c6989652c1cdf27cbdf3f56957e2030f825af5bc
+  SOCKit: d8d0dd3688ae1026c12367570da8fa8e1a6980fb
+  SVProgressHUD: 5034c6e22b8c2ca3e09402e48d41ed0340aa1c50
+  SVSegmentedControl: 755a9721054734a77841147de3cc8babf09ba7f1
+  TransitionKit: b573f93c422f6aedf7d40e93e7c2f202d1295063
+  UIActivityIndicator-for-SDWebImage: fad0a3471de0e5f97771e516f537453eee506103
 
-COCOAPODS: 0.29.0
+COCOAPODS: 0.33.1

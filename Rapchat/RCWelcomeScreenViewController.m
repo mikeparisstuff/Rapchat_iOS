@@ -33,7 +33,7 @@
                                                   forBarMetrics:UIBarMetricsDefault];
     self.navigationController.navigationBar.shadowImage = [UIImage new];
 //    self.navigationController.navigationBar.translucent = YES;
-    [self.navigationController.navigationBar setTintColor:[UIColor whiteColor]];
+    [self.navigationController.navigationBar setTintColor:[UIColor blackColor]];
     self.navigationController.view.backgroundColor = [UIColor clearColor];
 }
 

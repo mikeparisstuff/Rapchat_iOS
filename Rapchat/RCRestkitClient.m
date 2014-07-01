@@ -17,10 +17,14 @@
 #import "RCComment.h"
 #import "RCBaseModel.h"
 #import "RCClip.h"
+#import "RCBattleVote.h"
+#import "RCVoteCount.h"
+#import "RCVoteID.h"
 #import "RCFriendRequest.h"
 #import "RCSessionPaginator.h"
 #import "RCPublicProfile.h"
 #import "RCFriendRequestWrapper.h"
+#import "RCConstants.h"
 
 #import "RCUrlPaths.h"
 
@@ -28,10 +32,6 @@
 #import <RestKit/CoreData.h>
 
 @implementation RCRestkitClient
-
-//static const NSString *BASE_URL = @"http://rapback.herokuapp.com";
-static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
-//static const NSString *BASE_URL = @"http://10.0.1.39:8000";
 
 +(void)setupRestkit
 {
@@ -132,11 +132,11 @@ static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
                                                          @"title": @"title",
                                                          @"likes":@"numberOfLikes",
                                                          @"is_complete": @"isComplete",
-                                                         @"is_battle": @"isBattle",
+                                                         @"is_private": @"isPrivate",
                                                          @"created":@"created",
                                                          @"modified":@"modified",
                                                          @"clip_url":@"mostRecentClipUrl",
-                                                         @"thumbnail_url": @"thumbnailUrl"}];
+                                                         @"waveform_url": @"waveformUrl"}];
 
     RKRelationshipMapping *creatorSessionRelationshipMapping = [RKRelationshipMapping relationshipMappingFromKeyPath:@"session_creator" toKeyPath:@"creator" withMapping:profileMapping];
     RKRelationshipMapping *receiverSessionRelationshipMapping = [RKRelationshipMapping relationshipMappingFromKeyPath:@"session_receiver" toKeyPath:@"receiver" withMapping:profileMapping];
@@ -147,7 +147,7 @@ static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
                                                        @"url": @"url",
                                                        @"clip_num": @"clipNumber",
                                                        @"creator": @"creator",
-                                                       @"thumbnail_url": @"thumbnailUrl",
+                                                       @"waveform_url": @"waveformUrl",
                                                        @"created": @"created",
                                                        @"modified": @"modified"}
      ];
@@ -247,6 +247,32 @@ static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
     
 //    RKObjectMapping *clipRequestMapping = [RKObjectMapping mappingForClass:[RKObjectMapping requestMapping]];
 //    [clipRequestMapping addAttributeMappingsFromDictionary:clipMappingDict];
+    
+    
+    /*
+     * Vote Mapping
+     */
+    RKObjectMapping *battleVoteMapping = [RKObjectMapping mappingForClass:[RCBattleVote class]];
+    [battleVoteMapping addAttributeMappingsFromDictionary:@{@"id": @"voteId",
+                                                            @"created": @"created",
+                                                            @"modified": @"modified",
+                                                            @"is_for_creator": @"isForCreator"}];
+    
+    RKRelationshipMapping *voterRelationship = [RKRelationshipMapping relationshipMappingFromKeyPath:@"voter" toKeyPath:@"voter" withMapping:profileMapping];
+    RKRelationshipMapping *votedForRelationship = [RKRelationshipMapping relationshipMappingFromKeyPath:@"voted_for" toKeyPath:@"votedFor" withMapping:profileMapping];
+    RKRelationshipMapping *battleVotedOnRelationship = [RKRelationshipMapping relationshipMappingFromKeyPath:@"battle" toKeyPath:@"battle" withMapping:sessionMapping];
+    [battleVoteMapping addPropertyMappingsFromArray:@[voterRelationship, votedForRelationship, battleVotedOnRelationship]];
+    
+    RKObjectMapping *battleVotingCountMapping = [RKObjectMapping mappingForClass:[RCVoteCount class]];
+    [battleVotingCountMapping addAttributeMappingsFromDictionary:@{@"votes_for_creator": @"votesForCreator",
+                                                                   @"votes_for_receiver": @"votesForReceiver"}];
+    
+    RKRelationshipMapping *voteCountOnSessionRelationship = [RKRelationshipMapping relationshipMappingFromKeyPath:@"votes" toKeyPath:@"voteCount" withMapping:battleVotingCountMapping];
+    [sessionMapping addPropertyMapping:voteCountOnSessionRelationship];
+
+    
+    RKObjectMapping *battleVoteIDMapping = [RKObjectMapping mappingForClass:[RCVoteID class]];
+    [battleVoteIDMapping addPropertyMapping:[RKAttributeMapping attributeMappingFromKeyPath:nil toKeyPath:@"voteID"]];
     
     
     /*
@@ -418,7 +444,7 @@ static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
                                                              statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     
     RKResponseDescriptor *searchUsersDescriptor = [RKResponseDescriptor
-                                                   responseDescriptorWithMapping:userMapping
+                                                   responseDescriptorWithMapping:profileMapping
                                                    method:RKRequestMethodGET
                                                    pathPattern:searchPeopleEndpoint
                                                    keyPath:@"profiles"
@@ -448,6 +474,15 @@ static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
                                                                                                        keyPath:nil
                                                                                                    statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     
+    RKResponseDescriptor *createBattleVoteResponseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:battleVotingCountMapping
+                                                                                                            method:RKRequestMethodPOST
+                                                                                                       pathPattern:@"/sessions/:session/votes/"
+                                                                                                           keyPath:@"votes"
+                                                                                                       statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+    
+    RKResponseDescriptor *battleVoteIDResponseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:battleVoteIDMapping method:RKRequestMethodAny pathPattern:myVotesEndpoint keyPath:@"votes" statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+    
+    
     RKResponseDescriptor *replyToFriendRequestDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:friendRequestMapping method:RKRequestMethodPOST pathPattern:replyToFriendRequestEndpoint keyPath:@"request" statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     
 #pragma mark Request Descriptors
@@ -469,7 +504,7 @@ static const NSString *BASE_URL = @"http://rapchat-django.herokuapp.com";
 #pragma mark Register Descriptors
     
     // Putting public profile first is important becuase it needs to be checked after /users/me/
-    NSArray *responseDescriptorArray = @[publicProfileDescriptor, usersResponseDescriptor, newSessionResponseDescriptor, obtainTokenDescriptor, registerUserDescriptor, getMyProfileDescriptor, putMyProfileDescriptor, getFriendsDescriptor, getLikesDescriptor, postLikesDescriptor, getCommentsDescriptor, postNewCommentDescriptor, errorDescriptor, addClipDescriptor, pendingFriendRequestsDescriptor, errorDescriptor, searchUsersDescriptor, sessionsResponseDescriptor, myClipsDescriptor, sendFriendRequestDescriptor, sessionClipsDescriptor, completedSessionsResponseDescriptor, replyToFriendRequestDescriptor, deleteFriendDescriptor, postFeedbackResponseDescriptor];
+    NSArray *responseDescriptorArray = @[publicProfileDescriptor, usersResponseDescriptor, newSessionResponseDescriptor, obtainTokenDescriptor, registerUserDescriptor, getMyProfileDescriptor, putMyProfileDescriptor, getFriendsDescriptor, getLikesDescriptor, postLikesDescriptor, getCommentsDescriptor, postNewCommentDescriptor, errorDescriptor, addClipDescriptor, pendingFriendRequestsDescriptor, errorDescriptor, searchUsersDescriptor, sessionsResponseDescriptor, myClipsDescriptor, sendFriendRequestDescriptor, sessionClipsDescriptor, completedSessionsResponseDescriptor, replyToFriendRequestDescriptor, deleteFriendDescriptor, postFeedbackResponseDescriptor, createBattleVoteResponseDescriptor, battleVoteIDResponseDescriptor];
     [objectManager addResponseDescriptorsFromArray:responseDescriptorArray];
     
     NSArray *requestDescriptorArray = @[addClipRequestDescriptor];

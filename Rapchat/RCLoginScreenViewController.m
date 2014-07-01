@@ -39,7 +39,8 @@
 //                              RKObjectManager *objectManager = [RKObjectManager sharedManager];
                               [objectManager.HTTPClient setDefaultHeader:@"Authorization" value:[NSString stringWithFormat:@"Token %@", self.token.accessToken]];
                               // May not be the best way to get rid of the nav bar
-                              [self performSegueWithIdentifier:@"SegueToHomeFromLoginScreen" sender:self];
+//                              [self performSegueWithIdentifier:@"SegueToHomeFromLoginScreen" sender:self];
+                              [self gotoMainScreen];
                           } else {
                               NSLog(@"Access Token was nil");
                           }
@@ -56,6 +57,20 @@
 
 - (IBAction)loginButtonClicked {
     [self logInWithUsername:self.usernameTextfield.text password:self.passwordTextfield.text];
+}
+
+- (void)gotoMainScreen
+{
+    if ([[[UIApplication sharedApplication] delegate] respondsToSelector:@selector(gotoMainScreenFromLogin)]) {
+        UIStoryboard* storyboard = [UIStoryboard storyboardWithName:[[NSBundle mainBundle].infoDictionary objectForKey:@"UIMainStoryboardFile"] bundle:nil];
+        UIViewController* controller = [storyboard instantiateViewControllerWithIdentifier:@"EnjoyScreen"];
+        [self presentViewController:controller animated:YES completion:^{
+            // Call method in AppDelegate to go to login screen
+            [NSThread sleepForTimeInterval:0.7];
+            [[[UIApplication sharedApplication] delegate] performSelector:@selector(gotoMainScreenFromLogin)];
+            [controller dismissViewControllerAnimated:YES completion:nil];
+        }];
+    }
 }
 
 
@@ -101,5 +116,6 @@
 - (IBAction)textFieldShouldReturn:(UITextField *)sender {
     [self.view endEditing:YES];
 }
+
 
 @end

@@ -8,10 +8,13 @@
 
 #import "RCViewController.h"
 #import "RCSession.h"
+#import "RCVoteCount.h"
 
 @interface RCViewSessionViewController : RCViewController
 
 @property (nonatomic, strong) RCSession *session;
 @property (nonatomic) BOOL sessionIsLiked;
+@property (nonatomic) BOOL has_been_voted_on;
+@property (nonatomic) RCVoteCount *voteCount;
 
 @end

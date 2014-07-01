@@ -123,8 +123,8 @@
 	// Do any additional setup after loading the view.
     self.tabs = @[@"Friends", @"Likes", @"Requests"];
     
-    self.profilePictureImageView.layer.cornerRadius  = 5.0;
-    self.profilePictureImageView.layer.masksToBounds = YES;
+//    self.profilePictureImageView.layer.cornerRadius  = 5.0;
+//    self.profilePictureImageView.layer.masksToBounds = YES;
     
 
     // Because refreshControl is made to be used with UItvc we need to create on and

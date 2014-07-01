@@ -10,21 +10,23 @@
 #import "RCProfile.h"
 #import "RCClip.h"
 #import "RCBaseModel.h"
+#import "RCVoteCount.h"
 
 @interface RCSession : RCBaseModel
 
 @property (nonatomic, copy) NSNumber *sessionId;
 @property (nonatomic, copy) NSString *title;
 @property (nonatomic, copy) NSNumber *isComplete;
-@property (nonatomic, copy) NSNumber *isBattle;
+@property (nonatomic, copy) NSNumber *isPrivate;
 @property (nonatomic, copy) NSDate *created;
 @property (nonatomic, copy) NSDate *modified;
 //@property (nonatomic, strong) RCCrowd *crowd;
 @property (nonatomic, copy) NSNumber *numberOfLikes;
 @property (nonatomic, copy) NSArray *comments;
 @property (nonatomic, copy) NSURL *mostRecentClipUrl;
-@property (nonatomic, copy) NSURL *thumbnailUrl;
+@property (nonatomic, copy) NSURL *waveformUrl;
 @property (nonatomic, strong) NSArray *clips;
+@property (nonatomic) RCVoteCount *voteCount;
 @property (nonatomic) RCProfile *creator;
 @property (nonatomic) RCProfile *receiver;
 

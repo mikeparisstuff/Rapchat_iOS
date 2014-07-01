@@ -16,6 +16,8 @@
 #import "RCSessionPaginator.h"
 #import "RCViewSessionViewController.h"
 #import "RCNavigationController.h"
+#import "RCCreateNewSessionCameraViewController.h"
+#import "RCVoteID.h"
 
 #include "REMenu.h"
 
@@ -34,8 +36,17 @@
 @property (nonatomic, strong) NSMutableArray *allSessions;
 @property (nonatomic, strong) RCSessionPaginator *sessionsPaginator;
 
+@property (nonatomic) UIRefreshControl *refreshControl;
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
+
+@property (nonatomic) BOOL shouldBattle;
+
 @property (nonatomic) BOOL stillLoadingLikes;
 @property (nonatomic) BOOL stillLoadingSessions;
+
+// Keep track of what sessions we have already voted for... a set of ids
+@property (nonatomic, strong) NSSet *myVoteIDs;
+@property (nonatomic) BOOL session_is_voted_on;
 
 @end
 
@@ -48,13 +59,20 @@
 
 // Control dragged from refreshController so that dragging down will
 // refresh the page
-- (IBAction)refresh:(id)sender {
+//- (IBAction)refresh:(id)sender {
+//    [self.refreshControl beginRefreshing];
+//    [self reloadData];
+//}
+
+- (void)refresh
+{
     [self.refreshControl beginRefreshing];
     [self reloadData];
 }
 
 - (void)reloadData
 {
+    [self loadVotes];
     [self loadSessions];
     [self loadLikes];
 }
@@ -85,14 +103,14 @@
 }
 
 
-- (id)initWithStyle:(UITableViewStyle)style
-{
-    self = [super initWithStyle:style];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
+//- (id)initWithStyle:(UITableViewStyle)style
+//{
+//    self = [super initWithStyle:style];
+//    if (self) {
+//        // Custom initialization
+//    }
+//    return self;
+//}
 
 //- (void)viewDidLayoutSubviews
 //{
@@ -117,19 +135,31 @@
     // self.clearsSelectionOnViewWillAppear = NO;
     
     // Add profile and new session bar button items
-    UIBarButtonItem *newSessionButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ic_microphone"] style:UIBarButtonItemStyleBordered target:self action:@selector(segueToNewSessionWorkflow)];
+//    UIBarButtonItem *newSessionButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ic_microphone"] style:UIBarButtonItemStyleBordered target:self action:@selector(segueToNewSessionWorkflow)];
     UIBarButtonItem *friendsBarItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ic_users"] style:UIBarButtonItemStyleBordered target:self action:@selector(revealRightVC)];
     //    self.navigationItem.rightBarButtonItem = newSessionButton;
-    [self.navigationItem setRightBarButtonItems:@[friendsBarItem, newSessionButton]];
+    [self.navigationItem setRightBarButtonItems:@[friendsBarItem]];
     
     [self.navigationItem.leftBarButtonItem setImage:[UIImage imageNamed:@"ic_spotlight_nav"]];
     [self.navigationItem.leftBarButtonItem setImageInsets:UIEdgeInsetsZero];
     
     [self setTitle:@"The Stage"];
     
-    [self.refreshControl setBackgroundColor:[UIColor colorWithRed:189.0/255.0 green:195.0/255.0 blue:199.0/255.0 alpha:1.0]];
-    [self.refreshControl setTintColor:[UIColor redColor]];
+    // Setup Tableview
+    self.tableView.delegate = self;
+    self.tableView.dataSource = self;
     
+    self.refreshControl = [[UIRefreshControl alloc] init];
+    [self.refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
+//    [self.refreshControl setBackgroundColor:[UIColor colorWithRed:189.0/255.0 green:195.0/255.0 blue:199.0/255.0 alpha:1.0]];
+    [self.refreshControl setBackgroundColor:[UIColor clearColor]];
+    [self.refreshControl setTintColor:[UIColor redColor]];
+    [self.tableView addSubview:self.refreshControl];
+    UIImageView *backgroundView = [[UIImageView alloc] initWithFrame:self.tableView.frame];
+    [backgroundView setImage:[UIImage imageNamed:@"freedom_tower"]];
+    [self.tableView setBackgroundView:backgroundView];
+    
+    [self.view addSubview:[self createAwesomeMenu]];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -137,7 +167,7 @@
     
     [super viewWillAppear:animated];
     //    [SVProgressHUD showWithStatus:@"Loading Sessions" maskType:SVProgressHUDMaskTypeGradient];
-    [self.refreshControl beginRefreshing];
+//    [self.refreshControl beginRefreshing];
     [self reloadData];
 }
 
@@ -147,15 +177,39 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void) revealRightVC
+//- (void) revealRightVC
+//{
+//    RCNavigationController *navCont = (RCNavigationController *)self.navigationController;
+//    if ([navCont respondsToSelector:@selector(toggleRevealRight)]) {
+//        [navCont toggleRevealRight];
+//    }
+//}
+
+#pragma mark - Awesome Menu
+
+- (void)awesomeMenu:(AwesomeMenu *)menu didSelectIndex:(NSInteger)idx
 {
-    RCNavigationController *navCont = (RCNavigationController *)self.navigationController;
-    if ([navCont respondsToSelector:@selector(toggleRevealRight)]) {
-        [navCont toggleRevealRight];
-    }
+    NSLog(@"Selected index: %ld", (long)idx);
+    self.shouldBattle = (idx == 0) ? YES : NO;
+    [self performSegueWithIdentifier:@"segueToNewSessionWorkflow" sender:self];
 }
 
 #pragma mark API
+
+- (void)loadVotes
+{
+    NSLog(@"Loading Votes");
+    RKObjectManager *objectManager = [RKObjectManager sharedManager];
+    [objectManager getObjectsAtPath:myVotesEndpoint
+                         parameters:nil
+                            success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+                                self.myVoteIDs = [NSSet setWithArray:[mappingResult array]];
+                                NSLog(@"Got VoteIDs: %@", self.myVoteIDs);
+                            } failure:^(RKObjectRequestOperation *operation, NSError *error) {
+                                NSLog(@"Error getting vote ids");
+                            }];
+}
+
 - (void)loadSessions
 {
     NSLog(@"Loading Sessions");
@@ -285,6 +339,11 @@
     return cell;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 428;
+}
+
 /*
  // Override to support conditional editing of the table view.
  - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
@@ -367,7 +426,21 @@
             //                RCpfvc.videoURL = self.clipUrl;
             RCpfvc.sessionIsLiked = ([self.likesSet containsObject:self.session.sessionId]) ? YES : NO;
             RCpfvc.session = self.session;
+            RCpfvc.has_been_voted_on = self.session_is_voted_on;
+            RCpfvc.voteCount = self.session.voteCount;
             NSLog(@"Prepared PlaySessionSegue");
+        }
+    }
+    if ([segue.identifier isEqualToString:@"segueToNewSessionWorkflow"]) {
+        if ([segue.destinationViewController isKindOfClass:[UINavigationController class]]) {
+            UINavigationController *navController = segue.destinationViewController;
+            if ([[navController topViewController] isKindOfClass:[RCCreateNewSessionCameraViewController class]]) {
+                RCCreateNewSessionCameraViewController *RCnsc = (RCCreateNewSessionCameraViewController *)[navController topViewController];
+                
+                // Depending on which button was clicked set isBattle Yes or No
+                RCnsc.isBattle = self.shouldBattle;
+                NSLog(@"Prepared CreateNewSessionSegue");
+            }
         }
     }
     // Get the new view controller using [segue destinationViewController].
@@ -419,6 +492,20 @@
     self.session = [sender getCellSession];
     self.clipUrl = self.session.mostRecentClipUrl;
     self.selectedSessionId = self.session.sessionId;
+    if (self.session.isPrivate && self.session.isComplete) {
+        // This session is a complete battle so check if we have previously voted on this session
+        BOOL hasVotedOn = NO;
+        for ( RCVoteID *v in self.myVoteIDs) {
+            NSLog(@"Found vote: %@ and session id: %@", v.voteID, self.session.sessionId);
+            if ([v.voteID isEqualToNumber:self.session.sessionId]) {
+                hasVotedOn = YES;
+            }
+        }
+        NSLog(@"Found votedOn: %d", hasVotedOn);
+        self.session_is_voted_on = hasVotedOn;
+    } else {
+        self.session_is_voted_on = NO;
+    }
     NSLog(@"Clicking on video with url: %@", self.clipUrl);
     [self performSegueWithIdentifier:@"PlaySessionSegue" sender:self];
 }

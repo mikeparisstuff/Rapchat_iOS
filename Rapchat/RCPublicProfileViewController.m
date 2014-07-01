@@ -51,10 +51,10 @@
 	// Do any additional setup after loading the view.
     
     [self.segmentedControl addTarget:self action:@selector(segmentedControlIndexDidChange) forControlEvents:UIControlEventValueChanged];
-    self.profilePictureImageView.layer.cornerRadius  = 5.0;
-    self.profilePictureImageView.layer.masksToBounds = YES;
-    self.addFriendButton.layer.cornerRadius = 5.0;
-    self.addFriendButton.layer.masksToBounds = YES;
+//    self.profilePictureImageView.layer.cornerRadius  = 5.0;
+//    self.profilePictureImageView.layer.masksToBounds = YES;
+//    self.addFriendButton.layer.cornerRadius = 5.0;
+//    self.addFriendButton.layer.masksToBounds = YES;
     [self setTitle:self.discoverUsername];
 }
 
@@ -254,8 +254,8 @@
     RCFriendTableViewCell *cell = (RCFriendTableViewCell *)[tableView dequeueReusableCellWithIdentifier:reuseIdentifier];
     RCProfile *friend = [self.profile.friends objectAtIndex:indexPath.row];
     [cell setFriend:friend];
-    cell.profilePictureImageView.layer.cornerRadius  = 5.0;
-    cell.profilePictureImageView.layer.masksToBounds = YES;
+//    cell.profilePictureImageView.layer.cornerRadius  = 5.0;
+//    cell.profilePictureImageView.layer.masksToBounds = YES;
     cell.delegate = self;
     return cell;
 }

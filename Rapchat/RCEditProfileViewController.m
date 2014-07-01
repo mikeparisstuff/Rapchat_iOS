@@ -24,6 +24,8 @@
 @property (nonatomic) UIView *viewForPicker;
 @property (nonatomic) NSArray *pickerViewArray;
 
+@property (nonatomic) UIActionSheet *actionSheet;
+
 @end
 
 @implementation RCEditProfileViewController
@@ -49,9 +51,6 @@
     needsImageUpdate = NO;
     [self.phoneTextField addTarget:self action:@selector(phoneNumberChanged) forControlEvents:UIControlEventEditingChanged];
     self.title = @"Edit Profile";
-    
-    self.profilePictureImageView.layer.cornerRadius = 5.0;
-    self.profilePictureImageView.layer.masksToBounds = YES;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -90,6 +89,20 @@
 }
 
 #pragma mark Actions
+- (IBAction)logoutButtonClicked:(UIButton *)sender {
+    if ([[[UIApplication sharedApplication] delegate] respondsToSelector:@selector(gotoLogin)]) {
+        
+        // Remove Login Details From UserDefaults
+        [[NSUserDefaults standardUserDefaults] setObject:nil forKey:@"accessToken"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
+        // Remove this modal view
+        [self dismissViewControllerAnimated:YES completion:nil];
+        
+        // Call method in AppDelegate to go to login screen
+        [[[UIApplication sharedApplication] delegate] performSelector:@selector(gotoLogin)];
+    }
+}
 
 - (IBAction)goBack:(id)sender {
     [self dismissViewControllerAnimated:YES completion:nil];
@@ -106,30 +119,54 @@
 
 - (IBAction)beginUpdatingProfilePicture:(UIButton *)sender {
     
-    self.viewForPicker = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height, 320, 206)];
+    self.actionSheet = [[UIActionSheet alloc] initWithTitle:@"Profile Picture" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Choose Existing Image", @"Take New Picture", nil];
+    [self.actionSheet showInView:self.view];
     
-    UIPickerView *typeOfCameraPickerView = [[UIPickerView alloc] init];
-    typeOfCameraPickerView.frame = CGRectMake(0, 44, 320, 162);
-    typeOfCameraPickerView.dataSource = self;
-    typeOfCameraPickerView.delegate = self;
-    typeOfCameraPickerView.showsSelectionIndicator = YES;
-    [typeOfCameraPickerView setBackgroundColor:[UIColor whiteColor]];
-    [self.view addSubview:typeOfCameraPickerView];
-    
-    UIToolbar *pickerToolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0,0,320,44)];
-    [pickerToolbar setBarStyle:UIBarStyleBlackTranslucent];
-//    self.chooseButton = [[UIBarButtonItem alloc] initWithTitle:@"Choose" style:UIBarButtonItemStyleBordered target:self action:@selector(goToImagePicker)];
-    UIBarButtonItem *chooseButton = [[UIBarButtonItem alloc] initWithTitle:@"Choose" style:UIBarButtonItemStyleBordered target:self action:@selector(goToImagePicker)];
-    UIBarButtonItem *dismissButton = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStyleBordered target:self action:@selector(imagePickerControllerDidCancel:)];
-    pickerToolbar.items = @[chooseButton, dismissButton];
-    [pickerToolbar setTintColor:[UIColor whiteColor]];
-    [self.viewForPicker addSubview:typeOfCameraPickerView];
-    [self.viewForPicker addSubview:pickerToolbar];
-    [self.view addSubview:self.viewForPicker];
-    [UIView animateWithDuration:.3 animations:^{
-        self.viewForPicker.frame = CGRectMake(0, self.view.frame.size.height - 206, 320, 206);
-    }];
-    selectedPickerIndex = (int)[typeOfCameraPickerView selectedRowInComponent:0];
+//    self.viewForPicker = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height, 320, 206)];
+//    
+//    UIPickerView *typeOfCameraPickerView = [[UIPickerView alloc] init];
+//    typeOfCameraPickerView.frame = CGRectMake(0, 44, 320, 162);
+//    typeOfCameraPickerView.dataSource = self;
+//    typeOfCameraPickerView.delegate = self;
+//    typeOfCameraPickerView.showsSelectionIndicator = YES;
+//    [typeOfCameraPickerView setBackgroundColor:[UIColor whiteColor]];
+//    [self.view addSubview:typeOfCameraPickerView];
+//    
+//    UIToolbar *pickerToolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0,0,320,44)];
+//    [pickerToolbar setBarStyle:UIBarStyleBlackTranslucent];
+////    self.chooseButton = [[UIBarButtonItem alloc] initWithTitle:@"Choose" style:UIBarButtonItemStyleBordered target:self action:@selector(goToImagePicker)];
+//    UIBarButtonItem *chooseButton = [[UIBarButtonItem alloc] initWithTitle:@"Choose" style:UIBarButtonItemStyleBordered target:self action:@selector(goToImagePicker)];
+//    UIBarButtonItem *dismissButton = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStyleBordered target:self action:@selector(imagePickerControllerDidCancel:)];
+//    pickerToolbar.items = @[chooseButton, dismissButton];
+//    [pickerToolbar setTintColor:[UIColor whiteColor]];
+//    [self.viewForPicker addSubview:typeOfCameraPickerView];
+//    [self.viewForPicker addSubview:pickerToolbar];
+//    [self.view addSubview:self.viewForPicker];
+//    [UIView animateWithDuration:.3 animations:^{
+//        self.viewForPicker.frame = CGRectMake(0, self.view.frame.size.height - 206, 320, 206);
+//    }];
+//    selectedPickerIndex = (int)[typeOfCameraPickerView selectedRowInComponent:0];
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    NSLog(@"Clicked index: %ld", (long)buttonIndex);
+    [self gotoImagePickerForState:buttonIndex];
+}
+
+- (void) gotoImagePickerForState:(NSInteger)index
+{
+    NSLog(@"Goto Image Picker");
+    switch (index) {
+        case 0:
+            [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
+            break;
+        case 1:
+            [self showImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera];
+            break;
+        default:
+            break;
+    }
 }
 
 - (void) goToImagePicker
@@ -268,13 +305,14 @@
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
 {
 //    [self dismissViewControllerAnimated:YES completion:nil];
-    [UIView animateWithDuration:.3 animations:^{
-        self.viewForPicker.frame = CGRectMake(0, self.view.frame.size.height, 320, 206);
-    } completion:^(BOOL finished) {
-        [self.viewForPicker removeFromSuperview];
-        self.viewForPicker = nil;
-        self.imagePickerController = nil;
-    }];
+    [self.imagePickerController dismissViewControllerAnimated:YES completion:nil];
+//    [UIView animateWithDuration:.3 animations:^{
+//        self.viewForPicker.frame = CGRectMake(0, self.view.frame.size.height, 320, 206);
+//    } completion:^(BOOL finished) {
+//        [self.viewForPicker removeFromSuperview];
+//        self.viewForPicker = nil;
+//        self.imagePickerController = nil;
+//    }];
 }
 
 # pragma mark validation

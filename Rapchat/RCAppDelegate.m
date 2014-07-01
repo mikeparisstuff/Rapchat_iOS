@@ -10,6 +10,8 @@
 #import <RestKit/RestKit.h>
 #import "RCRestkitClient.h"
 #import "RCFeedViewController.h"
+#import "RCSettingsPageViewController.h"
+#import "Flurry.h"
 
 @interface RCAppDelegate () <PKRevealing>
 
@@ -22,6 +24,11 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    // Setup Flurry
+    [Flurry setCrashReportingEnabled:YES];
+    [Flurry startSession:@"9FVNYJQ8Y5SN575KWTVN"];
+    
+    
     // Override point for customization after application launch.
     [[UINavigationBar appearance] setBarTintColor:[UIColor colorWithRed:226.0/255.0 green:66.0/255.0 blue:51.0/255.0 alpha:1.0]];
     [[UINavigationBar appearance] setTintColor:[UIColor colorWithHue:0.0 saturation:0.06 brightness:0.14 alpha:1.0]];
@@ -45,40 +52,17 @@
     [RCRestkitClient setupRestkit];
     
     // Checks to see if we have an accessToken and skips login page if we do
-    UIStoryboard* storyboard = [UIStoryboard storyboardWithName:[[NSBundle mainBundle].infoDictionary objectForKey:@"UIMainStoryboardFile"] bundle:nil];
     
-    NSString* controllerId;
     // If we already have a accessToken for you, then skip the login page
     if ([NSUserDefaults.standardUserDefaults objectForKey:@"accessToken"])
     {
-//        controllerId = @"MainStart";
-        // Reveal controller
-        UIViewController *frontViewController = [self frontViewController];
-        
-        //        UINavigationController *frontNavigationController = [[UINavigationController alloc] initWithRootViewController:frontViewController];
-        
-        //        UIViewController *rightViewController = [[UIViewController alloc] init];
-        //        rightViewController.view.backgroundColor = [UIColor redColor];
-        
-        // Step 2: Instantiate.
-        self.revealController = [PKRevealController revealControllerWithFrontViewController:frontViewController
-                                                                         leftViewController:[self leftViewController]
-                                                                        rightViewController:[self rightViewController]];
-        // Step 3: Configure.
-        self.revealController.delegate = self;
-        self.revealController.animationDuration = 0.25;
-        [self.revealController setMinimumWidth:300.0 maximumWidth:320.0 forViewController:self.revealController.leftViewController];
-        [self.revealController setMinimumWidth:300.0 maximumWidth:320.0 forViewController:self.revealController.rightViewController];
-        
-        // Step 4: Apply.
-        self.window.rootViewController = self.revealController;
-
+        [self initializeMainScreen];
     }
     else
     {
-        controllerId = @"LoginStart";
-        self.window.rootViewController = [storyboard instantiateViewControllerWithIdentifier:controllerId];
+        [self initializeLoginScreen];
     }
+    
     
     [NSThread sleepForTimeInterval:1.0];
     [self.window makeKeyAndVisible];
@@ -162,12 +146,19 @@
 }
 
 #pragma mark RCLeftRevealVCProtocol
+- (void)gotoSettings
+{
+    NSLog(@"Settings");
+    UIStoryboard *storybard = [UIStoryboard storyboardWithName:[[NSBundle mainBundle].infoDictionary objectForKey:@"UIMainStoryboardFile"] bundle:nil];
+    RCSettingsPageViewController *controller = (RCSettingsPageViewController *)[storybard instantiateViewControllerWithIdentifier:@"SettingsPage"];
+    [self presentViewController:controller];
+}
 
 - (void)gotoLive
 {
     NSLog(@"Live");
     UIStoryboard* storyboard = [UIStoryboard storyboardWithName:[[NSBundle mainBundle].infoDictionary objectForKey:@"UIMainStoryboardFile"] bundle:nil];
-    UIViewController* controller = [storyboard instantiateViewControllerWithIdentifier:@"LiveFeedController"];
+    RCFeedViewController* controller = (RCFeedViewController *)[storyboard instantiateViewControllerWithIdentifier:@"LiveFeedController"];
     [self presentViewController:controller];
 }
 
@@ -175,7 +166,7 @@
 {
     NSLog(@"Stage");
     UIStoryboard* storyboard = [UIStoryboard storyboardWithName:[[NSBundle mainBundle].infoDictionary objectForKey:@"UIMainStoryboardFile"] bundle:nil];
-    UIViewController* controller = [storyboard instantiateViewControllerWithIdentifier:@"CompletedFeedController"];
+    RCFeedViewController* controller = (RCFeedViewController *)[storyboard instantiateViewControllerWithIdentifier:@"CompletedFeedController"];
     [self presentViewController:controller];
 }
 
@@ -207,6 +198,82 @@
     }];
 }
 
+#pragma mark - Handle Login Logic
+- (void)gotoLogin
+{
+    UIStoryboard* storyboard = [UIStoryboard storyboardWithName:[[NSBundle mainBundle].infoDictionary objectForKey:@"UIMainStoryboardFile"] bundle:nil];
+    UIViewController *controller = [storyboard instantiateViewControllerWithIdentifier:@"LoginStart"];
+    [self.revealController enterPresentationModeAnimated:YES completion:^(BOOL finished) {
+        [self.revealController setFrontViewController:controller];
+        self.revealController.frontViewController.revealController.recognizesPanningOnFrontView = NO;
+        [NSThread sleepForTimeInterval:.3];
+        [self.revealController resignPresentationModeEntirely:YES animated:YES completion:^(BOOL finished) {
+            NSLog(@"Should be focused on center");
+        }];
+    }];
+}
+
+- (void)gotoMainScreenFromLogin
+{
+    UIStoryboard* storyboard = [UIStoryboard storyboardWithName:[[NSBundle mainBundle].infoDictionary objectForKey:@"UIMainStoryboardFile"] bundle:nil];
+    UIViewController *controller = [storyboard instantiateViewControllerWithIdentifier:@"LoginStart"];
+    [self.revealController setFrontViewController:[self frontViewController]];
+    [self.revealController setRightViewController:[self rightViewController]];
+    [self.revealController setLeftViewController:[self leftViewController]];
+    self.revealController.frontViewController.revealController.recognizesPanningOnFrontView = YES;
+    
+//    [self.revealController enterPresentationModeAnimated:YES completion:^(BOOL finished) {
+//        [self.revealController setFrontViewController:[self frontViewController]];
+//        [self.revealController setRightViewController:[self rightViewController]];
+//        self.revealController.frontViewController.revealController.recognizesPanningOnFrontView = YES;
+//        [NSThread sleepForTimeInterval:.3];
+//        [self.revealController resignPresentationModeEntirely:YES animated:YES completion:^(BOOL finished) {
+//            NSLog(@"Should be focused on center");
+//            [self.revealController setLeftViewController:[self leftViewController]];
+//            
+//        }];
+//    }];
+}
+
+- (void)initializeMainScreen
+{
+    //controllerId = @"MainStart";
+    // Reveal controller
+    UIViewController *frontViewController = [self frontViewController];
+    
+    //        UINavigationController *frontNavigationController = [[UINavigationController alloc] initWithRootViewController:frontViewController];
+    
+    //        UIViewController *rightViewController = [[UIViewController alloc] init];
+    //        rightViewController.view.backgroundColor = [UIColor redColor];
+    
+    // Step 2: Instantiate.
+    self.revealController = [PKRevealController revealControllerWithFrontViewController:frontViewController
+                                                                     leftViewController:[self leftViewController]
+                                                                    rightViewController:[self rightViewController]];
+    // Step 3: Configure.
+    self.revealController.delegate = self;
+    self.revealController.animationDuration = 0.25;
+    [self.revealController setMinimumWidth:85.0 maximumWidth:85.0 forViewController:self.revealController.leftViewController];
+    [self.revealController setMinimumWidth:300.0 maximumWidth:320.0 forViewController:self.revealController.rightViewController];
+    
+    // Step 4: Apply.
+    self.window.rootViewController = self.revealController;
+}
+
+- (void)initializeLoginScreen
+{
+    UIStoryboard* storyboard = [UIStoryboard storyboardWithName:[[NSBundle mainBundle].infoDictionary objectForKey:@"UIMainStoryboardFile"] bundle:nil];
+    self.revealController = [PKRevealController revealControllerWithFrontViewController:[storyboard instantiateViewControllerWithIdentifier:@"LoginStart"] leftViewController:[[UIViewController alloc] init]];
+
+    // Step 3: Configure.
+    self.revealController.delegate = self;
+    self.revealController.animationDuration = 0.25;
+    [self.revealController setMinimumWidth:300.0 maximumWidth:320.0 forViewController:self.revealController.leftViewController];
+    [self.revealController setMinimumWidth:300.0 maximumWidth:320.0 forViewController:self.revealController.rightViewController];
+    self.revealController.frontViewController.revealController.recognizesPanningOnFrontView = NO;
+    self.window.rootViewController = self.revealController;
+}
+
 #pragma mark Helpers
 
 - (UIViewController *)frontViewController
@@ -232,6 +299,16 @@
     RCRightRevealViewController *rightView = (RCRightRevealViewController *)controller.viewControllers[0];
     rightView.delegate = self;
     return controller;
+}
+
+- (void)disableFrontPanning
+{
+    self.revealController.frontViewController.revealController.recognizesPanningOnFrontView = NO;
+}
+
+- (void)enableFrontPanning
+{
+    self.revealController.frontViewController.revealController.recognizesPanningOnFrontView = YES;
 }
 
 @end

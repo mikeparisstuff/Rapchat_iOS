@@ -10,10 +10,9 @@
 #import "RCSendFriendRequestCell.h"
 #import "RCUrlPaths.h"
 #import "RCFriendRequestWrapper.h"
-#import "RCUser.h"
 #import "RCFriendRequest.h"
+#import "UIImageView+UIActivityIndicatorForSDWebImage.h"
 
-#import "RCUser.h"
 #import "RCProfile.h"
 
 @interface RCSearchPeopleViewController ()
@@ -121,9 +120,9 @@
                                 NSLog(@"Successfully Got Results");
                                 self.contentList = [mappingResult array];
                                 self.contentList = [self.contentList sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-                                    RCUser *u1 = (RCUser *)obj1;
-                                    RCUser *u2 = (RCUser *)obj2;
-                                    return [u1.username localizedCaseInsensitiveCompare:u2.username];
+                                    RCProfile *u1 = (RCProfile *)obj1;
+                                    RCProfile *u2 = (RCProfile *)obj2;
+                                    return [u1.user.username localizedCaseInsensitiveCompare:u2.user.username];
                                 }];
                                 
 //                                [self.searchController.searchResultsTableView reloadData];
@@ -149,6 +148,7 @@
     }
 }
 
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSString *cellIdentifer = @"SendFriendRequestCell";
@@ -160,27 +160,31 @@
         [cell.sendFriendRequestButton setHidden:NO];
     }
     // Configure the cell...
-    RCUser *user;
+    RCProfile *profile;
     if (tableView == self.searchDisplayController.searchResultsTableView) {
-        user = (RCUser *)[self.filteredContentList objectAtIndex:indexPath.row];
+        profile = (RCProfile *)[self.filteredContentList objectAtIndex:indexPath.row];
     } else {
-        user = (RCUser *)[self.contentList objectAtIndex:indexPath.row];
+        profile = (RCProfile *)[self.contentList objectAtIndex:indexPath.row];
     }
-    if ([self.friendIds containsObject:user.userId]) {
+    if ([self.friendIds containsObject:profile.user.userId]) {
         [cell.completeButton setHidden:NO];
         [cell.sendFriendRequestButton setHidden:YES];
         [cell.pendingRequestLabel setText:@""];
-    } else if ( [self.requestsPendingThem containsObject:user.userId] ) {
+    } else if ( [self.requestsPendingThem containsObject:profile.user.userId] ) {
         [cell.completeButton setHidden:YES];
         [cell.sendFriendRequestButton setHidden:YES];
         [cell.pendingRequestLabel setText:@"Request Sent"];
-    } else if ( [self.requestsPendingMe containsObject:user.userId] ) {
+    } else if ( [self.requestsPendingMe containsObject:profile.user.userId] ) {
         [cell.completeButton setHidden:YES];
         [cell.sendFriendRequestButton setHidden:YES];
         [cell.pendingRequestLabel setText:@"Request Waiting"];
     }
-    cell.fullnameLabel.text = [NSString stringWithFormat:@"%@ %@", user.firstName, user.lastName];
-    cell.usernameLabel.text = user.username;
+    cell.fullnameLabel.text = [NSString stringWithFormat:@"%@ %@", profile.user.firstName, profile.user.lastName];
+    cell.usernameLabel.text = profile.user.username;
+    [cell.profilePictureImageView setImageWithURL:profile.profilePictureURL placeholderImage:[UIImage imageNamed:@"ic_profile"] usingActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+//    cell.profilePictureImageView.layer.cornerRadius  = 5.0;
+//    cell.profilePictureImageView.layer.masksToBounds = YES;
+    
     return cell;
 }
 #pragma mark - UISearchDisplayController Delegate Methods

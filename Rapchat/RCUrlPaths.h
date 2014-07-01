@@ -26,6 +26,7 @@ static NSString * const myFriendRequestsReplyEndpoint = @"/users/me/friends/repl
 static NSString * const obtainTokenEndpoint = @"/users/obtain-token/";
 static NSString * const myProfileEndpoint = @"/users/me/";
 static NSString * const myLikesEndpoint = @"/users/me/likes/";
+static NSString * const myVotesEndpoint = @"/users/me/votes/";
 static NSString * const usersEndpoint = @"/users/";
 static NSString * const replyToFriendRequestEndpoint = @"/users/me/friends/requests/reply/";
 

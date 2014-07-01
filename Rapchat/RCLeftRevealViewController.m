@@ -8,6 +8,7 @@
 
 #import "RCLeftRevealViewController.h"
 #import "RCUrlPaths.h"
+#import "RCConstants.h"
 #import <SVProgressHUD.h>
 #import "UIImageView+UIActivityIndicatorForSDWebImage.h"
 #import "RCProfile.h"
@@ -21,7 +22,11 @@
 @property (weak, nonatomic) IBOutlet UIButton *numberOfFriendsButton;
 @property (weak, nonatomic) IBOutlet UIImageView *profilePictureImageView;
 @property (weak, nonatomic) IBOutlet UILabel *usernameLabel;
-
+@property (weak, nonatomic) IBOutlet UIView *headerView;
+@property (weak, nonatomic) IBOutlet UIButton *feedButton;
+@property (weak, nonatomic) IBOutlet UIButton *feedbackButton;
+@property (weak, nonatomic) IBOutlet UIButton *stageButton;
+@property (weak, nonatomic) IBOutlet UIButton *settingsButton;
 @end
 
 @implementation RCLeftRevealViewController
@@ -40,6 +45,51 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     [self loadProfile];
+//    UIImage *patternImage = [UIImage imageNamed:@"grey_washed"];
+//    self.view.backgroundColor = [UIColor colorWithPatternImage:patternImage];
+    [self setHeaderStyle];
+    [self setButtonStyles];
+}
+
+- (void)setHeaderStyle
+{
+    self.headerView.layer.cornerRadius = 10.0;
+    self.headerView.layer.masksToBounds = YES;
+    self.headerView.clipsToBounds = NO;
+    self.headerView.layer.shadowColor = [[UIColor whiteColor] CGColor];
+    self.headerView.layer.shadowOffset = CGSizeMake(0,3);
+    self.headerView.layer.shadowOpacity = 0.5;
+}
+
+- (void)setButtonStyles
+{
+    self.stageButton.clipsToBounds = NO;
+    self.stageButton.layer.masksToBounds = YES;
+    self.stageButton.layer.shadowColor = [[UIColor blackColor] CGColor];
+    self.stageButton.layer.shadowOffset = CGSizeMake(0,3);
+    self.stageButton.layer.shadowOpacity = 0.5;
+    self.stageButton.layer.cornerRadius = self.stageButton.frame.size.width/2;
+    
+    self.feedbackButton.clipsToBounds = NO;
+    self.feedbackButton.layer.masksToBounds = YES;
+    self.feedbackButton.layer.shadowColor = [[UIColor blackColor] CGColor];
+    self.feedbackButton.layer.shadowOffset = CGSizeMake(0,3);
+    self.feedbackButton.layer.shadowOpacity = 0.5;
+    self.feedbackButton.layer.cornerRadius = self.stageButton.frame.size.width/2;
+    
+    self.settingsButton.clipsToBounds = NO;
+    self.settingsButton.layer.masksToBounds = YES;
+    self.settingsButton.layer.shadowColor = [[UIColor blackColor] CGColor];
+    self.settingsButton.layer.shadowOffset = CGSizeMake(0,3);
+    self.settingsButton.layer.shadowOpacity = 0.5;
+    self.settingsButton.layer.cornerRadius = self.stageButton.frame.size.width/2;
+    
+    self.feedButton.clipsToBounds = NO;
+    self.feedButton.layer.masksToBounds = YES;
+    self.feedButton.layer.shadowColor = [[UIColor blackColor] CGColor];
+    self.feedButton.layer.shadowOffset = CGSizeMake(0,3);
+    self.feedButton.layer.shadowOpacity = 0.5;
+    self.feedButton.layer.cornerRadius = self.stageButton.frame.size.width/2;
 }
 
 - (void)didReceiveMemoryWarning
@@ -51,8 +101,8 @@
 #pragma Update UI
 - (void)setProfileHeaderInfo
 {
-    self.profilePictureImageView.layer.cornerRadius  = 5.0;
-    self.profilePictureImageView.layer.masksToBounds = YES;
+//    self.profilePictureImageView.layer.cornerRadius  = 5.0;
+//    self.profilePictureImageView.layer.masksToBounds = YES;
     [self.numberOfFriendsButton setTitle:[NSString stringWithFormat:@"%@", self.myProfile.numberOfFriends] forState:UIControlStateNormal];
     [self.numberOfLikesButton setTitle:[NSString stringWithFormat:@"%@", self.myProfile.numberOfLikes] forState:UIControlStateNormal];
     [self.numberOfRapsButton setTitle:[NSString stringWithFormat:@"%@", self.myProfile.numberOfRaps] forState:UIControlStateNormal];
@@ -85,6 +135,13 @@
     }
 }
 
+- (IBAction)gotoSettings:(id)sender {
+    if ([self.delegate respondsToSelector:@selector(gotoSettings)]) {
+        [self.delegate gotoSettings];
+    }
+}
+
+
 
 #pragma mark API
 - (void)loadProfile
@@ -97,9 +154,15 @@
                                 self.myProfile = [mappingResult firstObject];
                                 NSLog(@"Got Profile: %@", self.myProfile.user.username);
                                 [self setProfileHeaderInfo];
+                                [self saveProfile];
                             }failure:^(RKObjectRequestOperation *operation, NSError *error) {
                                 [SVProgressHUD showErrorWithStatus:@"Network Error"];
                             }];
+}
+
+- (void)saveProfile
+{
+    [[NSUserDefaults standardUserDefaults] setValuesForKeysWithDictionary:@{@"username": self.myProfile.user.username, @"first_name": self.myProfile.user.firstName, @"last_name": self.myProfile.user.lastName, @"phone_number": self.myProfile.phoneNumber, @"email": self.myProfile.user.email, @"profile_picture_url": [self.myProfile.profilePictureURL absoluteString]}];
 }
 
 #pragma mark Segues

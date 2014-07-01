@@ -6,9 +6,9 @@
 //  Copyright (c) 2014 Michael Paris. All rights reserved.
 //
 
-#import "RCTableViewController.h"
+#import "RCViewController.h"
 #import "RCSessionTableViewCell.h"
 
-@interface RCStageFeedViewController : RCTableViewController <RCSessionCellProtocol>
+@interface RCStageFeedViewController : RCViewController <RCSessionCellProtocol, UITableViewDelegate, UITableViewDataSource>
 
 @end

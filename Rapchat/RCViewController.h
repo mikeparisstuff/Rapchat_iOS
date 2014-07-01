@@ -7,9 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AwesomeMenu.h"
 
-@interface RCViewController : UIViewController
+@interface RCViewController : UIViewController <AwesomeMenuDelegate>
+
+@property (nonatomic, strong) id revealDelegate;
 
 - (void)makeNavbarInvisible;
+- (AwesomeMenu *)createAwesomeMenu;
 
 @end

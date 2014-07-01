@@ -11,6 +11,8 @@
 @interface RCTableViewController : UITableViewController
 
 @property (nonatomic) BOOL showTabBar;
+-(void)revealRightVC;
+- (void)revealLeftVC;
 
 //- (void)setTabBarVisible;
 

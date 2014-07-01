@@ -7,6 +7,6 @@
 //
 
 
-@interface RCRegisterScreenViewController : UIViewController <UIImagePickerControllerDelegate, UIPickerViewDataSource, UIPickerViewDelegate>
+@interface RCRegisterScreenViewController : UIViewController <UIImagePickerControllerDelegate, UIActionSheetDelegate>
 
 @end

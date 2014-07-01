@@ -7,12 +7,14 @@
 //
 
 #import "RCFindFriendsViewController.h"
+#import "RCConstants.h"
 
 @interface RCFindFriendsViewController ()
 
 @end
 
 @implementation RCFindFriendsViewController
+
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -56,7 +58,7 @@
     }
     
     NSArray *recipents = @[];
-    NSString *message = [NSString stringWithFormat:@"Don't have Rapchat? Goto http://rapchat-django.herokuapp.com/users/invite/"];
+    NSString *message = [NSString stringWithFormat:@"Hey, check this out! \n Don't have Rapchat? Goto %@/invite/", BASE_URL];
     
     MFMessageComposeViewController *messageController = [[MFMessageComposeViewController alloc] init];
     [[messageController navigationBar] setBarTintColor:[UIColor lightGrayColor]];
@@ -97,7 +99,7 @@
 
 - (void)showEmail {
     NSString *emailTitle = @"Rapchat!";
-    NSString *messageBody = @"Hey, check this out! \n Don't have Rapchat? Goto http://rapchat-django.herokuapp.com/users/invite/";
+    NSString *messageBody = [NSString stringWithFormat:@"Hey, check this out! \n Don't have Rapchat? Goto %@/invite/", BASE_URL];
     NSArray *toRecipents = @[];
     
     MFMailComposeViewController *mc = [[MFMailComposeViewController alloc] init];
