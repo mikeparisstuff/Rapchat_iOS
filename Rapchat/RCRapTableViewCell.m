@@ -45,6 +45,10 @@
 
 - (void) setupViews
 {
+    // Add Gesture Recognizers to the waveformImageView
+    UIPanGestureRecognizer *recognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(dragged:)];
+    [self addGestureRecognizer:recognizer];
+    
     [self.waveformImageView setImageWithURL:self.session.waveformUrl usingActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     [self.sessionTitleLabel setText:self.session.title];
     [self.profilePictureImageView setImageWithURL:self.session.creator.profilePictureURL usingActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];

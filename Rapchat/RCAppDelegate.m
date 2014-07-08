@@ -63,6 +63,7 @@
         [self initializeLoginScreen];
     }
     
+    [self disableFrontPanning];
     
     [NSThread sleepForTimeInterval:1.0];
     [self.window makeKeyAndVisible];

@@ -10,6 +10,7 @@
 #import "RCUrlPaths.h"
 #import "SVProgressHud.h"
 #import "RCWaveFormView.h"
+#import "RCDataManager.h"
 
 
 @interface RCAudioRecorderViewController ()
@@ -29,6 +30,7 @@
 
 @property (nonatomic, strong) EZAudioFile *audioFile;
 @property (weak, nonatomic) IBOutlet EZAudioPlot *audioPlot;
+
 
 
 @end
@@ -153,6 +155,7 @@
 //    self.waveformView.progress = .4;
 //    [self.waveformView generateWaveforms];
 }
+
 
 #pragma mark - Audio Functions
 

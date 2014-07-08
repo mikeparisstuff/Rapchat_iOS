@@ -103,6 +103,7 @@
 		3FD3DE05185B08410016E3F3 /* RCRegisterScreenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FD3DE04185B08410016E3F3 /* RCRegisterScreenViewController.m */; };
 		3FD3DE08185B0CCB0016E3F3 /* RCAccessToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FD3DE07185B0CCB0016E3F3 /* RCAccessToken.m */; };
 		3FD8E4A81952C11000B57A53 /* RCAudioRecorderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FD8E4A71952C11000B57A53 /* RCAudioRecorderViewController.m */; };
+		3FDDC7E01963E51A00A98677 /* RCDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FDDC7DF1963E51A00A98677 /* RCDataManager.m */; };
 		3FE166A218BE6682006DBFAD /* RCFriendRequestWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FE166A118BE6682006DBFAD /* RCFriendRequestWrapper.m */; };
 		3FE299EA188343BE00E8F552 /* RCMyRapsTableViewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FE299E9188343BE00E8F552 /* RCMyRapsTableViewViewController.m */; };
 		3FE299ED188346EE00E8F552 /* RCPublicProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FE299EC188346EE00E8F552 /* RCPublicProfileViewController.m */; };
@@ -313,6 +314,8 @@
 		3FD3DE07185B0CCB0016E3F3 /* RCAccessToken.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RCAccessToken.m; path = Model/RCAccessToken.m; sourceTree = "<group>"; };
 		3FD8E4A61952C11000B57A53 /* RCAudioRecorderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCAudioRecorderViewController.h; sourceTree = "<group>"; };
 		3FD8E4A71952C11000B57A53 /* RCAudioRecorderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCAudioRecorderViewController.m; sourceTree = "<group>"; };
+		3FDDC7DE1963E51A00A98677 /* RCDataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCDataManager.h; sourceTree = "<group>"; };
+		3FDDC7DF1963E51A00A98677 /* RCDataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCDataManager.m; sourceTree = "<group>"; };
 		3FE166A018BE6682006DBFAD /* RCFriendRequestWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RCFriendRequestWrapper.h; path = Model/RCFriendRequestWrapper.h; sourceTree = "<group>"; };
 		3FE166A118BE6682006DBFAD /* RCFriendRequestWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RCFriendRequestWrapper.m; path = Model/RCFriendRequestWrapper.m; sourceTree = "<group>"; };
 		3FE299E8188343BE00E8F552 /* RCMyRapsTableViewViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCMyRapsTableViewViewController.h; sourceTree = "<group>"; };
@@ -682,6 +685,8 @@
 				3FA58EB8185BA8BC004C8BDB /* RCRestkitClient.m */,
 				3FF80E4018C655B900A9F316 /* RCAPI.h */,
 				3FF80E4118C655B900A9F316 /* RCAPI.m */,
+				3FDDC7DE1963E51A00A98677 /* RCDataManager.h */,
+				3FDDC7DF1963E51A00A98677 /* RCDataManager.m */,
 			);
 			name = API;
 			sourceTree = "<group>";
@@ -1010,6 +1015,7 @@
 				3F515E351859558500C950E9 /* Rapchat.xcdatamodeld in Sources */,
 				3FB24C8E186176E50047FFF4 /* RCContractableTableViewController.m in Sources */,
 				3F572E61185557A200CADD95 /* main.m in Sources */,
+				3FDDC7E01963E51A00A98677 /* RCDataManager.m in Sources */,
 				3F29474E1877EB5F0088235B /* RCEditProfileViewController.m in Sources */,
 				3FB24C88186141C80047FFF4 /* RCProgressView.m in Sources */,
 				3FD3BAD71877B9A9002EC6D2 /* RCPaginationItem.m in Sources */,

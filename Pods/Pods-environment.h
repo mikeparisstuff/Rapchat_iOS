@@ -12,6 +12,12 @@
 #define COCOAPODS_VERSION_MINOR_AFNetworking 3
 #define COCOAPODS_VERSION_PATCH_AFNetworking 4
 
+// EZAudio
+#define COCOAPODS_POD_AVAILABLE_EZAudio
+#define COCOAPODS_VERSION_MAJOR_EZAudio 0
+#define COCOAPODS_VERSION_MINOR_EZAudio 0
+#define COCOAPODS_VERSION_PATCH_EZAudio 5
+
 // PKRevealController
 #define COCOAPODS_POD_AVAILABLE_PKRevealController
 #define COCOAPODS_VERSION_MAJOR_PKRevealController 2
